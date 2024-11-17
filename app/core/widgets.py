@@ -1,0 +1,451 @@
+WIDGETS = {
+    "markets": {
+        "name": "Markets",
+        "description": "Current market data for all coins",
+        "category": "crypto",
+        "endpoint": "markets",
+    },
+    "crypto_dominance": {
+        "name": "Crypto Market Dominance",
+        "description": "Market dominance of major cryptocurrencies",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "dominance",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CoinGecko",
+        "params": [
+            {
+                "paramName": "coin_id",
+                "value": "bitcoin",
+                "label": "Coin",
+                "type": "text",
+                "description": "CoinGecko ID of the cryptocurrency",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+    "volume_marketcap_ratio": {
+        "name": "Volume/Market Cap Ratio",
+        "description": "Total Trading Volume / Total Market Cap",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "vm_ratio",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CoinGecko",
+        "params": [
+            {
+                "paramName": "coin_id",
+                "value": "bitcoin",
+                "label": "Coin",
+                "type": "text",
+                "description": "CoinGecko ID of the cryptocurrency",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+    "coingecko_coin_list": {
+        "name": "Coingecko Coins List",
+        "description": "List of all coins available on CoinGecko including ID, Name, Ticker, and available chains.",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "endpoint": "coingecko_coin_list",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CoinGecko",
+        "data": {
+            "table": {  
+                "showAll": True,
+                "columnsDefs": [
+                    {
+                        "headerName": "Name",
+                        "field": "name",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Ticker",
+                        "field": "symbol",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Chains",
+                        "field": "platforms",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "ID",
+                        "field": "id",
+                        "chartDataType": "category",
+                    },
+                ],
+            }
+        },
+    },
+    
+    "long_term_holders_net_change": {
+        "name": "Long Term Holders Net Position Change",
+        "description": "Net position change of long term holders",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "lth_net_change",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Glassnode",
+        "params": [
+            {
+                "paramName": "asset",
+                "value": "btc",
+                "label": "Coin",
+                "type": "text",
+                "description": "Glassnode ID of the cryptocurrency",
+            },  
+            {
+                "paramName": "show_price",
+                "value": "False",
+                "label": "Show Price",
+                "type": "text",
+                "description": "Overlay price on chart",
+                "options": [
+                    {
+                        "value": "True",
+                        "label": "True"
+                    },
+                    {
+                        "value": "False",
+                        "label": "False"
+                    },
+        ]
+      }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+
+    "long_term_holders_supply": {
+        "name": "Long Term Holders Supply",
+        "description": "Supply of long term holders",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "lth_supply",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Glassnode",
+        "params": [
+            {
+                "paramName": "asset",
+                "value": "btc",
+                "label": "Coin",
+                "type": "text",
+                "description": "Glassnode ID of the cryptocurrency",
+            },
+            {
+                "paramName": "show_price",
+                "value": "False",
+                "label": "Show Price",
+                "type": "text",
+                "description": "Overlay price on chart",
+                "options": [
+                    {
+                        "value": "True",
+                        "label": "True"
+                    },
+                    {
+                        "value": "False",
+                        "label": "False"
+                    },
+        ]
+      }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+
+    "google_trends": {
+        "name": "Google Trends",
+        "description": "Historical and current search trends for a given keyword",
+        "category": "sentiment",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "historical_google_trends",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Google",
+        "params": [
+            {
+                "paramName": "search_term",
+                "value": "coinbase",
+                "label": "Search Term",
+                "type": "text",
+                "description": "Term you want to return Google trends for",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+
+    "token_correlation": {
+        "name": "Token Correlation",
+        "description": "Historical correlation between two search tokens",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "correlation",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Google",
+        "params": [
+            {
+                "paramName": "coin_id1",
+                "value": "bitcoin",
+                "label": "Coin 1",
+                "type": "text",
+                "description": "CoinGecko ID of the first cryptocurrency",
+            },
+            {
+                "paramName": "coin_id2",
+                "value": "ethereum",
+                "label": "Coin 2",
+                "type": "text",
+                "description": "CoinGecko ID of the second cryptocurrency",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+
+    "funding_rates": {
+        "name": "Funding Rates",
+        "description": "Historical Daily Funding Rates. Default is BTCUSDT on Binance Futures.",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "funding_rates",
+        "gridData": {"w": 20, "h": 9},
+        "source": "VeloData",
+        "params": [
+            {
+                "paramName": "pair",
+                "value": "BTCUSDT",
+                "label": "Pair",
+                "type": "text",
+                "description": "Pair to get funding rates for",
+            },
+            {
+                "paramName": "exchange",
+                "value": "binance-futures",
+                "label": "Exchange",
+                "type": "text",
+                "description": "Exchange to get funding rates for",
+            },
+            {
+                "paramName": "show_price",
+                "value": "False",
+                "label": "Show Price",
+                "type": "text",
+                "description": "Show price in addition to funding rate",
+                "options": [
+                    {
+                        "value": "True",
+                        "label": "True"
+                    },
+                    {
+                        "value": "False",
+                        "label": "False"
+                    },
+        ]
+      }
+            
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+
+ "velo_futures_products": {
+        "name": "Velo Futures Products",
+        "description": "List of all futures products available on Velo.",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "endpoint": "velo_futures_products",
+        "gridData": {"w": 20, "h": 9},
+        "source": "VeloData",
+        "data": {
+            "table": {  
+                "showAll": True,
+                "columnsDefs": [
+                    {
+                        "headerName": "Exchange",
+                        "field": "exchange",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Ticker",
+                        "field": "coin",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Pair",
+                        "field": "product",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Start Date",
+                        "field": "begin",
+                        "chartDataType": "category",
+                    },
+                ],
+            }
+        },
+    },
+
+    "aave_lending_rate": {
+        "name": "Aave Lending Rate",
+        "description": "Historical Daily Aave Lending Rates. Default is USDC on Aave.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "aave_lending_rate",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Aave",
+        "params": [
+            {
+                "paramName": "pool",
+                "value": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e1",
+                "label": "Pool",
+                "type": "text",
+                "description": "Aave Pool to get lending rates for",
+            },
+
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+
+
+    "aave_borrow_rate": {
+        "name": "Aave Borrow Rate",
+        "description": "Historical Daily Aave Borrow Rates. Default is USDC on Aave.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "aave_borrow_rate",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Aave",
+        "params": [
+            {
+                "paramName": "pool",
+                "value": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e1",
+                "label": "Pool",
+                "type": "text",
+                "description": "Aave Pool to get borrow rates for",
+            },
+
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+
+    "aave_utilization_rate": {
+        "name": "Aave Utilization Rate",
+        "description": "Historical Daily Aave Utilization Rates. Default is USDC on Aave.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "aave_utilization_rate",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Aave",
+        "params": [
+            {
+                "paramName": "pool",
+                "value": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e1",
+                "label": "Pool",
+                "type": "text",
+                "description": "Aave Pool to get utilization rates for",
+            },
+        ],
+        "data": {"chart": {"type": "line"}},
+    },      
+
+
+ "aave_pools": {
+        "name": "Aave Pools",
+        "description": "List of all Aave Lending Pools.",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "endpoint": "aave_pools",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Aave",
+        "data": {
+            "table": {  
+                "showAll": True,
+                "columnsDefs": [
+                    {
+                        "headerName": "Pool Address",
+                        "field": "pool_address",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Pool Name",
+                        "field": "pool_name",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Chain",
+                        "field": "chain",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Version",
+                        "field": "version",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Link",
+                        "field": "link",
+                        "chartDataType": "category",
+                    },
+                ],
+            }
+        },
+    },
+
+    "coingecko_price": {
+        "name": "Coingecko Price",
+        "description": "Historical and current price for a given coin",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "coingecko_price",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CoinGecko",
+        "params": [
+            {
+                "paramName": "coin_id",
+                "value": "bitcoin",
+                "label": "Coin",
+                "type": "text",
+                "description": "CoinGecko ID of the cryptocurrency",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+
+    "coinbase_app_store_rank": {
+        "name": "Coinbase App Store Rank",
+        "description": "Historical and current rank of Coinbase in the App Store",
+        "category": "sentiment",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "coinbase_app_store_rank",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Telegram",
+        "data": {"chart": {"type": "line"}},
+    },
+
+
+    "glassnode_price": {
+        "name": "Glassnode Price",
+        "description": "Historical and current price for a given coin",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "glassnode_price",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Glassnode",
+        "params": [
+            {
+                "paramName": "asset",
+                "value": "btc",
+                "label": "Coin",
+                "type": "text",
+                "description": "Glassnode ID of the cryptocurrency",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+}
