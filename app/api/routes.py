@@ -185,7 +185,7 @@ async def get_lth_supply(asset: str = "btc", show_price: str = "False"):
             )
 
             # Add price line
-            figureadd_scatter(
+            figure.add_scatter(
                 x=price_data.index,
                 y=price_data["price"],
                 mode="lines",

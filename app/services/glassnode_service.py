@@ -1,6 +1,4 @@
-# %%
 
-from typing import Dict
 import pandas as pd
 import requests
 from app.core.settings import get_settings

@@ -5,7 +5,7 @@ from app.core.settings import get_settings
 
 settings = get_settings()
 
-class CoinGeckoService:
+class CoinGeckoService: 
     def __init__(self):
         self.api_key = settings.COINGECKO_API_KEY
         self.headers = {"accept": "application/json", "x-cg-pro-api-key": self.api_key}
@@ -14,9 +14,9 @@ class CoinGeckoService:
         response = requests.get(url, headers=self.headers)
         return response.json()
     
-    def get_coin_list(self) -> pd.DataFrame:
+    def get_coin_list(self, include_platform: bool = True, status: str = "active") -> pd.DataFrame:
         """Fetches active coins list from CoinGecko API."""
-        url = "https://pro-api.coingecko.com/api/v3/coins/list?include_platform=true&status=active"
+        url = f"https://pro-api.coingecko.com/api/v3/coins/list?include_platform={include_platform}&status={status}"
         data = self.fetch_data(url)
 
         # Convert list of dictionaries to DataFrame from the list of chains the token is on

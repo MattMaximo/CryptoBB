@@ -4,6 +4,7 @@ WIDGETS = {
         "description": "Current market data for all coins",
         "category": "crypto",
         "endpoint": "markets",
+        "source": "CoinGecko"
     },
     "crypto_dominance": {
         "name": "Crypto Market Dominance",
