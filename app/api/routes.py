@@ -27,10 +27,10 @@ async def get_widgets():
     return WIDGETS
 
 
-@router.get("/markets")
-async def get_markets():
-    data = coingecko_service.get_markets()
-    return data.to_dict(orient="records")
+@router.get("/coingecko_coin_list")
+async def get_coin_list(include_platform: str = "true", status: str = "active"):
+    symbols_list = coingecko_service.get_coin_list(include_platform, status)
+    return symbols_list.to_dict(orient="records")
 
 
 @router.get("/coingecko_price")
@@ -132,10 +132,7 @@ async def get_vm_ratio(coin_id: str):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/coingecko_coin_list")
-async def get_coin_list():
-    symbols_list = coingecko_service.get_coin_list()
-    return symbols_list.to_dict(orient="records")
+
 
 @router.get("/lth_supply")
 async def get_lth_supply(asset: str = "btc", show_price: str = "False"):
@@ -402,8 +399,17 @@ async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolutio
             y=exchange_data["annualized_funding_rate"],
             mode="lines",
             name=exchange,
-            line=dict(color=colors[exchange])
+            line=dict(color=colors[exchange]),
+            hovertemplate="%{y:.2%}"
         )
+    # Update y-axis to show percentage format
+    figure.update_layout(
+        yaxis=dict(
+            tickformat=".0%",  # Format as percentage with no decimals
+            gridcolor="#2f3338",
+            color="#ffffff"
+        )
+    )
 
     return json.loads(figure.to_json())
 

@@ -14,16 +14,17 @@ class CoinGeckoService:
         response = requests.get(url, headers=self.headers)
         return response.json()
     
-    def get_coin_list(self, include_platform: bool = True, status: str = "active") -> pd.DataFrame:
+    def get_coin_list(self, include_platform: str = "true", status: str = "active") -> pd.DataFrame:
         """Fetches active coins list from CoinGecko API."""
         url = f"https://pro-api.coingecko.com/api/v3/coins/list?include_platform={include_platform}&status={status}"
         data = self.fetch_data(url)
 
-        # Convert list of dictionaries to DataFrame from the list of chains the token is on
-        df = pd.DataFrame(data)
-        df["platforms"] = df["platforms"].apply(
-            lambda d: ", ".join(d.keys()) if isinstance(d, dict) else ""
-        )
+        if include_platform:
+            # Convert list of dictionaries to DataFrame from the list of chains the token is on
+            df = pd.DataFrame(data)
+            df["platforms"] = df["platforms"].apply(
+                lambda d: ", ".join(d.keys()) if isinstance(d, dict) else ""
+            )
 
         return df
 
