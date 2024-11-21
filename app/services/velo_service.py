@@ -3,6 +3,7 @@ from typing import Dict
 import pandas as pd
 from velodata import lib as velo
 from app.core.settings import get_settings
+from app.assets.annualization_intervals import intervals_per_year
 
 settings = get_settings()
 
@@ -11,48 +12,182 @@ class VeloService:
     def __init__(self):
         self.client = velo.client(settings.VELO_API_KEY)
 
-    def get_available_futures_products(self) -> pd.DataFrame:
+    def get_futures_products(self) -> pd.DataFrame:
         """Retrieves all available products (tickers)."""
         products = self.client.get_futures()
         data = pd.DataFrame(products)
         data['begin'] = pd.to_datetime(data['begin'], unit='ms')
         return data
+    
+    def get_spot_products(self) -> pd.DataFrame:
+        """Retrieves all available products (tickers)."""
+        products = self.client.get_spot()
+        data = pd.DataFrame(products)
+        return data
+    
+    def get_options_products(self) -> pd.DataFrame:
+        """Retrieves all available products (tickers)."""
+        products = self.client.get_options()
+        data = pd.DataFrame(products)
+        return data
 
-    def get_historical_funding_rates_daily(self, pair: str = "BTCUSDT", exchange: str = "binance-futures") -> pd.DataFrame:
-        """Retrieves daily historical funding rates for a specified product over the longest available period."""
+
+    def oi_weighted_funding_rate(self, coin='BTC', begin=None, resolution='1d') -> pd.DataFrame:
+        """
+        Calculate the open interest (OI) weighted funding rate for the specified coin.
+
+        Parameters:
+        - coin: Coin symbol (e.g., 'SOL').
+        - begin: Start time as a string in 'YYYY-MM-DD' format.
+        - resolution: Data resolution (e.g., '1m', '15m', '1h', '8h', '1d', '1w').
+
+        Returns:
+        - DataFrame with OI-weighted funding rate and annualized funding rate.
+        """
+        if begin is None or begin == '' or begin == "None":
+            # Get futures and grab earliest date
+            future = self.client.get_futures()
+            df = pd.DataFrame(future)
+            df = df[df['coin'] == coin]
+            begin_timestamp = int(df.begin.min())
+        else:
+            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+
+        params = {
+            'type': 'futures',
+            'columns': ['funding_rate', 'coin_open_interest_close', 'close_price'],
+            'exchanges': ['binance-futures', 'bybit', 'okex-swap', 'hyperliquid'],
+            'coins': [coin],
+            'begin': begin_timestamp,
+            'end': self.client.timestamp(),  # Current timestamp
+            'resolution': resolution
+        }
+
+        # Fetch data
+        df = self.client.get_rows(params)
+        df.time = pd.to_datetime(df.time, unit='ms')
+
+        # Calculate OI-weighted funding rate
+        df['oi_weighted_funding_rate'] = df['funding_rate'] * df['coin_open_interest_close']
+        df = df.groupby(df['time']).sum(numeric_only=True).reset_index()
+        df['oi_weighted_funding_rate'] = df['oi_weighted_funding_rate'] / df['coin_open_interest_close']
+
+        df['oi_weighted_funding_rate_annualized'] = df['oi_weighted_funding_rate'] * intervals_per_year.get(resolution, 365)
+        return df[['time', 'oi_weighted_funding_rate_annualized', 'close_price']]
+
+    def funding_rates(self, coin='BTC', begin=None, resolution='1d') -> pd.DataFrame:
+        """
+        Return the funding rate for the specified coin by exchange.
+
+        Parameters:
+        - coin: Coin symbol (e.g., 'SOL').
+        - begin: Start time as a string in 'YYYY-MM-DD' format.
+        - resolution: Data resolution (e.g., '1m', '15m', '1h', '8h', '1w').
+
+        Returns:
+        - DataFrame with funding rate by exchange.
+        """
+        if begin is None or begin == '' or begin == "None":
+            # get futures and grab earliest date
+            future = self.client.get_futures()
+            df = pd.DataFrame(future)
+            df = df[df['coin'] == coin]
+            begin_timestamp = int(df.begin.min())
+        else:
+            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+
         params = {
             'type': 'futures',
             'columns': ['funding_rate'],
-            'exchanges': [exchange],
-            'products': [pair],
-            'begin': 0,  # Set to earliest possible timestamp
-            'end': self.client.timestamp(),  # Current timestamp
-            'resolution': '1d'  
+            'exchanges': ['binance-futures', 'bybit', 'okex-swap', 'hyperliquid'],
+            'coins': [coin],
+            'begin': begin_timestamp,
+            'end': self.client.timestamp(),  # current timestamp
+            'resolution': resolution
         }
-        
-        data = self.client.get_rows(params)
-        df = pd.DataFrame(data)
-        df = df[['time', 'funding_rate']]
-        df = df.rename(columns={'time': 'date'})
-        df['date'] = pd.to_datetime(df['date'], unit='ms')
-        df['funding_rate'] = df['funding_rate'].apply(lambda x: x * 100)
 
-        return df
+        # Fetch data
+        df = self.client.get_rows(params)
+        df.time = pd.to_datetime(df.time, unit='ms')
 
-    def get_historical_ohlcv_daily(self, pair: str = "BTCUSDT", exchange: str = "binance-futures", from_time: int = 0, to_time: int = 0) -> pd.DataFrame:
-        """Retrieves daily historical OHLCV candles for a specified product."""
+        # Annualize the funding rate
+        df['annualized_funding_rate'] = df['funding_rate'] * intervals_per_year.get(resolution, 365)
+
+        return df[['time', 'annualized_funding_rate', 'exchange']]
+    
+    def liquidations(self, coin='BTC', begin=None, resolution='1d') -> pd.DataFrame:
+        """
+        Return the liquidations for the specified coin by exchange.
+
+        Parameters:
+        - coin: Coin symbol (e.g., 'SOL').
+        - begin: Start time as a string in 'YYYY-MM-DD' format.
+        - resolution: Data resolution (e.g., '1m', '15m', '1h', '8h', '1w').
+
+        Returns:
+        - DataFrame with liquidations by exchange.
+        """
+        if begin is None or begin == '' or begin == "None":
+            # get futures and grab earliest date
+            future = self.client.get_futures()
+            df = pd.DataFrame(future)
+            df = df[df['coin'] == coin]
+            begin_timestamp = int(df.begin.min())
+        else:
+            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+
         params = {
             'type': 'futures',
-            'columns': ['open_price', 'high_price', 'low_price', 'close_price', 'coin_volume'],
-            'exchanges': [exchange],
-            'products': [pair],
-            'begin': from_time * 1000,
-            'end': to_time * 1000,
-            'resolution': '1d'
+            'columns': ['close_price', 'buy_liquidations_dollar_volume', 'sell_liquidations_dollar_volume'],
+            'exchanges': ['binance-futures', 'bybit', 'okex-swap', 'hyperliquid'],
+            'coins': [coin],
+            'begin': begin_timestamp,
+            'end': self.client.timestamp(),  # current timestamp
+            'resolution': resolution
         }
-    
-        return self.client.get_rows(params)
 
+        # Fetch data
+        df = self.client.get_rows(params)
+        df.time = pd.to_datetime(df.time, unit='ms')
+
+        return df[['time', 'close_price', 'buy_liquidations_dollar_volume', 'sell_liquidations_dollar_volume', 'exchange']]
+
+    def open_interest(self, coin='BTC', begin=None, resolution='1d') -> pd.DataFrame:
+        """
+        Return the open interest (OI) for the specified coin by exchange.
+
+        Parameters:
+        - coin: Coin symbol (e.g., 'SOL').
+        - begin: Start time as a string in 'YYYY-MM-DD' format.
+        - resolution: Data resolution (e.g., '1m', '15m', '1h', '8h', '1w').
+
+        Returns:
+        - DataFrame with OI by exchange.
+        """
+        if begin is None or begin == '' or begin == "None":
+            # get futures and grab earliest date
+            future = self.client.get_futures()
+            df = pd.DataFrame(future)
+            df = df[df['coin'] == coin]
+            begin_timestamp = int(df.begin.min())
+        else:
+            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+
+        params = {
+            'type': 'futures',
+            'columns': ['dollar_open_interest_close', 'close_price'],
+            'exchanges': ['binance-futures', 'bybit', 'okex-swap', 'hyperliquid'],
+            'coins': [coin],
+            'begin': begin_timestamp,
+            'end': self.client.timestamp(),  # current timestamp
+            'resolution': resolution
+        }
+
+        # Fetch data
+        df = self.client.get_rows(params)
+        df.time = pd.to_datetime(df.time, unit='ms')
+
+        return df[['time', 'dollar_open_interest_close', 'close_price', 'exchange']]
 
 # %%
 

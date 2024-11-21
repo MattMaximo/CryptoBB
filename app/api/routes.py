@@ -8,6 +8,7 @@ from app.services.telegram_service import TelegramService
 from app.core.widgets import WIDGETS
 from app.assets.aave_pools import AAVE_POOLS
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import json
 import pandas as pd
 
@@ -332,108 +333,339 @@ async def get_correlation(coin_id1: str, coin_id2: str):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/funding_rates")
-async def get_funding_rates(
-    pair: str = "BTCUSDT", exchange: str = "binance-futures", show_price: str = "False"
-):
+
+@router.get("/velo_futures_products")
+async def get_velo_futures_products():
+    data = velo_service.get_futures_products()
+    return data.to_dict(orient="records")
+
+@router.get("/velo_spot_products")
+async def get_velo_spot_products():
+    data = velo_service.get_spot_products()
+    return data.to_dict(orient="records")
+
+@router.get("/velo_options_products")
+async def get_velo_options_products():
+    data = velo_service.get_options_products()
+    return data.to_dict(orient="records")
+
+@router.get("/oi_weighted_funding_rates")
+async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
     try:
-        # Get funding rate data
-        data = velo_service.get_historical_funding_rates_daily(pair, exchange)
-        data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
-        data = data.set_index("date")
+        data = velo_service.oi_weighted_funding_rate(coin, begin, resolution)
+        data = data.set_index("time")
 
         figure = go.Figure(
             layout=dict(
                 xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
-                yaxis=dict(title="Funding Rate", gridcolor="#2f3338", color="#ffffff"),
+                yaxis=dict(title="OI Weighted Funding Rate", gridcolor="#2f3338", color="#ffffff"),
                 margin=dict(b=0, l=0, r=0, t=0),
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
                 font=dict(color="#ffffff"),
-                showlegend=False,
             )
         )
 
-        # Add funding rate data
+        # Add bar chart for funding rate
+        figure.add_bar(
+            x=data.index,
+            y=data["oi_weighted_funding_rate_annualized"],
+            name="OI Weighted Funding Rate",
+            marker_color=['rgba(0,255,0,0.3)' if x >= 0 else 'rgba(255,0,0,0.3)' 
+                        for x in data["oi_weighted_funding_rate_annualized"]]
+        )
+
+        # Add price line on secondary y-axis
         figure.add_scatter(
             x=data.index,
-            y=data["funding_rate"],
+            y=data["close_price"],
             mode="lines",
-            name="Funding Rate",
-            line=dict(color="green"),
-            hovertemplate="%{y}%",
+            name="Price",
+            line=dict(color="#F7931A"),
+            yaxis="y2"
         )
 
-        # Add red line for negative funding rates
-        data_red = data["funding_rate"].where(data["funding_rate"] < 0, None)
-        figure.add_scatter(
-            x=data.index,
-            y=data_red,
-            mode="lines",
-            name="Negative Funding Rate",
-            line=dict(color="red"),
-            hovertemplate="%{y}%",
-            showlegend=False,
+        figure.update_layout(
+            yaxis2=dict(
+                title="Price",
+                overlaying="y",
+                side="right",
+                gridcolor="#2f3338",
+                color="#ffffff"
+            )
         )
-
-        if show_price.lower() == "true":
-            # Get funding rate data timestamps
-            from_time = int(pd.Timestamp(data.index[0]).timestamp())
-            to_time = int(pd.Timestamp(data.index[-1]).timestamp())
-            price_data = velo_service.get_historical_ohlcv_daily(
-                pair, exchange, from_time=from_time, to_time=to_time
-            )
-            price_df = pd.DataFrame(price_data)
-            price_df["date"] = pd.to_datetime(price_df["time"], unit="ms").dt.strftime(
-                "%Y-%m-%d"
-            )
-            price_df = price_df.rename(columns={"close_price": "price"})
-            # drop all columns except date and price
-            price_df = price_df[["date", "price"]]
-            price_df = price_df.set_index("date")
-
-            # Add secondary Y axis for price
-            figure.update_layout(
-                yaxis2=dict(
-                    title="Price",
-                    overlaying="y",
-                    side="right",
-                    gridcolor="#2f3338",
-                    color="#ffffff",
-                )
-            )
-
-            # Add price line
-            figure.add_scatter(
-                x=price_df.index,
-                y=price_df["price"],
-                mode="lines",
-                name="Price",
-                line=dict(color="#00b0f0"),
-                yaxis="y2",
-                hovertemplate="%{y:,.2f}",
-            )
 
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/velo_futures_products")
-async def get_velo_futures_products():
-    data = velo_service.get_available_futures_products()
-    return data.to_dict(orient="records")
+@router.get("/exchange_funding_rates")
+async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+    data = velo_service.funding_rates(coin, begin, resolution)
+    data = data.set_index("time")
 
+    figure = go.Figure(
+        layout=dict(
+            xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
+            yaxis=dict(title="Funding Rate", gridcolor="#2f3338", color="#ffffff"),
+            margin=dict(b=0, l=0, r=0, t=0),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#ffffff"),
+        )
+    )
 
-@router.get("/futures_ohlcv")
-async def get_futures_ohlcv(pair: str = "BTCUSDT", exchange: str = "binance-futures"):
+    # Define colors for each exchange
+    colors = {
+        'binance-futures': '#F3BA2F',  # Binance yellow
+        'bybit': '#4982D4',           # Bybit blue
+        'okex-swap': '#BB81F6',       # OKX purple
+        'hyperliquid': '#50D2C1'      # HL Green
+    }
+
+    # Plot line for each exchange
+    for exchange in data['exchange'].unique():
+        exchange_data = data[data['exchange'] == exchange]
+        figure.add_scatter(
+            x=exchange_data.index,
+            y=exchange_data["annualized_funding_rate"],
+            mode="lines",
+            name=exchange,
+            line=dict(color=colors[exchange])
+        )
+
+    return json.loads(figure.to_json())
+
+@router.get("/long_liquidations")
+async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
     try:
-        data = velo_service.get_historical_ohlcv_daily(pair, exchange)
-        data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
-        data = data.set_index("date")
-        return data.to_dict(orient="records")
+        data = velo_service.liquidations(coin, begin, resolution)
+        # Group by time to aggregate across exchanges
+        data = data.groupby('time').agg({
+            'close_price': 'mean',
+            'buy_liquidations_dollar_volume': 'sum'
+        }).reset_index()
+        data = data.set_index("time")
+
+        figure = go.Figure()
+
+        # Add bar chart for liquidations
+        figure.add_bar(
+            x=data.index,
+            y=data["buy_liquidations_dollar_volume"],
+            name="Long Liquidations",
+            marker_color="rgba(255,0,0,0.5)"
+        )
+
+        # Add price line on secondary y-axis
+        figure.add_scatter(
+            x=data.index,
+            y=data["close_price"],
+            mode="lines",
+            name="Price",
+            line=dict(color="#F7931A"),
+            yaxis="y2"
+        )
+
+        figure.update_layout(
+            xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
+            yaxis=dict(title="Long Liquidations", gridcolor="#2f3338", color="#ffffff"),
+            yaxis2=dict(
+                title="Price",
+                overlaying="y",
+                side="right",
+                gridcolor="#2f3338",
+                color="#ffffff"
+            ),
+            margin=dict(b=0, l=0, r=0, t=0),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#ffffff"),
+            hovermode='x unified'
+        )
+
+        return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/short_liquidations")
+async def get_velo_short_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+    try:
+        data = velo_service.liquidations(coin, begin, resolution)
+        data = data.rename(columns={"time": "date"})
+        data = data.set_index("date")
+
+        figure = go.Figure(
+            layout=dict(
+                xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
+                yaxis=dict(title="Short Liquidations", gridcolor="#2f3338", color="#ffffff"), 
+                margin=dict(b=0, l=0, r=0, t=0),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#ffffff"),
+            )
+        )
+
+        figure.add_scatter(
+            x=data.index,
+            y=data["close_price"],
+            mode="lines", 
+            name="Price",
+            line=dict(color="#ffffff"),
+            yaxis="y2"
+    )
+        
+        figure.add_bar(
+            x=data.index,
+            y=data["sell_liquidations_dollar_volume"],
+            name="Short Liquidations",
+            marker=dict(color="#ff0000")
+        )
+
+        figure.update_layout(
+            yaxis2=dict(
+                title="Price",
+                overlaying="y",
+                side="right",
+                gridcolor="#2f3338",
+                color="#ffffff"
+            ),
+            hovermode='x unified',
+            title=f"{coin} Short Liquidations"
+        )
+
+        return json.loads(figure.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/net_liquidations")
+async def get_velo_net_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+    try:
+        data = velo_service.liquidations(coin, begin, resolution)
+        
+        # Group by time to aggregate across exchanges
+        data = data.groupby('time').agg({
+            'close_price': 'mean',
+            'buy_liquidations_dollar_volume': 'sum',
+            'sell_liquidations_dollar_volume': 'sum'
+        }).reset_index()
+        
+        # Calculate net liquidations
+        data['net_liquidations'] = data['buy_liquidations_dollar_volume'] - data['sell_liquidations_dollar_volume']
+        data = data.set_index("time")
+
+        figure = go.Figure()
+
+        # Add bar chart for net liquidations with conditional colors
+        figure.add_bar(
+            x=data.index,
+            y=data["net_liquidations"],
+            name="Net Liquidations",
+            marker_color=['rgba(0,255,0,0.5)' if x >= 0 else 'rgba(255,0,0,0.5)' 
+                        for x in data["net_liquidations"]]
+        )
+
+        # Add price line on secondary y-axis
+        figure.add_scatter(
+            x=data.index,
+            y=data["close_price"],
+            mode="lines",
+            name="Price",
+            line=dict(color="#F7931A"),
+            yaxis="y2"
+        )
+
+        figure.update_layout(
+            xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
+            yaxis=dict(title="Net Liquidations ($)", gridcolor="#2f3338", color="#ffffff"),
+            yaxis2=dict(
+                title="Price ($)",
+                overlaying="y",
+                side="right",
+                gridcolor="#2f3338",
+                color="#ffffff"
+            ),
+            margin=dict(b=0, l=0, r=0, t=0),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#ffffff"),
+            showlegend=True,
+            hovermode='x unified',
+        )
+
+        return json.loads(figure.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/open_interest")
+async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+    try:
+        data = velo_service.open_interest(coin, begin, resolution)
+        
+        # Group by time and exchange to get stacked data
+        oi_data = data.groupby(['time', 'exchange'])['dollar_open_interest_close'].sum().reset_index()
+        price_data = data.groupby('time')['close_price'].mean().reset_index()
+        
+        figure = go.Figure()
+
+        # Define colors for each exchange
+        colors = {
+            'binance-futures': '#F3BA2F',  # Binance yellow
+            'bybit': '#4982D4',           # Bybit blue
+            'okex-swap': '#BB81F6',       # OKX purple
+            'hyperliquid': '#50D2C1'      # HL Green
+        }
+
+        # Add stacked area for each exchange
+        for exchange in oi_data['exchange'].unique():
+            exchange_data = oi_data[oi_data['exchange'] == exchange]
+            figure.add_trace(
+                go.Scatter(
+                    x=exchange_data['time'],
+                    y=exchange_data['dollar_open_interest_close'],
+                    name=exchange,
+                    mode='lines',
+                    stackgroup='oi',
+                    line=dict(color=colors[exchange])
+                )
+            )
+
+        # Add price line on secondary axis
+        figure.add_trace(
+            go.Scatter(
+                x=price_data['time'],
+                y=price_data['close_price'],
+                name="Price",
+                line=dict(color="#ffffff"),
+                yaxis="y2"
+            )
+        )
+
+        # Update layout
+        figure.update_layout(
+            xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
+            yaxis=dict(title="Open Interest", gridcolor="#2f3338", color="#ffffff"),
+            yaxis2=dict(
+                title="Price",
+                overlaying="y",
+                side="right",
+                gridcolor="#2f3338",
+                color="#ffffff"
+            ),
+            margin=dict(b=0, l=0, r=0, t=0),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#ffffff"),
+            showlegend=True,
+            hovermode='x unified',
+        )
+
+        return json.loads(figure.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 
 
 @router.get("/aave_lending_rate")

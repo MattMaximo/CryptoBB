@@ -206,52 +206,6 @@ WIDGETS = {
         "data": {"chart": {"type": "line"}},
     },
 
-    "funding_rates": {
-        "name": "Funding Rates",
-        "description": "Historical Daily Funding Rates. Default is BTCUSDT on Binance Futures.",
-        "category": "crypto",
-        #"subCategory": "crypto",
-        "defaultViz": "chart",
-        "endpoint": "funding_rates",
-        "gridData": {"w": 20, "h": 9},
-        "source": "VeloData",
-        "params": [
-            {
-                "paramName": "pair",
-                "value": "BTCUSDT",
-                "label": "Pair",
-                "type": "text",
-                "description": "Pair to get funding rates for",
-            },
-            {
-                "paramName": "exchange",
-                "value": "binance-futures",
-                "label": "Exchange",
-                "type": "text",
-                "description": "Exchange to get funding rates for",
-            },
-            {
-                "paramName": "show_price",
-                "value": "False",
-                "label": "Show Price",
-                "type": "text",
-                "description": "Show price in addition to funding rate",
-                "options": [
-                    {
-                        "value": "True",
-                        "label": "True"
-                    },
-                    {
-                        "value": "False",
-                        "label": "False"
-                    },
-        ]
-      }
-            
-        ],
-        "data": {"chart": {"type": "line"}},
-    },
-
  "velo_futures_products": {
         "name": "Velo Futures Products",
         "description": "List of all futures products available on Velo.",
@@ -287,6 +241,278 @@ WIDGETS = {
                 ],
             }
         },
+    },
+
+ "velo_spot_products": {
+        "name": "Velo Spot Products",
+        "description": "List of all spot products available on Velo.",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "endpoint": "velo_spot_products",
+        "gridData": {"w": 20, "h": 9},
+        "source": "VeloData",
+        "data": {
+            "table": {  
+                "showAll": True,
+                "columnsDefs": [
+                    {
+                        "headerName": "Exchange",
+                        "field": "exchange",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Ticker",
+                        "field": "coin",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Pair",
+                        "field": "product",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Start Date",
+                        "field": "begin",
+                        "chartDataType": "category",
+                    },
+                ],
+            }
+        },
+    },
+ "velo_options_products": {
+        "name": "Velo Options Products",
+        "description": "List of all options products available on Velo.",
+        "category": "crypto",
+        #"subCategory": "crypto",
+        "endpoint": "velo_options_products",
+        "gridData": {"w": 20, "h": 9},
+        "source": "VeloData",
+        "data": {
+            "table": {  
+                "showAll": True,
+                "columnsDefs": [
+                    {
+                        "headerName": "Exchange",
+                        "field": "exchange",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Ticker",
+                        "field": "coin",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Pair",
+                        "field": "product",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Start Date",
+                        "field": "begin",
+                        "chartDataType": "category",
+                    },
+                ],
+            }
+        },
+    },
+    "oi_weighted_funding_rates": {
+        "name": "Open Interest Weighted Funding Rates",
+        "description": "Historical Open Interest Weighted Funding Rates.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "oi_weighted_funding_rates",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Velo",
+        "params": [
+            {
+                "paramName": "coin",
+                "value": "BTC",
+                "label": "Coin",
+                "type": "text",
+                "description": "Coin to get funding rates for",
+            },
+            {
+                "paramName": "resolution",
+                "value": "1d",
+                "label": "Resolution",
+                "type": "text",
+                "description": "Resolution of the data",
+            },
+            {
+                "paramName": "begin",
+                "value": "2024-01-01",
+                "label": "Start Date",
+                "type": "text",
+                "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+    
+    "exchange_funding_rates": {
+        "name": "Funding Rates by Exchange",
+        "description": "Historical Funding Rates by Exchange.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "exchange_funding_rates",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Velo",
+        "params": [
+            {
+                "paramName": "coin",
+                "value": "BTC",
+                "label": "Coin",
+                "type": "text",
+                "description": "Coin to get funding rates for",
+            },
+            {
+                "paramName": "resolution",
+                "value": "1d",
+                "label": "Resolution",
+                "type": "text",
+                "description": "Resolution of the data",
+            },
+            {
+                "paramName": "begin",
+                "value": "2024-01-01",
+                "label": "Start Date",
+                "type": "text",
+                "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+    "long_liquidations": {
+        "name": "Long Liquidations",
+        "description": "Historical Long Liquidations.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "long_liquidations",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Velo",
+        "params": [
+            {
+                "paramName": "coin",
+                "value": "BTC",
+                "label": "Coin",
+                "type": "text",
+                "description": "Coin to get funding rates for",
+            },
+            {
+                "paramName": "resolution",
+                "value": "1d",
+                "label": "Resolution",
+                "type": "text",
+                "description": "Resolution of the data",
+            },
+            {
+                "paramName": "begin",
+                "value": "2024-01-01",
+                "label": "Start Date",
+                "type": "text",
+                "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+    "short_liquidations": {
+        "name": "Short Liquidations",
+        "description": "Historical Short Liquidations.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "short_liquidations",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Velo",
+        "params": [
+            {
+                "paramName": "coin",
+                "value": "BTC",
+                "label": "Coin",
+                "type": "text",
+                "description": "Coin to get funding rates for",
+            },
+            {
+                "paramName": "resolution",
+                "value": "1d",
+                "label": "Resolution",
+                "type": "text",
+                "description": "Resolution of the data",
+            },
+            {
+                "paramName": "begin",
+                "value": "2024-01-01",
+                "label": "Start Date",
+                "type": "text",
+                "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+    "net_liquidations": {
+        "name": "Net Liquidations",
+        "description": "Historical Net Liquidations.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "net_liquidations",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Velo",
+        "params": [
+            {
+                "paramName": "coin",
+                "value": "BTC",
+                "label": "Coin",
+                "type": "text",
+                "description": "Coin to get funding rates for",
+            },
+            {
+                "paramName": "resolution",
+                "value": "1d",
+                "label": "Resolution",
+                "type": "text",
+                "description": "Resolution of the data",
+            },
+            {
+                "paramName": "begin",
+                "value": "2024-01-01",
+                "label": "Start Date",
+                "type": "text",
+                "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+    "open_interest": {
+        "name": "Open Interest",
+        "description": "Historical Open Interest.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "open_interest",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Velo",
+        "params": [
+            {
+                "paramName": "coin",
+                "value": "BTC",
+                "label": "Coin",
+                "type": "text",
+                "description": "Coin to get funding rates for",
+            },
+            {
+                "paramName": "resolution",
+                "value": "1d",
+                "label": "Resolution",
+                "type": "text",
+                "description": "Resolution of the data",
+            },
+            {
+                "paramName": "begin",
+                "value": "2024-01-01",
+                "label": "Start Date",
+                "type": "text",
+                "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
     },
 
     "aave_lending_rate": {
