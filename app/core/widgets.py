@@ -322,7 +322,7 @@ WIDGETS = {
         "defaultViz": "chart",
         "endpoint": "oi_weighted_funding_rates",
         "gridData": {"w": 20, "h": 9},
-        "source": "Velo",
+        "source": "VeloData",
         "params": [
             {
                 "paramName": "coin",
@@ -356,7 +356,7 @@ WIDGETS = {
         "defaultViz": "chart",
         "endpoint": "exchange_funding_rates",
         "gridData": {"w": 20, "h": 9},
-        "source": "Velo",
+        "source": "VeloData",
         "params": [
             {
                 "paramName": "coin",
@@ -389,7 +389,7 @@ WIDGETS = {
         "defaultViz": "chart",
         "endpoint": "long_liquidations",
         "gridData": {"w": 20, "h": 9},
-        "source": "Velo",
+        "source": "VeloData",
         "params": [
             {
                 "paramName": "coin",
@@ -422,7 +422,7 @@ WIDGETS = {
         "defaultViz": "chart",
         "endpoint": "short_liquidations",
         "gridData": {"w": 20, "h": 9},
-        "source": "Velo",
+        "source": "VeloData",
         "params": [
             {
                 "paramName": "coin",
@@ -455,7 +455,7 @@ WIDGETS = {
         "defaultViz": "chart",
         "endpoint": "net_liquidations",
         "gridData": {"w": 20, "h": 9},
-        "source": "Velo",
+        "source": "VeloData",
         "params": [
             {
                 "paramName": "coin",
@@ -488,7 +488,7 @@ WIDGETS = {
         "defaultViz": "chart",
         "endpoint": "open_interest",
         "gridData": {"w": 20, "h": 9},
-        "source": "Velo",
+        "source": "VeloData",
         "params": [
             {
                 "paramName": "coin",
