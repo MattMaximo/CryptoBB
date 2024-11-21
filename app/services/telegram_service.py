@@ -35,20 +35,21 @@ class TelegramService:
         return client
 
 
-    def _extract_rank(self, message_text: str):
+    def _extract_rank(self, prefix: str, message_text: str):
         if message_text:
-            match = re.search(r"Coinbase Rank:\s*[><]?\s*(\d+)", message_text, re.IGNORECASE)
+            match = re.search(f"{prefix} Rank:\s*[><]?\s*(\d+)", message_text, re.IGNORECASE)
             return int(match.group(1)) if match else None
         return None
 
-    async def scrape_messages(self, channel_url: str, limit=None) -> pd.DataFrame:
+
+    async def scrape_messages(self, prefix: str, channel_url: str, limit=None) -> pd.DataFrame:
         messages = []
         async for message in self.client.iter_messages(channel_url, limit=limit):
             if message is None:
                 break
             messages.append({
                 "date": message.date,
-                "rank": self._extract_rank(message.text),
+                "rank": self._extract_rank(prefix, message.text),
                 "message_id": message.id,
                 "text": message.text,
                 "views": message.views,
@@ -60,12 +61,25 @@ class TelegramService:
         df.dropna(subset=['rank'], inplace=True)
         return df
     
-    async def get_messages(self, channel_url: str, limit=None) -> pd.DataFrame:
-        return await self.scrape_messages(channel_url, limit)
-    
     async def get_coinbase_app_store_rank(self) -> pd.DataFrame:
         async with self.client:
-            data = await self.get_messages("coinbaseappstore")
+            data = await self.scrape_messages("Coinbase", "@coinbaseappstore")
+            if not data.empty:
+                data = data[["date", "rank"]]
+                data = data.sort_values("date")
+            return data
+        
+    async def get_coinbase_wallet_app_store_rank(self) -> pd.DataFrame:
+        async with self.client:
+            data = await self.scrape_messages("Coinbase Wallet", "@coinbase_wallet_tracker")
+            if not data.empty:
+                data = data[["date", "rank"]]
+                data = data.sort_values("date")
+            return data
+        
+    async def get_phantom_wallet_app_store_rank(self) -> pd.DataFrame:
+        async with self.client:
+            data = await self.scrape_messages("Phantom Wallet", "@phantom_appstore")
             if not data.empty:
                 data = data[["date", "rank"]]
                 data = data.sort_values("date")

@@ -785,8 +785,6 @@ async def get_aave_pools():
 
 
 
-
-
 @router.get("/coinbase_app_store_rank")
 async def get_coinbase_app_store_rank_route():
     try:
@@ -799,9 +797,10 @@ async def get_coinbase_app_store_rank_route():
             layout=dict(
                 xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
                 yaxis=dict(
-                    title="Coinbase App Store Rank",
+                    title="Rank (Inverted)",
                     gridcolor="#2f3338",
                     color="#ffffff",
+                    autorange="reversed"  # Invert y-axis
                 ),
                 paper_bgcolor="rgba(0,0,0,0)",
                 margin=dict(b=0, l=0, r=0, t=0),
@@ -811,7 +810,70 @@ async def get_coinbase_app_store_rank_route():
         )
 
         figure.add_scatter(
-            x=data.index, y=data["rank"], mode="lines", line=dict(color="#00b0f0")
+            x=data.index, y=data["rank"], mode="lines", line=dict(color="#034AF6")
+        )
+        return json.loads(figure.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+
+@router.get("/coinbase_wallet_app_store_rank")
+async def get_coinbase_wallet_app_store_rank_route():
+    try:
+        data = await telegram_service.get_coinbase_wallet_app_store_rank()
+
+        data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
+        data = data.set_index("date")
+
+        figure = go.Figure(
+            layout=dict(
+                xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
+                yaxis=dict(
+                    title="Rank (Inverted)",
+                    gridcolor="#2f3338",
+                    color="#ffffff",
+                    autorange="reversed"  # Invert y-axis
+                ),
+                paper_bgcolor="rgba(0,0,0,0)",
+                margin=dict(b=0, l=0, r=0, t=0),
+                plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#ffffff"),
+            )
+        )
+
+        figure.add_scatter(
+            x=data.index, y=data["rank"], mode="lines", line=dict(color="#82a7ff")
+        )
+        return json.loads(figure.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.get("/phantom_wallet_app_store_rank")
+async def get_phantom_wallet_app_store_rank_route():
+    try:
+        data = await telegram_service.get_phantom_wallet_app_store_rank()
+
+        data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
+        data = data.set_index("date")
+
+        figure = go.Figure(
+            layout=dict(
+                xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
+                yaxis=dict(
+                    title="Rank (Inverted)",
+                    gridcolor="#2f3338",
+                    color="#ffffff",
+                    autorange="reversed"  # Invert y-axis
+                ),
+                paper_bgcolor="rgba(0,0,0,0)",
+                margin=dict(b=0, l=0, r=0, t=0),
+                plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#ffffff"),
+            )
+        )
+
+        figure.add_scatter(
+            x=data.index, y=data["rank"], mode="lines", line=dict(color="#9382DE")
         )
         return json.loads(figure.to_json())
     except Exception as e:

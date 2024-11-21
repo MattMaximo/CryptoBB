@@ -654,6 +654,30 @@ WIDGETS = {
         "data": {"chart": {"type": "line"}},
     },
 
+    "coinbase_wallet_app_store_rank": {
+        "name": "Coinbase Wallet App Store Rank",
+        "description": "Historical and current rank of Coinbase Wallet in the App Store",
+        "category": "sentiment",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "coinbase_wallet_app_store_rank",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Telegram",
+        "data": {"chart": {"type": "line"}},
+    },
+
+    "phantom_wallet_app_store_rank": {
+        "name": "Phantom Wallet App Store Rank",
+        "description": "Historical and current rank of Phantom Wallet in the App Store",
+        "category": "sentiment",
+        #"subCategory": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "phantom_wallet_app_store_rank",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Telegram",
+        "data": {"chart": {"type": "line"}},
+    },
+
 
     "glassnode_price": {
         "name": "Glassnode Price",
