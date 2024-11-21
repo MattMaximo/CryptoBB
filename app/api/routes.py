@@ -342,7 +342,8 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
             y=data["oi_weighted_funding_rate_annualized"],
             name="OI Weighted Funding Rate",
             marker_color=['rgba(0,255,0,0.3)' if x >= 0 else 'rgba(255,0,0,0.3)' 
-                        for x in data["oi_weighted_funding_rate_annualized"]]
+                        for x in data["oi_weighted_funding_rate_annualized"]],
+            hovertemplate="%{y:.2%}"
         )
 
         # Add price line on secondary y-axis
@@ -357,6 +358,11 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
         )
 
         figure.update_layout(
+            yaxis=dict(
+                tickformat=".0%",  # Format as percentage with no decimals
+                gridcolor="#2f3338",
+                color="#ffffff"
+            ),
             yaxis2=dict(
                 title="Price",
                 overlaying="y",
@@ -602,14 +608,19 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
                     name=exchange,
                     mode='lines',
                     stackgroup='oi',
-                    line=dict(color=colors[exchange])
+                    line=dict(color=colors[exchange]),
                 )
             )
 
         # Update layout for secondary y-axis
         figure.update_layout(
+            yaxis=dict(
+                title="Open Interest ($)",
+                gridcolor="#2f3338",
+                color="#ffffff",
+            ),
             yaxis2=dict(
-                title="Price ($)",
+                title="Price ($)", 
                 overlaying="y",
                 side="right",
                 gridcolor="#2f3338",
