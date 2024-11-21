@@ -73,7 +73,6 @@ async def get_dominance(coin_id: str):
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Market Dominance",
                 x_title="Date",
                 y_title="Dominance (%)"
             )
@@ -116,7 +115,6 @@ async def get_vm_ratio(coin_id: str):
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Volume/Market Cap Ratio",
                 x_title="Date",
                 y_title="Ratio"
             )
@@ -148,7 +146,6 @@ async def get_lth_supply(asset: str = "btc", show_price: str = "False"):
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="LTH Supply",
                 x_title="Date",
                 y_title="LTH Supply"
             )
@@ -203,7 +200,6 @@ async def get_lth_net_change(asset: str = "btc", show_price: str = "False"):
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="LTH Net Position Change",
                 x_title="Date",
                 y_title="Net Change"
             )
@@ -271,7 +267,6 @@ async def get_historical_google_trends(search_term: str):
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Google Trends History",
                 x_title="Date",
                 y_title="Search Interest"
             )
@@ -298,7 +293,6 @@ async def get_correlation(coin_id1: str, coin_id2: str):
 
         figure = go.Figure(
             layout=create_base_layout(
-                title=f"{coin_id1}/{coin_id2} Correlation",
                 x_title="Date",
                 y_title="Correlation"
             )
@@ -339,13 +333,9 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
         data = data.set_index("time")
 
         figure = go.Figure(
-            layout=dict(
-                xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
-                yaxis=dict(title="OI Weighted Funding Rate", gridcolor="#2f3338", color="#ffffff"),
-                margin=dict(b=0, l=0, r=0, t=0),
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color="#ffffff"),
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="OI Weighted Funding Rate"
             )
         )
 
@@ -390,7 +380,6 @@ async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolutio
 
     figure = go.Figure(
         layout=create_base_layout(
-            title="Exchange Funding Rates",
             x_title="Date",
             y_title="Funding Rate"
         )
@@ -429,7 +418,6 @@ async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resol
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Long Liquidations",
                 x_title="Date",
                 y_title="Long Liquidations"
             )
@@ -478,7 +466,6 @@ async def get_velo_short_liquidations(coin: str = "BTC", begin: str = None, reso
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Short Liquidations",
                 x_title="Date",
                 y_title="Short Liquidations"
             )
@@ -532,7 +519,6 @@ async def get_velo_net_liquidations(coin: str = "BTC", begin: str = None, resolu
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Net Liquidations",
                 x_title="Date",
                 y_title="Net Liquidations ($)"
             )
@@ -583,7 +569,6 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
         
         figure = go.Figure(
             layout=create_base_layout(
-                title="Open Interest by Exchange",
                 x_title="Date",
                 y_title="Open Interest ($)"
             )
@@ -652,7 +637,6 @@ async def get_aave_lending_rate(pool: str = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Aave Lending Rate",
                 x_title="Date",
                 y_title="Lending Rate"
             )
@@ -681,7 +665,6 @@ async def get_aave_utilization_rate(pool: str = "0xa0b86991c6218b36c1d19d4a2e9eb
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Aave Utilization Rate",
                 x_title="Date",
                 y_title="Utilization Rate"
             )
@@ -710,7 +693,6 @@ async def get_aave_borrow_rate(pool: str = "0xa0b86991c6218b36c1d19d4a2e9eb0ce36
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Aave Borrow Rate",
                 x_title="Date",
                 y_title="Borrow Rate"
             )
@@ -744,7 +726,6 @@ async def get_coinbase_app_store_rank_route():
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Coinbase App Store Rank",
                 x_title="Date",
                 y_title="Rank"
             )
@@ -780,7 +761,6 @@ async def get_coinbase_wallet_app_store_rank_route():
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Coinbase Wallet App Store Rank",
                 x_title="Date",
                 y_title="Rank"
             )
@@ -815,7 +795,6 @@ async def get_phantom_wallet_app_store_rank_route():
 
         figure = go.Figure(
             layout=create_base_layout(
-                title="Phantom Wallet App Store Rank",
                 x_title="Date",
                 y_title="Rank"
             )
@@ -851,7 +830,6 @@ async def get_glassnode_price(asset: str = "btc"):
 
         figure = go.Figure(
             layout=create_base_layout(
-                title=f"{asset.upper()} Price",
                 x_title="Date",
                 y_title="Price"
             )

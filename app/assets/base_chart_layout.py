@@ -1,10 +1,5 @@
 def create_base_layout(title: str, x_title: str, y_title: str):
     return dict(
-        title=dict(
-            text=title,
-            x=0.5,  # Center align
-            font=dict(color="#ffffff"),
-        ),
         xaxis=dict(
             title=x_title,
             gridcolor="#2f3338",
