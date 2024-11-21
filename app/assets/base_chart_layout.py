@@ -1,4 +1,4 @@
-def create_base_layout(title: str, x_title: str, y_title: str):
+def create_base_layout(x_title: str, y_title: str):
     return dict(
         xaxis=dict(
             title=x_title,
@@ -22,4 +22,9 @@ def create_base_layout(title: str, x_title: str, y_title: str):
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#ffffff"),
+        hovermode="x unified",
+        hoverlabel=dict(
+            bgcolor="white",
+            font_color="black"
+        )
     )
