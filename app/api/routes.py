@@ -355,7 +355,8 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
             mode="lines",
             name="Price",
             line=dict(color="#F7931A"),
-            yaxis="y2"
+            yaxis="y2",
+            hovertemplate="%{y:,.2f}"
         )
 
         figure.update_layout(
@@ -364,7 +365,7 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
                 overlaying="y",
                 side="right",
                 gridcolor="#2f3338",
-                color="#ffffff"
+                color="#ffffff",
             )
         )
 
@@ -450,7 +451,8 @@ async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resol
             mode="lines",
             name="Price",
             line=dict(color="#F7931A"),
-            yaxis="y2"
+            yaxis="y2",
+            hovertemplate="%{y:,.2f}"
         )
 
         return json.loads(figure.to_json())
@@ -496,7 +498,8 @@ async def get_velo_short_liquidations(coin: str = "BTC", begin: str = None, reso
             mode="lines",
             name="Price",
             line=dict(color="#ffffff"),
-            yaxis="y2"
+            yaxis="y2",
+            hovertemplate="%{y:,.2f}"
         )
 
         return json.loads(figure.to_json())
@@ -552,7 +555,8 @@ async def get_velo_net_liquidations(coin: str = "BTC", begin: str = None, resolu
             mode="lines",
             name="Price",
             line=dict(color="#F7931A"),
-            yaxis="y2"
+            yaxis="y2",
+            hovertemplate="%{y:,.2f}"
         )
 
         return json.loads(figure.to_json())
@@ -615,7 +619,8 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
                 y=price_data['close_price'],
                 name="Price",
                 line=dict(color="#ffffff"),
-                yaxis="y2"
+                yaxis="y2",
+                hovertemplate="%{y:,.2f}"
             )
         )
 

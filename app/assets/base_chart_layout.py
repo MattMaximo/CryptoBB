@@ -1,5 +1,6 @@
 def create_base_layout(x_title: str, y_title: str):
     return dict(
+        title=None,
         xaxis=dict(
             title=x_title,
             gridcolor="#2f3338",
@@ -9,6 +10,7 @@ def create_base_layout(x_title: str, y_title: str):
             title=y_title,
             gridcolor="#2f3338",
             color="#ffffff",
+            tickformat=".2s" # Format large numbers with 2 decimals
         ),
         legend=dict(
             orientation="h",

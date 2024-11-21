@@ -69,7 +69,11 @@ class VeloService:
 
         # Calculate OI-weighted funding rate
         df['oi_weighted_funding_rate'] = df['funding_rate'] * df['coin_open_interest_close']
-        df = df.groupby(df['time']).sum(numeric_only=True).reset_index()
+        df = df.groupby(df['time']).agg({
+            'close_price': 'mean',
+            'oi_weighted_funding_rate': 'sum',
+            'coin_open_interest_close': 'sum'
+        }).reset_index()
         df['oi_weighted_funding_rate'] = df['oi_weighted_funding_rate'] / df['coin_open_interest_close']
 
         df['oi_weighted_funding_rate_annualized'] = df['oi_weighted_funding_rate'] * intervals_per_year.get(resolution, 365)
