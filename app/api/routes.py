@@ -899,7 +899,7 @@ async def get_microstrategy_premium():
             mode="lines",
             name="NAV Premium",
             line=dict(color="#00b0f0"),
-            hovertemplate="%{y:.2%}"
+            hovertemplate="%{y:.2f}"
         )
 
         # Add price line on secondary y-axis
