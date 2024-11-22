@@ -1,4 +1,6 @@
 def create_base_layout(x_title: str, y_title: str):
+    if x_title.lower() in ['date', 'time', 'timestamp', 'datetime']:
+        x_title = None
     return dict(
         title=None,
         xaxis=dict(

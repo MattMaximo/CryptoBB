@@ -43,13 +43,9 @@ async def get_market_data(coin_id: str):
         data = data.set_index("date")
 
         figure = go.Figure(
-            layout=dict(
-                xaxis=dict(title="Date", gridcolor="#2f3338", color="#ffffff"),
-                yaxis=dict(title="Ratio", gridcolor="#2f3338", color="#ffffff"),
-                margin=dict(b=0, l=0, r=0, t=0),
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color="#ffffff"),
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Price"
             )
         )
 
@@ -57,6 +53,7 @@ async def get_market_data(coin_id: str):
             x=data.index,
             y=data[f"{coin_id}_price"],
             mode="lines",
+            name="Price",
             line=dict(color="#00b0f0"),
         )
 
@@ -81,21 +78,22 @@ async def get_dominance(coin_id: str):
 
         figure.add_scatter(
             x=data.index,
-            y=data["dominance"],
+            y=data["dominance"] * 100,
             mode="lines",
-            line=dict(color="#00b0f0")
+            line=dict(color="#00b0f0"),
+            hovertemplate="%{y:.2f}%"  # Display hover as percentage
         )
 
         if coin_id == "bitcoin":
             figure.add_hline(
-                y=0.40,
+                y=40,
                 line_color="red",
                 line_dash="dash",
                 annotation_text="Top",
                 annotation_position="bottom right",
             )
             figure.add_hline(
-                y=0.65,
+                y=65,
                 line_color="green",
                 line_dash="dash",
                 annotation_text="Bottom",
@@ -125,8 +123,11 @@ async def get_vm_ratio(coin_id: str):
             x=data.index,
             y=data["vm_ratio"],
             mode="lines",
-            line=dict(color="#00b0f0")
+            name="Ratio",  # Added name to specify the trace name in the legend
+            line=dict(color="#00b0f0"),
+            hovertemplate="%{y:.2f}"  # Format hover as decimal
         )
+        figure.update_yaxes(tickformat=".2f")  # Override tick format to show decimals
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -223,7 +224,7 @@ async def get_lth_net_change(asset: str = "btc", show_price: str = "False"):
             y=data_red,
             mode="lines",
             line=dict(color="red"),
-            hovertemplate="%{y}"
+            hoverinfo="skip"
         )
 
         if show_price.lower() == "true":
