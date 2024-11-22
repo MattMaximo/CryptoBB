@@ -44,7 +44,6 @@ WIDGETS = {
         "name": "Coingecko Coins List",
         "description": "List of all coins available on CoinGecko including ID, Name, Ticker, and available chains.",
         "category": "crypto",
-        #"subCategory": "crypto",
         "endpoint": "coingecko_coin_list",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
@@ -693,4 +692,76 @@ WIDGETS = {
         ],
         "data": {"chart": {"type": "line"}},
     },
+    "microstrategy_premium": {
+        "name": "Microstrategy Premium",
+        "description": "Historical and current premium for Microstrategy",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "microstrategy_premium",
+        "gridData": {"w": 20, "h": 9},
+        "source": "MSTR Tracker",
+        "data": {"chart": {"type": "line"}},
+    },
+    "microstrategy_info": {
+        "name": "Microstrategy Info",
+        "description": "Historical info for Microstrategy's Bitcoin holdings, including balance, cost basis, and share metrics",
+        "category": "crypto",
+        "defaultViz": "table",
+        "endpoint": "microstrategy_info", 
+        "gridData": {"w": 20, "h": 9},
+        "source": "MSTR Tracker",
+        "data": {
+            "table": {
+                "showAll": True,
+                "columnsDefs": [
+                    {
+                        "headerName": "Date",
+                        "field": "date",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "BTC Held",
+                        "field": "btc_balance",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Bal Change",
+                        "field": "change", 
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "BTC per Share",
+                        "field": "btc_per_share",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Cost Basis",
+                        "field": "cost_basis",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "MSTR/BTC",
+                        "field": "mstr_btc",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "MSTR Price",
+                        "field": "mstr",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "BTC Price",
+                        "field": "btc",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Outstanding Shares",
+                        "field": "total_outstanding_shares",
+                        "chartDataType": "category"
+                    }
+                ]
+            }
+        }
+    }
 }
+
