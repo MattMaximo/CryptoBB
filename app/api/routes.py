@@ -938,14 +938,15 @@ async def get_exchange_price_deltas():
         data = ccdata_service.get_delta_data()
         data['timestamp'] = data['timestamp'].dt.strftime("%Y-%m-%d %H:%M:%S")
         data = data.set_index("timestamp")
-        print(data.head())
 
         fig = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Delta"
+                y_title="Delta",
+                y_dtype=".2%"
             )
         )
+
 
         # Add delta lines on primary y-axis
         for col in data.columns:
@@ -953,9 +954,9 @@ async def get_exchange_price_deltas():
                 fig.add_scatter(
                     x=data.index,
                     y=data[col],
-                    mode="lines",
+                    mode="lines", 
                     name=col.split('_')[0],
-                    hovertemplate="%{y:.2f}%"
+                    hovertemplate="%{y:.3%}"
                 )
 
         fig.update_layout(
@@ -987,7 +988,7 @@ async def get_ai_agents_market_data():
     try:
         data = geckoterminal_service.fetch_ai_agent_market_data(ai_agent_mapping)
         data.fillna(0, inplace=True)
-        # Convert columns to float
+
         float_columns = ['price_usd', 'volume_usd', 'market_cap_usd', 'fdv_usd', 
                         'total_supply', 'total_reserve_in_usd']
         for col in float_columns:

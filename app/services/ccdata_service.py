@@ -112,7 +112,7 @@ class CCDataService:
             exchange = col.replace('_vwap', '')
             result_df[f'{exchange}_delta'] = (
                 (result_df[col] - result_df['average_price']) / result_df['average_price']
-            ) * 100
+            ) 
 
         # Select only timestamp and delta columns
         delta_cols = [col for col in result_df.columns if col.endswith('_delta')]
