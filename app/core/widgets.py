@@ -826,13 +826,13 @@ WIDGETS = {
                         "chartDataType": "category"
                     },
                     {
-                        "headerName": "Chain",
-                        "field": "chain",
+                        "headerName": "Top Pool ID",
+                        "field": "top_pool_id",
                         "chartDataType": "category"
                     },
                     {
-                        "headerName": "Top Pool ID",
-                        "field": "top_pool_id",
+                        "headerName": "Chain",
+                        "field": "chain",
                         "chartDataType": "category"
                     },
                     {
@@ -844,5 +844,45 @@ WIDGETS = {
             }
         }
     }, 
+    "geckoterminal_ohlcv": {
+        "name": "Geckoterminal OHLCV",
+        "description": "OHLCV data for a given pool",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "geckoterminal_ohlcv",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Geckoterminal",
+        "params": [
+            {
+                "paramName": "pool_id",
+                "value": "9Tb2ohu5P16BpBarqd3N27WnkF51Ukfs8Z1GzzLDxVZW",
+                "label": "Pool ID",
+                "type": "text", 
+                "description": "ID of the pool"
+            },
+            {
+                "paramName": "chain",
+                "value": "solana",
+                "label": "Chain",
+                "type": "text",
+                "description": "Chain name"
+            },
+            {
+                "paramName": "timeframe", 
+                "value": "day",
+                "label": "Timeframe",
+                "type": "text",
+                "description": "Timeframe for the data. Daily, hourly, or minutely candles"
+            },
+            {
+                "paramName": "aggregate",
+                "value": "1",
+                "label": "Aggregate",
+                "type": "text", 
+                "description": "Aggregation interval"
+            }
+        ],
+        "data": {"chart": {"type": "candlestick"}},
 }
 
+}

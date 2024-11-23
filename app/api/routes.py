@@ -998,3 +998,51 @@ async def get_ai_agents_market_data():
         return data.to_dict(orient="records")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@router.get("/geckoterminal_ohlcv")
+async def get_geckoterminal_ohlcv(pool_id: str, chain: str, timeframe: str, aggregate: int):
+    try:
+        data = geckoterminal_service.fetch_pool_ohlcv_data(pool_id, chain, timeframe, aggregate)
+        data = data.set_index("timestamp")
+        print(data)
+
+        figure = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Price",
+                y_dtype="$,.4f"
+            )
+        )
+
+        # Add candlestick chart
+        figure.add_candlestick(
+            x=data.index,
+            open=data['open'],
+            high=data['high'],
+            low=data['low'],
+            close=data['close'],
+            name="Price"
+        )
+
+        # Add volume bars on secondary y-axis
+        figure.add_bar(
+            x=data.index,
+            y=data['volume'],
+            name="Volume",
+            yaxis="y2",
+            marker_color='rgba(128,128,128,0.5)'
+        )
+
+        # Update layout to include secondary y-axis for volume
+        figure.update_layout(
+            yaxis2=dict(
+                title="Volume",
+                overlaying="y",
+                side="right",
+                showgrid=False
+            )
+        )
+
+        return json.loads(figure.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

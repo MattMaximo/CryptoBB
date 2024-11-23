@@ -48,5 +48,38 @@ class GeckoTerminalService:
 
         df = pd.concat(dfs, ignore_index=True)
         df.drop(columns=['type'], inplace=True)
-        return df[['name', 'symbol', 'price_usd', 'volume_usd', 'market_cap_usd', 'fdv_usd', 'total_supply', 'total_reserve_in_usd', 'chain','top_pool_id', 'address']]
+        return df[['name', 'symbol', 'price_usd', 'volume_usd', 'market_cap_usd', 'fdv_usd', 'total_supply', 'total_reserve_in_usd','top_pool_id', 'chain', 'address']]
+
+    def fetch_pool_ohlcv_data(self, pool_id: str, chain: str, timeframe: str, aggregate: int) -> pd.DataFrame:
+        """
+        Parameters:
+        - pool_id (str): The ID of the pool to fetch data for.
+        - chain (str): The blockchain network (e.g., 'solana').
+        - timeframe (str): The timeframe for the data. Options are:
+            - 'minute': Data aggregated by minute.
+            - 'hour': Data aggregated by hour.
+            - 'day': Data aggregated by day.
+        - aggregate (int): The aggregation interval. Options vary based on the timeframe:
+            - For 'minute': 1, 5, 15
+            - For 'hour': 1, 4, 12
+            - For 'day': 1
+
+        Returns:
+        - pd.DataFrame: A DataFrame containing the OHLCV data with columns ['timestamp', 'open', 'high', 'low', 'close', 'volume'].
+        """
+        url = f"https://pro-api.coingecko.com/api/v3/onchain/networks/{chain}/pools/{pool_id}/ohlcv/{timeframe}"
+        
+        params = {
+            "aggregate": aggregate,
+            "limit": 1000,
+            "currency": "usd"
+        }
+        
+        response = requests.get(url, headers=self.headers, params=params)
+        data = response.json()['data']['attributes']['ohlcv_list']
+        
+        df = pd.DataFrame(data, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+        df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
+        
+        return df
 
