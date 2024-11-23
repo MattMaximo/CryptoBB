@@ -762,6 +762,16 @@ WIDGETS = {
                 ]
             }
         }
-    }
+    },
+    "exchange_price_deltas": {
+        "name": "Exchange Price Deltas",
+        "description": "This is the percent difference between the vwap price of BTC on each exchange and the average price of BTC across those exchanges.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "exchange_price_deltas",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CCData",
+        "data": {"chart": {"type": "line"}},
+    }   
 }
 

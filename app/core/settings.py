@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     VELO_API_KEY: str = "your_api_key"
     TELEGRAM_API_ID: str = "your_api_id"
     TELEGRAM_API_HASH: str = "your_api_hash"
-    
+    CCDATA_API_KEY: str = "your_api_key"
     class Config:
         env_file = ".env"
 

@@ -6,6 +6,7 @@ from app.services.velo_service import VeloService
 from app.services.aave_service import AaveService
 from app.services.telegram_service import TelegramService
 from app.services.microstrategy_service import MicrostrategyService
+from app.services.ccdata_service import CCDataService
 from app.core.widgets import WIDGETS
 from app.assets.aave_pools import AAVE_POOLS
 from app.assets.base_chart_layout import create_base_layout
@@ -22,7 +23,7 @@ velo_service = VeloService()
 aave_service = AaveService()
 telegram_service = TelegramService()
 microstrategy_service = MicrostrategyService()
-
+ccdata_service = CCDataService()
 @router.get("/widgets.json")
 async def get_widgets():
     return WIDGETS
@@ -923,5 +924,55 @@ async def get_microstrategy_info():
     try:
         data = microstrategy_service.get_treasury_data()
         return data.to_dict(orient="records")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.get("/exchange_price_deltas")
+async def get_exchange_price_deltas():
+    try:
+        data = ccdata_service.get_delta_data()
+        data['timestamp'] = data['timestamp'].dt.strftime("%Y-%m-%d %H:%M:%S")
+        data = data.set_index("timestamp")
+        print(data.head())
+
+        fig = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Delta"
+            )
+        )
+
+        # Add delta lines on primary y-axis
+        for col in data.columns:
+            if col != 'average_price':
+                fig.add_scatter(
+                    x=data.index,
+                    y=data[col],
+                    mode="lines",
+                    name=col.split('_')[0],
+                    hovertemplate="%{y:.2f}%"
+                )
+
+        fig.update_layout(
+            yaxis2=dict(
+                title="Price",
+                overlaying="y", 
+                side="right",
+                gridcolor="#2f3338",
+                color="#ffffff"
+            )
+        )
+        # Add average price line on secondary y-axis
+        fig.add_scatter(
+            x=data.index,
+            y=data['average_price'],
+            mode="lines",
+            name="Average Price",
+            line=dict(color="white", width=1),
+            yaxis="y2",
+            hovertemplate="%{y:,.2f}",
+        )
+
+        return json.loads(fig.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
