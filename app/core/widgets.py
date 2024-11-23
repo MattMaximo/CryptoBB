@@ -872,14 +872,14 @@ WIDGETS = {
                 "value": "day",
                 "label": "Timeframe",
                 "type": "text",
-                "description": "Timeframe for the data. Daily, hourly, or minutely candles"
+                "description": "Options: day, hour, minute"
             },
             {
                 "paramName": "aggregate",
                 "value": "1",
                 "label": "Aggregate",
                 "type": "text", 
-                "description": "Aggregation interval"
+                "description": "Aggregation interval. Options: day = [1], hour = [1, 4, 12], minute = [1, 5, 15]"
             }
         ],
         "data": {"chart": {"type": "candlestick"}},
