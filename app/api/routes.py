@@ -1016,7 +1016,16 @@ async def get_geckoterminal_ohlcv(symbol: str, timeframe: str, aggregate: int):
             )
         )
 
-        # Add candlestick chart
+        # Add volume bars on secondary y-axis first so they appear behind candlesticks
+        figure.add_bar(
+            x=data.index,
+            y=data['volume'],
+            name="Volume",
+            yaxis="y2",
+            marker_color='rgba(128,128,128,0.5)'
+        )
+
+        # Add candlestick chart second so it appears on top
         figure.add_candlestick(
             x=data.index,
             open=data['open'],
@@ -1026,19 +1035,10 @@ async def get_geckoterminal_ohlcv(symbol: str, timeframe: str, aggregate: int):
             name="Price"
         )
 
-        # Add volume bars on secondary y-axis
-        figure.add_bar(
-            x=data.index,
-            y=data['volume'],
-            name="Volume",
-            yaxis="y2",
-            marker_color='rgba(128,128,128,0.5)'
-        )
-
         # Update layout to include secondary y-axis for volume
         figure.update_layout(
             yaxis2=dict(
-                title="Volume",
+                title="Volume", 
                 overlaying="y",
                 side="right",
                 showgrid=False
