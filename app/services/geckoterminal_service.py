@@ -20,6 +20,7 @@ class GeckoTerminalService:
 
         df = pd.DataFrame(data)
         attributes_df = df['attributes'].apply(pd.Series)
+        df['top_pool_id'] = df['relationships'].apply(lambda x: x['top_pools']['data'][0]['id'] if x['top_pools']['data'] else None)
         df = pd.concat([df.drop(['attributes', 'relationships'], axis=1), attributes_df], axis=1)
         df['volume_usd'] = df['volume_usd'].apply(lambda x: float(x['h24']))
         df.drop(columns=['id', 'decimals', 'image_url', 'coingecko_coin_id'], inplace=True)
@@ -47,5 +48,5 @@ class GeckoTerminalService:
 
         df = pd.concat(dfs, ignore_index=True)
         df.drop(columns=['type'], inplace=True)
-        return df[['name', 'symbol', 'price_usd', 'volume_usd', 'market_cap_usd', 'fdv_usd', 'total_supply', 'total_reserve_in_usd', 'chain', 'address']]
+        return df[['name', 'symbol', 'price_usd', 'volume_usd', 'market_cap_usd', 'fdv_usd', 'total_supply', 'total_reserve_in_usd', 'chain','top_pool_id', 'address']]
 

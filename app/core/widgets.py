@@ -786,6 +786,16 @@ WIDGETS = {
                 "showAll": True,
                 "columnsDefs": [
                     {
+                        "headerName": "Name",
+                        "field": "name",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Symbol",
+                        "field": "symbol",
+                        "chartDataType": "category"
+                    },
+                    {
                         "headerName": "Price USD",
                         "field": "price_usd",
                         "chartDataType": "category"
@@ -813,6 +823,21 @@ WIDGETS = {
                     {
                         "headerName": "Total Reserve USD",
                         "field": "total_reserve_in_usd",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Chain",
+                        "field": "chain",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Top Pool ID",
+                        "field": "top_pool_id",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Address",
+                        "field": "address",
                         "chartDataType": "category"
                     }
                 ]
