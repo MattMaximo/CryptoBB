@@ -1006,7 +1006,6 @@ async def get_geckoterminal_ohlcv(symbol: str, timeframe: str, aggregate: int):
         chain = ai_agent_mapping[symbol.upper()]['chain']
         data = geckoterminal_service.fetch_pool_ohlcv_data(pool_id, chain, timeframe, aggregate)
         data = data.set_index("timestamp")
-        print(data.shape)
 
         figure = go.Figure(
             layout=create_base_layout(
@@ -1037,12 +1036,22 @@ async def get_geckoterminal_ohlcv(symbol: str, timeframe: str, aggregate: int):
 
         # Update layout to include secondary y-axis for volume
         figure.update_layout(
+            yaxis=dict(
+                rangemode="nonnegative",
+                zeroline=True,
+                zerolinewidth=2,
+                zerolinecolor="lightgrey"
+            ),
             yaxis2=dict(
-                title="Volume", 
-                overlaying="y",
+                title="Volume",
+                overlaying="y", 
                 side="right",
-                showgrid=False
-            )
+                showgrid=False,
+                rangemode="nonnegative",
+                zeroline=True,
+                zerolinewidth=2,
+                zerolinecolor="lightgrey"
+            ),
         )
 
         return json.loads(figure.to_json())
