@@ -1004,7 +1004,7 @@ async def get_geckoterminal_ohlcv(pool_id: str, chain: str, timeframe: str, aggr
     try:
         data = geckoterminal_service.fetch_pool_ohlcv_data(pool_id, chain, timeframe, aggregate)
         data = data.set_index("timestamp")
-        print(data)
+        print(data.shape)
 
         figure = go.Figure(
             layout=create_base_layout(

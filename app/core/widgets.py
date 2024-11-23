@@ -869,14 +869,14 @@ WIDGETS = {
             },
             {
                 "paramName": "timeframe", 
-                "value": "day",
+                "value": "hour",
                 "label": "Timeframe",
                 "type": "text",
                 "description": "Options: day, hour, minute"
             },
             {
                 "paramName": "aggregate",
-                "value": "1",
+                "value": "4",
                 "label": "Aggregate",
                 "type": "text", 
                 "description": "Aggregation interval. Options: day = [1], hour = [1, 4, 12], minute = [1, 5, 15]"
