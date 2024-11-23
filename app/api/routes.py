@@ -7,9 +7,11 @@ from app.services.aave_service import AaveService
 from app.services.telegram_service import TelegramService
 from app.services.microstrategy_service import MicrostrategyService
 from app.services.ccdata_service import CCDataService
+from app.services.geckoterminal_service import GeckoTerminalService
 from app.core.widgets import WIDGETS
 from app.assets.aave_pools import AAVE_POOLS
 from app.assets.base_chart_layout import create_base_layout
+from app.assets.ai_agent_mapping import ai_agent_mapping
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import json
@@ -24,6 +26,9 @@ aave_service = AaveService()
 telegram_service = TelegramService()
 microstrategy_service = MicrostrategyService()
 ccdata_service = CCDataService()
+geckoterminal_service = GeckoTerminalService()
+
+
 @router.get("/widgets.json")
 async def get_widgets():
     return WIDGETS
@@ -974,5 +979,21 @@ async def get_exchange_price_deltas():
         )
 
         return json.loads(fig.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.get("/ai_agents_market_data")
+async def get_ai_agents_market_data():
+    try:
+        data = geckoterminal_service.fetch_ai_agent_market_data(ai_agent_mapping)
+        data.fillna(0, inplace=True)
+        # Convert columns to float
+        float_columns = ['price_usd', 'volume_usd', 'market_cap_usd', 'fdv_usd', 
+                        'total_supply', 'total_reserve_in_usd']
+        for col in float_columns:
+            if col in data.columns:
+                data[col] = data[col].astype(float, errors='ignore')
+                
+        return data.to_dict(orient="records")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -772,6 +772,52 @@ WIDGETS = {
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
         "data": {"chart": {"type": "line"}},
-    }   
+    },
+    "ai_agents_market_data": {
+        "name": "AI Agents Market Data",
+        "description": "Market data for AI Agents",
+        "category": "crypto",
+        "defaultViz": "table",
+        "endpoint": "ai_agents_market_data", 
+        "gridData": {"w": 20, "h": 9},
+        "source": "Geckoterminal",
+        "data": {
+            "table": {
+                "showAll": True,
+                "columnsDefs": [
+                    {
+                        "headerName": "Price USD",
+                        "field": "price_usd",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Volume USD",
+                        "field": "volume_usd",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Market Cap USD",
+                        "field": "market_cap_usd",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "FDV USD",
+                        "field": "fdv_usd",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Total Supply",
+                        "field": "total_supply",
+                        "chartDataType": "category"
+                    },
+                    {
+                        "headerName": "Total Reserve USD",
+                        "field": "total_reserve_in_usd",
+                        "chartDataType": "category"
+                    }
+                ]
+            }
+        }
+    }, 
 }
 
