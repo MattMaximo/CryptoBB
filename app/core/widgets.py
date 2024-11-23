@@ -854,18 +854,11 @@ WIDGETS = {
         "source": "Geckoterminal",
         "params": [
             {
-                "paramName": "pool_id",
-                "value": "9Tb2ohu5P16BpBarqd3N27WnkF51Ukfs8Z1GzzLDxVZW",
-                "label": "Pool ID",
-                "type": "text", 
-                "description": "ID of the pool"
-            },
-            {
-                "paramName": "chain",
-                "value": "solana",
-                "label": "Chain",
+                "paramName": "symbol",
+                "value": "GOAT",
+                "label": "Symbol",
                 "type": "text",
-                "description": "Chain name"
+                "description": "Symbol of the AI Agent token"
             },
             {
                 "paramName": "timeframe", 

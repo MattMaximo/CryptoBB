@@ -1000,8 +1000,10 @@ async def get_ai_agents_market_data():
         raise HTTPException(status_code=400, detail=str(e))
     
 @router.get("/geckoterminal_ohlcv")
-async def get_geckoterminal_ohlcv(pool_id: str, chain: str, timeframe: str, aggregate: int):
+async def get_geckoterminal_ohlcv(symbol: str, timeframe: str, aggregate: int):
     try:
+        pool_id = ai_agent_mapping[symbol]['pool_id']
+        chain = ai_agent_mapping[symbol]['chain']
         data = geckoterminal_service.fetch_pool_ohlcv_data(pool_id, chain, timeframe, aggregate)
         data = data.set_index("timestamp")
         print(data.shape)
