@@ -884,7 +884,7 @@ WIDGETS = {
         "defaultViz": "chart",
         "endpoint": "btc_price_sma_multiplier",
         "gridData": {"w": 20, "h": 9},
-        "source": "CCData",
+        "source": "CoinGecko",
         "data": {"chart": {"type": "line"}},
     }
 
