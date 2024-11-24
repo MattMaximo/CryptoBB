@@ -876,6 +876,16 @@ WIDGETS = {
             }
         ],
         "data": {"chart": {"type": "candlestick"}},
-}
+    },
+    "bitcoin_price_sma_multiplier": {
+        "name": "Bitcoin Price SMA Multiplier",
+        "description": "Bitcoin price SMA multiplier",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "btc_price_sma_multiplier",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CCData",
+        "data": {"chart": {"type": "line"}},
+    }
 
 }

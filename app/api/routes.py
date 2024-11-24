@@ -1057,3 +1057,72 @@ async def get_geckoterminal_ohlcv(symbol: str, timeframe: str, aggregate: int):
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@router.get("/btc_price_sma_multiplier")
+async def get_btc_price_sma_multiplier():
+    try:
+        data = coingecko_service.get_market_data("bitcoin")
+        data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
+        data = data[["date", "bitcoin_price"]]
+        data = data.set_index("date")
+
+        sma_days = 1458
+        data['SMA_1458'] = data['bitcoin_price'].rolling(window=sma_days).mean()
+        data['multiplier'] = data['bitcoin_price'] / data['SMA_1458']
+
+        def get_color(multiplier):
+            if multiplier < 1.5:
+                return '#00ff00'  # Bright green
+            elif 1.5 <= multiplier < 2:
+                return '#ffff00'  # Bright yellow
+            elif 2 <= multiplier < 2.5:
+                return '#ffa500'  # Bright orange
+            elif 2.5 <= multiplier < 3:
+                return '#ff0000'  # Bright red
+            elif 3 <= multiplier < 4:
+                return '#ff00ff'  # Bright magenta
+            elif 4 <= multiplier < 5:
+                return '#00ffff'  # Bright cyan
+            elif 5 <= multiplier < 6:
+                return '#0080ff'  # Bright blue
+            else:
+                return '#ffffff'  # White
+
+        data['color'] = data['multiplier'].apply(get_color)
+        data = data.dropna(subset=['SMA_1458'])
+
+        fig = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Price",
+                y_dtype=".2f"
+            )
+        )
+
+        for color in data['color'].unique():
+            subset = data[data['color'] == color]
+            fig.add_trace(go.Scatter(
+                x=subset.index,
+                y=subset['bitcoin_price'],
+                mode='markers',
+                marker=dict(color=color, size=5),
+                name=color
+            ))
+
+        fig.add_trace(go.Scatter(
+            x=data.index,
+            y=data['SMA_1458'],
+            mode='lines',
+            line=dict(color='black', dash='dash'),
+            name='SMA-1458'
+        ))
+
+        # Update layout for the plot
+        fig.update_layout(
+            yaxis_type='log',
+            showlegend=False
+        )
+
+        return json.loads(fig.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
