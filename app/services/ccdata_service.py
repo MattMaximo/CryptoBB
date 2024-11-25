@@ -21,17 +21,17 @@ class CCDataService:
             "mexc": ["BTC-USDT", "BTC-USDC"],
         }
 
-    def _fetch_spot_data(self, exchange_pair: Tuple[str, str]) -> List[Dict]:
+    def _fetch_spot_data(self, exchange_pair: Tuple[str, str], interval: str = "hours", aggregate: int = 1, limit: int = 120) -> List[Dict]:
         """Fetch historical spot data for a specific exchange and trading pair."""
         exchange, pair = exchange_pair
         
         response = requests.get(
-            url=f"{self.base_url}/spot/v1/historical/hours",
+            url=f"{self.base_url}/spot/v1/historical/{interval}",
             params={
                 "market": exchange,
                 "instrument": pair,
-                "limit": 120,
-                "aggregate": 1,
+                "limit": limit,
+                "aggregate": aggregate,
                 "fill": "true",
                 "apply_mapping": "true",
                 "response_format": "JSON",
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     import time
     start_time = time.time()
     ccdata_service = CCDataService()
-    delta_df = ccdata_service.get_delta_data()
-    print(delta_df)
+    df = ccdata_service._fetch_spot_data(("binance", "BTC-USDC"))
+    print(df)
     end_time = time.time()
     print(f"Time taken: {end_time - start_time} seconds")

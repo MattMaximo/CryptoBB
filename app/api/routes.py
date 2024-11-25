@@ -999,8 +999,8 @@ async def get_ai_agents_market_data():
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-@router.get("/geckoterminal_ohlcv")
-async def get_geckoterminal_ohlcv(symbol: str, timeframe: str, aggregate: int):
+@router.get("/geckoterminal_candles")
+async def get_geckoterminal_candles(symbol: str, timeframe: str, aggregate: int):
     try:
         pool_id = ai_agent_mapping[symbol.upper()]['pool_id']
         chain = ai_agent_mapping[symbol.upper()]['chain']
@@ -1124,5 +1124,70 @@ async def get_btc_price_sma_multiplier():
         )
 
         return json.loads(fig.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+
+@router.get("/ccdata_candles")
+async def get_ccdata_candles(exchange: str, symbol: str, interval: str, aggregate: int):
+    try:
+        data = ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
+        data = pd.DataFrame(data)
+        data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
+        data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
+        if interval == "minutes" or interval == "hours":
+            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d %H:%M:%S")
+        elif interval == "day":
+            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d")
+        data = data.set_index("TIMESTAMP")
+
+        figure = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Price",
+                y_dtype="$,.4f"
+            )
+        )
+
+        # Add volume bars on secondary y-axis first so they appear behind candlesticks
+        figure.add_bar(
+            x=data.index,
+            y=data['VOLUME'],
+            name="Volume",
+            yaxis="y2",
+            marker_color='rgba(128,128,128,0.5)'
+        )
+
+        # Add candlestick chart second so it appears on top
+        figure.add_candlestick(
+            x=data.index,
+            open=data['OPEN'],
+            high=data['HIGH'],
+            low=data['LOW'],
+            close=data['CLOSE'],
+            name="Price"
+        )
+
+        # Update layout to include secondary y-axis for volume
+        figure.update_layout(
+            yaxis=dict(
+                rangemode="nonnegative",
+                zeroline=True,
+                zerolinewidth=2,
+                zerolinecolor="lightgrey"
+            ),
+            yaxis2=dict(
+                title="Volume",
+                overlaying="y", 
+                side="right",
+                showgrid=False,
+                rangemode="nonnegative",
+                zeroline=True,
+                zerolinewidth=2,
+                zerolinecolor="lightgrey"
+            ),
+        )
+
+        return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

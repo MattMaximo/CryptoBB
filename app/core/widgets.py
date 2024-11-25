@@ -844,12 +844,12 @@ WIDGETS = {
             }
         }
     }, 
-    "geckoterminal_ohlcv": {
-        "name": "Geckoterminal OHLCV",
+    "geckoterminal_candles": {
+        "name": "Geckoterminal OHLCV Candles",
         "description": "OHLCV data for a given pool",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "geckoterminal_ohlcv",
+        "endpoint": "geckoterminal_candles",
         "gridData": {"w": 20, "h": 9},
         "source": "Geckoterminal",
         "params": [
@@ -886,6 +886,46 @@ WIDGETS = {
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "data": {"chart": {"type": "line"}},
-    }
+    },
+    "ccdata_candles": {
+        "name": "CCData OHLCV Candles",
+        "description": "OHLCV data for a given pool",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "ccdata_candles",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CCData",
+        "params": [
+            {
+                "paramName": "exchange",
+                "value": "binance",
+                "label": "Exchange",
+                "type": "text",
+                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)"
+            },
+            {
+                "paramName": "symbol", 
+                "value": "BTC-USDT",
+                "label": "Pair",
+                "type": "text",
+                "description": "Pair (e.g. BTC-USDT) to fetch data for"
+            },
+            {
+                "paramName": "interval", 
+                "value": "hours",
+                "label": "Interval",
+                "type": "text",
+                "description": "Interval to fetch data for (options: minutes, hours, days)"
+            },
+            {
+                "paramName": "aggregate",
+                "value": "1",
+                "label": "Aggregate",
+                "type": "text", 
+                "description": "Aggregation interval."
+            }
+        ],
+        "data": {"chart": {"type": "candlestick"}},
+    },
 
 }
