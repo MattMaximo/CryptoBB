@@ -346,7 +346,7 @@ WIDGETS = {
         "name": "Funding Rates by Exchange",
         "description": "Historical Funding Rates by Exchange.",
         "category": "crypto",
-        "defaultViz": "chart",
+        "defaultViz": "chart-highcharts",
         "endpoint": "exchange_funding_rates",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
