@@ -991,5 +991,22 @@ WIDGETS = {
         ],
         "data": {"chart": {"type": "candlestick"}},
     },
-
+    "coingecko_coin_details": {
+        "name": "CoinGecko Coin Details",
+        "description": "Details for a given coin",
+        "category": "crypto",
+        "defaultViz": "markdown",
+        "endpoint": "coingecko_coin_details",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CoinGecko",
+        "params": [
+            {
+                "paramName": "coin_id",
+                "value": "bitcoin",
+                "label": "Coin",
+                "type": "text",
+                "description": "CoinGecko ID of the cryptocurrency"
+            }
+        ]
+    }
 }

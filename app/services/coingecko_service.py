@@ -14,6 +14,10 @@ class CoinGeckoService:
         response = requests.get(url, headers=self.headers)
         return response.json()
     
+    def get_coin_details(self, coin_id: str) -> Dict:
+        url = f"https://pro-api.coingecko.com/api/v3/coins/{coin_id}"
+        return self.fetch_data(url)
+    
     def get_coin_list(self, include_platform: str = "true", status: str = "active") -> pd.DataFrame:
         """Fetches active coins list from CoinGecko API."""
         url = f"https://pro-api.coingecko.com/api/v3/coins/list?include_platform={include_platform}&status={status}"
