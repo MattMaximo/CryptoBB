@@ -1126,68 +1126,47 @@ async def get_btc_price_sma_multiplier():
         return json.loads(fig.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
 
-@router.get("/ccdata_candles")
-async def get_ccdata_candles(exchange: str, symbol: str, interval: str, aggregate: int):
+@router.get("/velo_ohlcv")
+async def get_velo_ohlcv(ticker: str = "BTCUSDT", exchange: str = "binance", resolution: str = "1d"):
     try:
-        data = ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
-        data = pd.DataFrame(data)
-        data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
-        data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
-        if interval == "minutes" or interval == "hours":
-            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d %H:%M:%S")
-        elif interval == "day":
-            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d")
-        data = data.set_index("TIMESTAMP")
+        from highcharts_stock.options.series.candlestick import CandlestickSeries
+        from highcharts_stock.options.chart import ChartOptions
+        from highcharts_stock.chart import Chart
+        
+        # Get data from velo service
+        data = velo_service.get_ohlcv(ticker, exchange, resolution)
+                
+        # Create data points for Highcharts - format: [timestamp, open, high, low, close]
+        chart_data = [[
+            row['time'],  # timestamp is already in milliseconds
+            row['open_price'],
+            row['high_price'],
+            row['low_price'],
+            row['close_price'],
+        ] for _, row in data.iterrows()]
 
-        figure = go.Figure(
-            layout=create_base_layout(
-                x_title="Date",
-                y_title="Price",
-                y_dtype="$,.4f"
-            )
+        chart = Chart()
+        
+        # Configure chart options
+        chart.chart = ChartOptions(
+            type='candlestick',            
+            style={
+                'fontFamily': 'Arial, sans-serif'
+            }
         )
 
-        # Add volume bars on secondary y-axis first so they appear behind candlesticks
-        figure.add_bar(
-            x=data.index,
-            y=data['VOLUME'],
-            name="Volume",
-            yaxis="y2",
-            marker_color='rgba(128,128,128,0.5)'
-        )
+        chart.add_series(CandlestickSeries(
+            data=chart_data,
+            name=ticker,
+            tooltip={
+                'valueDecimals': 2
+            },
+        ))
 
-        # Add candlestick chart second so it appears on top
-        figure.add_candlestick(
-            x=data.index,
-            open=data['OPEN'],
-            high=data['HIGH'],
-            low=data['LOW'],
-            close=data['CLOSE'],
-            name="Price"
-        )
+        obj = json.loads(chart.to_json())
+        obj["constructorType"] = "stockChart"
+        return obj
 
-        # Update layout to include secondary y-axis for volume
-        figure.update_layout(
-            yaxis=dict(
-                rangemode="nonnegative",
-                zeroline=True,
-                zerolinewidth=2,
-                zerolinecolor="lightgrey"
-            ),
-            yaxis2=dict(
-                title="Volume",
-                overlaying="y", 
-                side="right",
-                showgrid=False,
-                rangemode="nonnegative",
-                zeroline=True,
-                zerolinewidth=2,
-                zerolinecolor="lightgrey"
-            ),
-        )
-
-        return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

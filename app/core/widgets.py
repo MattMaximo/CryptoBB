@@ -887,6 +887,70 @@ WIDGETS = {
         "source": "CoinGecko",
         "data": {"chart": {"type": "line"}},
     },
+    "velo_ohlcv": {
+        "name": "Velo OHLCV Candles",
+        "description": "OHLCV data for a given symbol and exchange",
+        "category": "crypto",
+        "defaultViz": "chart-highcharts",
+        "endpoint": "velo_ohlcv",
+        "gridData": {"w": 20, "h": 9},
+        "source": "VeloData",
+        "params": [
+            {
+                "paramName": "ticker",
+                "value": "BTCUSDT",
+                "label": "Symbol",
+            },
+            {
+                "paramName": "exchange",
+                "value": "binance",
+                "label": "Exchange",
+            },
+            {
+                "paramName": "resolution",
+                "value": "1d",
+                "label": "Resolution",
+                "options": [
+                    {
+                        "value": "1m",
+                        "label": "1m"
+                    },
+                    {
+                        "value": "5m",
+                        "label": "5m"
+                    },
+                    {
+                        "value": "10m",
+                        "label": "10m"
+                    },
+                    {
+                        "value": "30m",
+                        "label": "30m"
+                    },
+                    {
+                        "value": "1h",
+                        "label": "1h"
+                    },
+                    {
+                        "value": "4h",
+                        "label": "4h"
+                    },
+                    {
+                        "value": "1d",
+                        "label": "1d"
+                    },
+                    {
+                        "value": "1w",
+                        "label": "1w"
+                    },
+                    {
+                        "value": "1M",
+                        "label": "1M"
+                    }
+                ]
+            }
+        ],
+    },
     "ccdata_candles": {
         "name": "CCData OHLCV Candles",
         "description": "OHLCV data for a given pool",

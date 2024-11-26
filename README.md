@@ -2,9 +2,16 @@
 
 OpenBB backend for Crypto Traders.
 
+
+#### Dev
+
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 7778
+```
+
 #### Docker
 
-```
+```bash
 docker build -t crypto-backend .
 docker run --env-file .env -p 7778:7778 crypto-backend
 ```

@@ -11,6 +11,35 @@ settings = get_settings()
 class VeloService:
     def __init__(self):
         self.client = velo.client(settings.VELO_API_KEY)
+    
+    def get_ohlcv(self, symbol: str, exchange: str, resolution: str = "10m") -> pd.DataFrame:
+        """
+        Get OHLCV data for a given symbol and exchange.
+        
+        Parameters:
+        - symbol: Trading pair symbol
+        - exchange: Exchange name
+        - resolution: Time resolution (m, h, d, w, or M)
+        
+        Returns:
+        - DataFrame with OHLCV data
+        """
+
+        day_in_ms = 1000 * 60 * 60 * 24
+
+        params = {
+            'type': 'spot',
+            'columns': ['open_price', 'high_price', 'low_price', 'close_price', 'coin_volume'],
+            'exchanges': [exchange],
+            'products': [symbol],
+            'begin': int(self.client.timestamp() - day_in_ms * 365),
+            'end': int(self.client.timestamp()),
+            'resolution': resolution
+        }
+
+        df = self.client.get_rows(params)
+
+        return df[['time', 'open_price', 'high_price', 'low_price', 'close_price', 'coin_volume']]
 
     def get_futures_products(self) -> pd.DataFrame:
         """Retrieves all available products (tickers)."""
