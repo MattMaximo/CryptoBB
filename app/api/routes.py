@@ -1189,49 +1189,62 @@ async def get_coingecko_coin_details(coin_id: str):
         markdown = f"""
 # {data['name']} ({data['symbol'].upper()})
 
-![{data['name']} Logo]({data['image']['large']})
-
-## Overview
-- **Current Price:** ${data['market_data']['current_price']['usd']:,.2f}
-- **Market Cap Rank:** #{data['market_cap_rank']}
-- **Market Cap:** ${data['market_data']['market_cap']['usd']:,.0f}
-- **24h Trading Volume:** ${data['market_data']['total_volume']['usd']:,.0f}
-- **Genesis Date:** {data.get('genesis_date', 'N/A')}
-
-## Price Changes
-- **24h:** {data['market_data']['price_change_percentage_24h']:.1f}%
-- **7d:** {data['market_data']['price_change_percentage_7d']:.1f}%
-- **30d:** {data['market_data']['price_change_percentage_30d']:.1f}%
-
-## Market Data
-- **Circulating Supply:** {data['market_data']['circulating_supply']:,.0f}
-- **Total Supply:** {f"{data['market_data']['total_supply']:,.0f}" if data['market_data']['total_supply'] else 'N/A'}
-- **Max Supply:** {f"{data['market_data']['max_supply']:,.0f}" if data['market_data']['max_supply'] else 'N/A'}
-
-## Developer Data
-- **Forks:** {data.get('developer_data', {}).get('forks', 'N/A')}
-- **Stars:** {data.get('developer_data', {}).get('stars', 'N/A')}
-- **Subscribers:** {data.get('developer_data', {}).get('subscribers', 'N/A')}
-- **Total Issues:** {data.get('developer_data', {}).get('total_issues', 'N/A')}
-- **Closed Issues:** {data.get('developer_data', {}).get('closed_issues', 'N/A')}
-- **Pull Requests Merged:** {data.get('developer_data', {}).get('pull_requests_merged', 'N/A')}
-- **Pull Request Contributors:** {data.get('developer_data', {}).get('pull_request_contributors', 'N/A')}
-
-## Community Data
-- **Twitter Followers:** {data.get('community_data', {}).get('twitter_followers', 'N/A')}
-- **Reddit Subscribers:** {data.get('community_data', {}).get('reddit_subscribers', 'N/A')}
-- **Telegram Channel Users:** {data.get('community_data', {}).get('telegram_channel_user_count', 'N/A')}
-
-## Links
-- **Website:** {data['links']['homepage'][0] if data['links']['homepage'] else 'N/A'}
-- **Blockchain Explorer:** {data['links']['blockchain_site'][0] if data['links']['blockchain_site'] else 'N/A'}
-- **Github:** {data['links']['repos_url']['github'][0] if data['links']['repos_url']['github'] else 'N/A'}
-- **Twitter:** {data['links'].get('twitter_screen_name', 'N/A')}
-- **Reddit:** {data['links'].get('subreddit_url', 'N/A')}
-- **Telegram:** {data['links'].get('telegram_channel_identifier', 'N/A')}
+<img src="{data['image']['large']}" alt="{data['name']} Logo" width="100" height="100">
 
 ## Description
 {data['description']['en']}
+
+
+## Overview
+| Metric | Value |
+|--------|-------|
+| Current Price | ${data['market_data']['current_price']['usd']:,.2f} |
+| Market Cap Rank | #{data['market_cap_rank']} |
+| Market Cap | ${data['market_data']['market_cap']['usd']:,.0f} |
+| 24h Trading Volume | ${data['market_data']['total_volume']['usd']:,.0f} |
+| Genesis Date | {data.get('genesis_date', 'N/A')} |
+
+## Price Changes
+| Period | Change |
+|--------|--------|
+| 24h | {data['market_data']['price_change_percentage_24h']:.1f}% |
+| 7d | {data['market_data']['price_change_percentage_7d']:.1f}% |
+| 30d | {data['market_data']['price_change_percentage_30d']:.1f}% |
+
+## Market Data
+| Metric | Value |
+|--------|-------|
+| Circulating Supply | {data['market_data']['circulating_supply']:,.0f} |
+| Total Supply | {f"{data['market_data']['total_supply']:,.0f}" if data['market_data']['total_supply'] else 'N/A'} |
+| Max Supply | {f"{data['market_data']['max_supply']:,.0f}" if data['market_data']['max_supply'] else 'N/A'} |
+
+## Developer Data
+| Metric | Value |
+|--------|-------|
+| Forks | {data.get('developer_data', {}).get('forks', 'N/A')} |
+| Stars | {data.get('developer_data', {}).get('stars', 'N/A')} |
+| Subscribers | {data.get('developer_data', {}).get('subscribers', 'N/A')} |
+| Total Issues | {data.get('developer_data', {}).get('total_issues', 'N/A')} |
+| Closed Issues | {data.get('developer_data', {}).get('closed_issues', 'N/A')} |
+| Pull Requests Merged | {data.get('developer_data', {}).get('pull_requests_merged', 'N/A')} |
+| Pull Request Contributors | {data.get('developer_data', {}).get('pull_request_contributors', 'N/A')} |
+
+## Community Data
+| Platform | Count |
+|----------|-------|
+| Twitter Followers | {data.get('community_data', {}).get('twitter_followers', 'N/A')} |
+| Reddit Subscribers | {data.get('community_data', {}).get('reddit_subscribers', 'N/A')} |
+| Telegram Channel Users | {data.get('community_data', {}).get('telegram_channel_user_count', 'N/A')} |
+
+## Links
+| Platform | URL |
+|----------|-----|
+| Website | {data['links']['homepage'][0] if data['links']['homepage'] else 'N/A'} |
+| Blockchain Explorer | {data['links']['blockchain_site'][0] if data['links']['blockchain_site'] else 'N/A'} |
+| Github | {data['links']['repos_url']['github'][0] if data['links']['repos_url']['github'] else 'N/A'} |
+| Twitter | {data['links'].get('twitter_screen_name', 'N/A')} |
+| Reddit | {data['links'].get('subreddit_url', 'N/A')} |
+| Telegram | {data['links'].get('telegram_channel_identifier', 'N/A')} |
 
 *Last Updated: {data['last_updated']}*
 """
