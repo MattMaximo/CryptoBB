@@ -6,7 +6,7 @@ WIDGETS = {
         "category": "crypto",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "dominance",
+        "endpoint": "coingecko/dominance",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "params": [
@@ -26,7 +26,7 @@ WIDGETS = {
         "category": "crypto",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "vm_ratio",
+        "endpoint": "coingecko/vm_ratio",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "params": [
@@ -44,7 +44,7 @@ WIDGETS = {
         "name": "Coingecko Coins List",
         "description": "List of all coins available on CoinGecko including ID, Name, Ticker, and available chains.",
         "category": "crypto",
-        "endpoint": "coingecko_coin_list",
+        "endpoint": "coingecko/coin_list",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "data": {
@@ -81,7 +81,7 @@ WIDGETS = {
         "description": "Net position change of long term holders",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "lth_net_change",
+        "endpoint": "glassnode/lth_net_change",
         "gridData": {"w": 20, "h": 9},
         "source": "Glassnode",
         "params": [
@@ -118,7 +118,7 @@ WIDGETS = {
         "description": "Supply of long term holders",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "lth_supply",
+        "endpoint": "glassnode/lth_supply",
         "gridData": {"w": 20, "h": 9},
         "source": "Glassnode",
         "params": [
@@ -156,7 +156,7 @@ WIDGETS = {
         "category": "sentiment",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "historical_google_trends",
+        "endpoint": "google_trends/historical_google_trends",
         "gridData": {"w": 20, "h": 9},
         "source": "Google",
         "params": [
@@ -177,9 +177,9 @@ WIDGETS = {
         "category": "crypto",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "correlation",
+        "endpoint": "coingecko/correlation",
         "gridData": {"w": 20, "h": 9},
-        "source": "Google",
+        "source": "CoinGecko",
         "params": [
             {
                 "paramName": "coin_id1",
@@ -204,7 +204,7 @@ WIDGETS = {
         "description": "List of all futures products available on Velo.",
         "category": "crypto",
         #"subCategory": "crypto",
-        "endpoint": "velo_futures_products",
+        "endpoint": "velo/futures_products",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "data": {
@@ -241,7 +241,7 @@ WIDGETS = {
         "description": "List of all spot products available on Velo.",
         "category": "crypto",
         #"subCategory": "crypto",
-        "endpoint": "velo_spot_products",
+        "endpoint": "velo/spot_products",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "data": {
@@ -277,7 +277,7 @@ WIDGETS = {
         "description": "List of all options products available on Velo.",
         "category": "crypto",
         #"subCategory": "crypto",
-        "endpoint": "velo_options_products",
+        "endpoint": "velo/options_products",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "data": {
@@ -313,7 +313,7 @@ WIDGETS = {
         "description": "Historical Open Interest Weighted Funding Rates.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "oi_weighted_funding_rates",
+        "endpoint": "velo/oi_weighted_funding_rates",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -347,7 +347,7 @@ WIDGETS = {
         "description": "Historical Funding Rates by Exchange.",
         "category": "crypto",
         "defaultViz": "chart-highcharts",
-        "endpoint": "exchange_funding_rates",
+        "endpoint": "velo/exchange_funding_rates",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -380,7 +380,7 @@ WIDGETS = {
         "description": "Historical Long Liquidations.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "long_liquidations",
+        "endpoint": "velo/long_liquidations",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -413,7 +413,7 @@ WIDGETS = {
         "description": "Historical Short Liquidations.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "short_liquidations",
+        "endpoint": "velo/short_liquidations",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -446,7 +446,7 @@ WIDGETS = {
         "description": "Historical Net Liquidations.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "net_liquidations",
+        "endpoint": "velo/net_liquidations",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -479,7 +479,7 @@ WIDGETS = {
         "description": "Historical Open Interest.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "open_interest",
+        "endpoint": "velo/open_interest",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -513,7 +513,7 @@ WIDGETS = {
         "description": "Historical Daily Aave Lending Rates. Default is USDC on Aave.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "aave_lending_rate",
+        "endpoint": "aave/lending_rate",
         "gridData": {"w": 20, "h": 9},
         "source": "Aave",
         "params": [
@@ -535,7 +535,7 @@ WIDGETS = {
         "description": "Historical Daily Aave Borrow Rates. Default is USDC on Aave.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "aave_borrow_rate",
+        "endpoint": "aave/borrow_rate",
         "gridData": {"w": 20, "h": 9},
         "source": "Aave",
         "params": [
@@ -556,7 +556,7 @@ WIDGETS = {
         "description": "Historical Daily Aave Utilization Rates. Default is USDC on Aave.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "aave_utilization_rate",
+        "endpoint": "aave/utilization_rate",
         "gridData": {"w": 20, "h": 9},
         "source": "Aave",
         "params": [
@@ -577,7 +577,7 @@ WIDGETS = {
         "description": "List of all Aave Lending Pools.",
         "category": "crypto",
         #"subCategory": "crypto",
-        "endpoint": "aave_pools",
+        "endpoint": "aave/pools",
         "gridData": {"w": 20, "h": 9},
         "source": "Aave",
         "data": {
@@ -620,7 +620,7 @@ WIDGETS = {
         "category": "crypto",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "coingecko_price",
+        "endpoint": "coingecko/price",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "params": [
@@ -641,7 +641,7 @@ WIDGETS = {
         "category": "sentiment",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "coinbase_app_store_rank",
+        "endpoint": "telegram/coinbase_app_store_rank",
         "gridData": {"w": 20, "h": 9},
         "source": "Telegram",
         "data": {"chart": {"type": "line"}},
@@ -653,7 +653,7 @@ WIDGETS = {
         "category": "sentiment",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "coinbase_wallet_app_store_rank",
+        "endpoint": "telegram/coinbase_wallet_app_store_rank",
         "gridData": {"w": 20, "h": 9},
         "source": "Telegram",
         "data": {"chart": {"type": "line"}},
@@ -665,7 +665,7 @@ WIDGETS = {
         "category": "sentiment",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "phantom_wallet_app_store_rank",
+        "endpoint": "telegram/phantom_wallet_app_store_rank",
         "gridData": {"w": 20, "h": 9},
         "source": "Telegram",
         "data": {"chart": {"type": "line"}},
@@ -678,7 +678,7 @@ WIDGETS = {
         "category": "crypto",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "glassnode_price",
+        "endpoint": "glassnode/price",
         "gridData": {"w": 20, "h": 9},
         "source": "Glassnode",
         "params": [
@@ -697,7 +697,7 @@ WIDGETS = {
         "description": "Historical and current premium for Microstrategy",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "microstrategy_premium",
+        "endpoint": "microstrategy/premium",
         "gridData": {"w": 20, "h": 9},
         "source": "MSTR Tracker",
         "data": {"chart": {"type": "line"}},
@@ -707,7 +707,7 @@ WIDGETS = {
         "description": "Historical info for Microstrategy's Bitcoin holdings, including balance, cost basis, and share metrics",
         "category": "crypto",
         "defaultViz": "table",
-        "endpoint": "microstrategy_info", 
+        "endpoint": "microstrategy/info", 
         "gridData": {"w": 20, "h": 9},
         "source": "MSTR Tracker",
         "data": {
@@ -768,7 +768,7 @@ WIDGETS = {
         "description": "This is the percent difference between the vwap price of BTC on each exchange and the average price of BTC across those exchanges.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "exchange_price_deltas",
+        "endpoint": "ccdata/exchange_price_deltas",
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
         "data": {"chart": {"type": "line"}},
@@ -778,7 +778,7 @@ WIDGETS = {
         "description": "Market data for AI Agents",
         "category": "crypto",
         "defaultViz": "table",
-        "endpoint": "ai_agents_market_data", 
+        "endpoint": "geckoterminal/ai_agents_market_data", 
         "gridData": {"w": 20, "h": 9},
         "source": "Geckoterminal",
         "data": {
@@ -849,7 +849,7 @@ WIDGETS = {
         "description": "OHLCV data for a given pool",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "geckoterminal_candles",
+        "endpoint": "geckoterminal/candles",
         "gridData": {"w": 20, "h": 9},
         "source": "Geckoterminal",
         "params": [
@@ -882,7 +882,7 @@ WIDGETS = {
         "description": "Bitcoin price SMA multiplier",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "btc_price_sma_multiplier",
+        "endpoint": "coingecko/btc_price_sma_multiplier",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "data": {"chart": {"type": "line"}},
@@ -892,7 +892,7 @@ WIDGETS = {
         "description": "OHLCV data for a given symbol and exchange",
         "category": "crypto",
         "defaultViz": "chart-highcharts",
-        "endpoint": "velo_ohlcv",
+        "endpoint": "velo/ohlcv",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -956,7 +956,7 @@ WIDGETS = {
         "description": "OHLCV data for a given pool",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "ccdata_candles",
+        "endpoint": "ccdata/candles",
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
         "params": [
@@ -990,23 +990,5 @@ WIDGETS = {
             }
         ],
         "data": {"chart": {"type": "candlestick"}},
-    },
-    "coingecko_coin_details": {
-        "name": "CoinGecko Coin Details",
-        "description": "Details for a given coin",
-        "category": "crypto",
-        "defaultViz": "markdown",
-        "endpoint": "coingecko_coin_details",
-        "gridData": {"w": 20, "h": 9},
-        "source": "CoinGecko",
-        "params": [
-            {
-                "paramName": "coin_id",
-                "value": "bitcoin",
-                "label": "Coin",
-                "type": "text",
-                "description": "CoinGecko ID of the cryptocurrency"
-            }
-        ]
     }
 }

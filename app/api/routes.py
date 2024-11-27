@@ -13,11 +13,11 @@ from app.assets.aave_pools import AAVE_POOLS
 from app.assets.base_chart_layout import create_base_layout
 from app.assets.ai_agent_mapping import ai_agent_mapping
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import json
 import pandas as pd
 
 router = APIRouter()
+
 coingecko_service = CoinGeckoService()
 glassnode_service = GlassnodeService()
 google_trends_service = GoogleTrendsService()
