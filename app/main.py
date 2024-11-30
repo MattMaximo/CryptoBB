@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import get_settings
-from app.api.udf_routes import router as udf_router
 from app.api.general_routes import general_router
 from app.api.aave_routes import aave_router
 from app.api.ccdata_routes import ccdata_router
@@ -11,6 +10,7 @@ from app.api.glassnode_routes import glassnode_router
 from app.api.google_trends_routes import google_trends_router
 from app.api.microstrategy_routes import microstrategy_router
 from app.api.telegram_routes import telegram_router
+from app.api.ta_routes import ta_router
 from app.api.velo_routes import velo_router
 
 settings = get_settings()
@@ -31,11 +31,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(
-    udf_router,
-    prefix="/udf",  
-    tags=["UDF"]
-)
 
 app.include_router(
     general_router,
@@ -89,6 +84,12 @@ app.include_router(
     telegram_router,
     prefix="/telegram",
     tags=["Telegram"]
+)
+
+app.include_router(
+    ta_router,
+    prefix="/crypto_ta",
+    tags=["Crypto TA"]
 )
 
 app.include_router(

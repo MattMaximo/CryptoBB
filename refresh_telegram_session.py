@@ -7,6 +7,7 @@ settings = get_settings()
 api_id = settings.TELEGRAM_API_ID
 api_hash = settings.TELEGRAM_API_HASH
 
+
 # Choose a session name (the session file will be saved as 'your_session_name.session')
 session_name = 'jumbocircus_session'
 

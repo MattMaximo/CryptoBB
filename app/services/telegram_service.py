@@ -37,7 +37,7 @@ class TelegramService:
 
     def _extract_rank(self, prefix: str, message_text: str):
         if message_text:
-            match = re.search(f"{prefix} Rank:\s*[><]?\s*(\d+)", message_text, re.IGNORECASE)
+            match = re.search(fr"{prefix} Rank:\s*[><]?\s*(\d+)", message_text, re.IGNORECASE)
             return int(match.group(1)) if match else None
         return None
 
