@@ -283,20 +283,20 @@ async def get_stochastic(exchange: str, symbol: str, interval: str, aggregate: i
             layer="below", line_width=0
         )
 
-        # Add %K line (fast)
+        # Add %K line (fast) in purple
         fig.add_trace(go.Scatter(
             x=data.index,
             y=data['%K'],
             name="%K",
-            line=dict(color='blue', width=2)
+            line=dict(color='purple', width=2)
         ))
 
-        # Add %D line (slow)
+        # Add %D line (slow) in yellow
         fig.add_trace(go.Scatter(
             x=data.index,
             y=data['%D'],
             name="%D",
-            line=dict(color='red', width=2, dash='dot')
+            line=dict(color='yellow', width=2, dash='dot')
         ))
 
         # Add reference lines
