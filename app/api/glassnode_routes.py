@@ -152,3 +152,43 @@ async def get_glassnode_price(asset: str = "btc"):
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@glassnode_router.get("/mvrv_zscore")
+async def get_mvrv_zscore(asset: str = "btc"):
+    try:
+        data = glassnode_service.mvrv_zscore(asset)
+        data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
+        data = data.set_index("date")
+
+        figure = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="MVRV Z-Score",
+                y_dtype=".2f"   
+            )
+        )
+
+        # Add shaded areas
+        figure.add_hrect(
+            y0=0, y1=-1,
+            fillcolor="green", opacity=0.2,
+            layer="below", line_width=0
+        )
+        figure.add_hrect(
+            y0=6.5, y1=10,
+            fillcolor="red", opacity=0.2,
+            layer="below", line_width=0
+        )
+
+        # Add main MVRV Z-Score line
+        figure.add_scatter(
+            x=data.index,
+            y=data["mvrv_zscore"],
+            mode="lines",
+            name="MVRV Z-Score",
+            line=dict(color="#00b0f0")
+        )
+        
+        return json.loads(figure.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

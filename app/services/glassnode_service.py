@@ -104,5 +104,38 @@ class GlassnodeService:
         df["date"] = pd.to_datetime(df["date"]).dt.date
 
         return df
-    
+
+    def mvrv_zscore(
+        self,
+        asset: str = 'btc',
+        since: str = None,
+        until: str = None,
+        frequency: str = "24h",
+        format: str = "JSON",
+        timestamp_format: str = "humanized",
+    ) -> pd.DataFrame:
+        
+        url = " https://api.glassnode.com/v1/metrics/market/mvrv_z_score"
+        params = {
+            "a": asset,
+            #'s': since,
+            #'u': until,
+            "i": frequency,
+            "f": format,
+            "timestamp_format": timestamp_format,
+            "api_key": self.api_key,
+        }
+
+        response = requests.get(url, params=params)
+
+        data = response.json()
+        df = pd.DataFrame(data)
+        df.columns = ["date", "mvrv_zscore"]
+
+        df["date"] = pd.to_datetime(df["date"]).dt.date
+        df['mvrv_zscore'] = pd.to_numeric(df['mvrv_zscore'], errors='coerce')
+
+        return df
+
+
 # %%

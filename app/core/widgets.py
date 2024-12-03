@@ -1030,5 +1030,148 @@ WIDGETS = {
             }
         ],
         "data": {"chart": {"type": "line"}},
-    }
+    },
+    "ta_macd": {
+        "name": "MACD",
+        "description": "MACD for a given symbol and exchange",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "crypto_ta/macd",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CCData",
+        "params": [
+            {
+                "paramName": "exchange",
+                "value": "binance",
+                "label": "Exchange",
+                "type": "text",
+                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)"
+            },
+            {
+                "paramName": "symbol", 
+                "value": "BTC-USDT",
+                "label": "Pair",
+                "type": "text",
+                "description": "Pair (e.g. BTC-USDT) to fetch data for"
+            },
+            {
+                "paramName": "interval", 
+                "value": "hours",
+                "label": "Interval",
+                "type": "text",
+                "description": "Interval to fetch data for (options: minutes, hours, days)"
+            },
+            {
+                "paramName": "aggregate",
+                "value": "1",
+                "label": "Aggregate",
+                "type": "text", 
+                "description": "Aggregation interval."
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+    "ta_fibonacci_retracement": {
+        "name": "Fibonacci Retracement",
+        "description": "Fibonacci retracement for a given symbol and exchange",
+        "category": "crypto",
+        "defaultViz": "table",
+        "endpoint": "crypto_ta/fibonacci_retracement",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CCData",
+                "params": [
+            {
+                "paramName": "exchange",
+                "value": "binance",
+                "label": "Exchange",
+                "type": "text",
+                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)"
+            },
+            {
+                "paramName": "symbol", 
+                "value": "BTC-USDT",
+                "label": "Pair",
+                "type": "text",
+                "description": "Pair (e.g. BTC-USDT) to fetch data for"
+            },
+            {
+                "paramName": "interval", 
+                "value": "hours",
+                "label": "Interval",
+                "type": "text",
+                "description": "Interval to fetch data for (options: minutes, hours, days)"
+            },
+            {
+                "paramName": "aggregate",
+                "value": "1",
+                "label": "Aggregate",
+                "type": "text", 
+                "description": "Aggregation interval."
+            }
+        ],
+        "data": {
+            "table": {  
+                "showAll": True,
+            }
+        },
+    },
+    "ta_stochastic": {
+        "name": "Stochastic Oscillator",
+        "description": "Stochastic Oscillator for a given symbol and exchange",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "crypto_ta/stochastic",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CCData",
+        "params": [
+            {
+                "paramName": "exchange",
+                "value": "binance",
+                "label": "Exchange",
+                "type": "text",
+                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)"
+            },
+            {
+                "paramName": "symbol", 
+                "value": "BTC-USDT",
+                "label": "Pair",
+                "type": "text",
+                "description": "Pair (e.g. BTC-USDT) to fetch data for"
+            },
+            {
+                "paramName": "interval", 
+                "value": "hours",
+                "label": "Interval",
+                "type": "text",
+                "description": "Interval to fetch data for (options: minutes, hours, days)"
+            },
+            {
+                "paramName": "aggregate",
+                "value": "1",
+                "label": "Aggregate",
+                "type": "text", 
+                "description": "Aggregation interval."
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+    "mvrv_zscore": {
+        "name": "MVRV Z-Score",
+        "description": "MVRV Z-Score",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "glassnode/mvrv_zscore",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Glassnode",
+        "params": [
+            {
+                "paramName": "asset",
+                "value": "btc",
+                "label": "Coin",
+                "type": "text",
+                "description": "Glassnode ID of the cryptocurrency",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
 }
