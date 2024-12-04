@@ -1,4 +1,4 @@
-aiohttp==3.9.3
+aiohttp==3.11.7
 annotated-types==0.7.0
 anyio==4.6.2.post1
 asyncio==3.4.3
