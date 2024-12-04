@@ -80,56 +80,42 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
 
 @velo_router.get("/exchange_funding_rates")
 async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
-    from highcharts_core.chart import Chart
-    from highcharts_core.options.chart import ChartOptions
-    from highcharts_core.options.series.series_generator import LineSeries
-    from highcharts_core.options.title import Title
-    
-    # Get data from velo service
-    data = velo_service.funding_rates(coin, begin, resolution)
-    
-    # Define colors for each exchange
-    colors = {
-        'binance-futures': '#F3BA2F',  # Binance yellow
-        'bybit': '#4982D4',           # Bybit blue
-        'okex-swap': '#BB81F6',       # OKX purple
-        'hyperliquid': '#50D2C1'      # HL Green
-    }
-    
-    # Create series array
-    series = []
-    for exchange in data['exchange'].unique():
-        df_exchange = data[data['exchange'] == exchange]
-        series_data = [[
-            row['time'],
-            row['annualized_funding_rate'] * 100  # Convert to percentage
-        ] for _, row in df_exchange.iterrows()]
-        
-        series.append(LineSeries(
-            data=series_data,
-            name=exchange,
-            color=colors[exchange],
-            tooltip={
-                'valueSuffix': '%'
-            },
-            
+    try:
+        # Get data from velo service
+        data = velo_service.funding_rates(coin, begin, resolution)
+        data['time'] = pd.to_datetime(data['time'])
+        # Define colors for exchanges
+        colors = {
+            'binance-futures': '#F3BA2F',  # Binance yellow
+            'bybit': '#4982D4',           # Bybit blue
+            'okex-swap': '#BB81F6',       # OKX purple
+            'hyperliquid': '#50D2C1'      # HL Green
+        }
+
+        # Create Plotly Figure
+        figure = go.Figure(layout=create_base_layout(
+            x_title="Date",
+            y_title="Annualized Funding Rate (%)",
+            y_dtype=".2%"
         ))
 
-    # Create chart
-    chart = Chart()
+        # Group by exchange and add a trace for each
+        for exchange, group_data in data.groupby('exchange'):
+            figure.add_trace(
+                go.Scatter(
+                    x=group_data['time'],
+                    y=group_data['annualized_funding_rate'],
+                    mode='lines',
+                    name=exchange,
+                    line=dict(color=colors.get(exchange, '#000000'))  # Default to black if exchange is not in colors
+                )
+            )
 
-    chart.chart = ChartOptions(
-        type='line',
-        style={
-            'fontFamily': 'Arial, sans-serif'
-        },
-    )
+        # Return the chart as JSON
+        return json.loads(figure.to_json())
 
-    for s in series:
-        chart.add_series(s)
-    
-    return json.loads(chart.to_json())
-
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error processing funding rates: {str(e)}")
 
 @velo_router.get("/long_liquidations")
 async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
