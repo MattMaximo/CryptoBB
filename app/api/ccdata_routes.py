@@ -11,7 +11,7 @@ ccdata_service = CCDataService()
 @ccdata_router.get("/exchange_price_deltas")
 async def get_exchange_price_deltas():
     try:
-        data = ccdata_service.get_delta_data()
+        data = await ccdata_service.get_delta_data()
         data['timestamp'] = data['timestamp'].dt.strftime("%Y-%m-%d %H:%M:%S")
         data = data.set_index("timestamp")
 
@@ -63,7 +63,7 @@ async def get_exchange_price_deltas():
 @ccdata_router.get("/candles")
 async def get_ccdata_candles(exchange: str, symbol: str, interval: str, aggregate: int):
     try:
-        data = ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
+        data = await ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
         data = pd.DataFrame(data)
         data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
         data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')

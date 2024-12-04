@@ -2,24 +2,26 @@
 
 from typing import Dict
 import pandas as pd
-import requests
+import aiohttp
+from app.core.session_manager import SessionManager
 
 class AaveService:
     def __init__(self):
-        # Initialize any necessary attributes here
-        pass
+        self.session_manager = SessionManager()
 
+    async def fetch_data(self, url: str) -> Dict:
+        session = await self.session_manager.get_session()
+        async with session.get(url) as response:
+            return await response.json()
 
-    def get_lending_pool_history(
+    async def get_lending_pool_history(
         self,
         pool: str,
         start_date: int = 0,
         interval_hours: int = 24
     ) -> pd.DataFrame:
         url = f"https://aave-api-v2.aave.com/data/rates-history?reserveId={pool}&from={start_date}&resolutionInHours={interval_hours}"
-        response = requests.get(url)
-        print(url)
-        data = response.json()
+        data = await self.fetch_data(url)
         
         df = pd.DataFrame(data)
 

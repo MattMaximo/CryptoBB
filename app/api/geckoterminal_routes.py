@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, HTTPException
 from app.services.geckoterminal_service import GeckoTerminalService
 from app.assets.base_chart_layout import create_base_layout
@@ -7,14 +6,13 @@ import plotly.graph_objects as go
 import pandas as pd
 import json
 
-
 geckoterminal_router = APIRouter()
 geckoterminal_service = GeckoTerminalService()
 
 @geckoterminal_router.get("/ai_agents_market_data")
 async def get_ai_agents_market_data():
     try:
-        data = geckoterminal_service.fetch_ai_agent_market_data(ai_agent_mapping)
+        data = await geckoterminal_service.fetch_ai_agent_market_data(ai_agent_mapping)
         data.fillna(0, inplace=True)
 
         float_columns = ['price_usd', 'volume_usd', 'market_cap_usd', 'fdv_usd', 
@@ -32,7 +30,8 @@ async def get_geckoterminal_candles(symbol: str, timeframe: str, aggregate: int)
     try:
         pool_id = ai_agent_mapping[symbol.upper()]['pool_id']
         chain = ai_agent_mapping[symbol.upper()]['chain']
-        data = geckoterminal_service.fetch_pool_ohlcv_data(pool_id, chain, timeframe, aggregate)
+        data = await geckoterminal_service.fetch_pool_ohlcv_data(pool_id, chain, timeframe, aggregate)
+        data["timestamp"] = pd.to_datetime(data["timestamp"]).dt.strftime("%Y-%m-%d %H:%M:%S")
         data = data.set_index("timestamp")
 
         figure = go.Figure(
@@ -43,7 +42,7 @@ async def get_geckoterminal_candles(symbol: str, timeframe: str, aggregate: int)
             )
         )
 
-        # Add volume bars on secondary y-axis first so they appear behind candlesticks
+        # Add volume bars on secondary y-axis
         figure.add_bar(
             x=data.index,
             y=data['volume'],
@@ -52,7 +51,7 @@ async def get_geckoterminal_candles(symbol: str, timeframe: str, aggregate: int)
             marker_color='rgba(128,128,128,0.5)'
         )
 
-        # Add candlestick chart second so it appears on top
+        # Add candlestick chart
         figure.add_candlestick(
             x=data.index,
             open=data['open'],

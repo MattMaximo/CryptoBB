@@ -11,7 +11,7 @@ glassnode_service = GlassnodeService()
 @glassnode_router.get("/lth_supply")
 async def get_lth_supply(asset: str = "btc", show_price: str = "False"):
     try:
-        data = glassnode_service.get_lth_supply(asset)
+        data = await glassnode_service.get_lth_supply(asset)
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 
@@ -32,7 +32,7 @@ async def get_lth_supply(asset: str = "btc", show_price: str = "False"):
         )
 
         if show_price.lower() == "true":
-            price_data = glassnode_service.get_price(asset)
+            price_data = await glassnode_service.get_price(asset)
             price_data["date"] = pd.to_datetime(price_data["date"]).dt.strftime("%Y-%m-%d")
             price_data = price_data.set_index("date")
 
@@ -65,7 +65,7 @@ async def get_lth_supply(asset: str = "btc", show_price: str = "False"):
 @glassnode_router.get("/lth_net_change")
 async def get_lth_net_change(asset: str = "btc", show_price: str = "False"):
     try:
-        data = glassnode_service.get_lth_net_change(asset)
+        data = await glassnode_service.get_lth_net_change(asset)
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 
@@ -100,7 +100,7 @@ async def get_lth_net_change(asset: str = "btc", show_price: str = "False"):
         )
 
         if show_price.lower() == "true":
-            price_data = glassnode_service.get_price(asset)
+            price_data = await glassnode_service.get_price(asset)
             price_data["date"] = pd.to_datetime(price_data["date"]).dt.strftime("%Y-%m-%d")
             price_data = price_data.set_index("date")
 
@@ -132,7 +132,7 @@ async def get_lth_net_change(asset: str = "btc", show_price: str = "False"):
 @glassnode_router.get("/price")
 async def get_glassnode_price(asset: str = "btc"):
     try:
-        data = glassnode_service.get_price(asset)
+        data = await glassnode_service.get_price(asset)
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 
@@ -156,7 +156,7 @@ async def get_glassnode_price(asset: str = "btc"):
 @glassnode_router.get("/mvrv_zscore")
 async def get_mvrv_zscore(asset: str = "btc"):
     try:
-        data = glassnode_service.mvrv_zscore(asset)
+        data = await glassnode_service.mvrv_zscore(asset)
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 

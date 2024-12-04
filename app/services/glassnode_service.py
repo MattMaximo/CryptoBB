@@ -1,8 +1,9 @@
 
 import pandas as pd
 import requests
+from typing import Dict
 from app.core.settings import get_settings
-
+from app.core.session_manager import SessionManager
 settings = get_settings()
 
 
@@ -10,8 +11,14 @@ settings = get_settings()
 class GlassnodeService:
     def __init__(self):
         self.api_key = settings.GLASSNODE_API_KEY
+        self.session_manager = SessionManager()
 
-    def get_price(
+    async def fetch_data(self, url: str, params: Dict = None) -> Dict:
+        session = await self.session_manager.get_session()
+        async with session.get(url, params=params) as response:
+            return await response.json()
+
+    async def get_price(
         self,
         asset: str = 'btc',
         since: str = None,
@@ -33,9 +40,8 @@ class GlassnodeService:
         }
 
 
-        response = requests.get(url, params=params)
+        data = await self.fetch_data(url, params=params)
 
-        data = response.json()
         df = pd.DataFrame(data)
         df.columns = ["date", "price"]
 
@@ -43,7 +49,7 @@ class GlassnodeService:
 
         return df
 
-    def get_lth_net_change(
+    async def get_lth_net_change(
         self,
         asset: str = 'btc',
         since: str = None,
@@ -64,9 +70,8 @@ class GlassnodeService:
             "api_key": self.api_key,
         }
 
-        response = requests.get(url, params=params)
+        data = await self.fetch_data(url, params=params)
 
-        data = response.json()
         df = pd.DataFrame(data)
         df.columns = ["date", "lth_net_change"]
 
@@ -74,7 +79,7 @@ class GlassnodeService:
 
         return df
     
-    def get_lth_supply(
+    async def get_lth_supply(
         self,
         asset: str = 'btc',
         since: str = None,
@@ -95,9 +100,8 @@ class GlassnodeService:
             "api_key": self.api_key,
         }
 
-        response = requests.get(url, params=params)
+        data = await self.fetch_data(url, params=params)
 
-        data = response.json()
         df = pd.DataFrame(data)
         df.columns = ["date", "lth_supply"]
 
@@ -105,7 +109,7 @@ class GlassnodeService:
 
         return df
 
-    def mvrv_zscore(
+    async def mvrv_zscore(
         self,
         asset: str = 'btc',
         since: str = None,
@@ -126,9 +130,8 @@ class GlassnodeService:
             "api_key": self.api_key,
         }
 
-        response = requests.get(url, params=params)
+        data = await self.fetch_data(url, params=params)
 
-        data = response.json()
         df = pd.DataFrame(data)
         df.columns = ["date", "mvrv_zscore"]
 

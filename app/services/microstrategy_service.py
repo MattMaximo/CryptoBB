@@ -1,25 +1,32 @@
 # %%
 import requests
 import pandas as pd
+from typing import Dict
+from app.core.session_manager import SessionManager
 
 class MicrostrategyService:
     def __init__(self):
         self.url = "https://www.mstr-tracker.com/data"
-        response = requests.get(self.url)
-        response.raise_for_status()  # Raise exception for bad status codes
-        self._data = response.json()
+        self.session_manager = SessionManager()
 
-    def get_prices(self):
+    async def fetch_data(self):
+        session = await self.session_manager.get_session()
+        async with session.get(self.url) as response:
+            return await response.json()
+
+    async def get_prices(self):
+        data = await self.fetch_data()
         df_prices = pd.DataFrame({
-            'date': pd.to_datetime(self._data["dates"]),
-            'nav_premium': pd.to_numeric(self._data["nav_premium"], errors='coerce'),
-            'mstr_price': pd.to_numeric(self._data["mstr_prices"], errors='coerce'),
-            'btc_price': pd.to_numeric(self._data["btc_prices"], errors='coerce')
+            'date': pd.to_datetime(data["dates"]),
+            'nav_premium': pd.to_numeric(data["nav_premium"], errors='coerce'),
+            'mstr_price': pd.to_numeric(data["mstr_prices"], errors='coerce'),
+            'btc_price': pd.to_numeric(data["btc_prices"], errors='coerce')
         })
         return df_prices
     
-    def get_treasury_data(self):
-        df_treasury = pd.DataFrame(self._data['treasury_table'])
+    async def get_treasury_data(self):
+        data = await self.fetch_data()
+        df_treasury = pd.DataFrame(data['treasury_table'])
         
         df_treasury['date'] = pd.to_datetime(df_treasury['Date'])
         df_treasury['btc_balance'] = pd.to_numeric(df_treasury['BTC Balance'], errors='coerce')
@@ -35,9 +42,5 @@ class MicrostrategyService:
                            'cost_basis', 'mstr_btc', 'mstr', 'btc',
                            'total_outstanding_shares']]
 
-if __name__ == "__main__":
-    microstrategy_service = MicrostrategyService()
-    treasury_data = microstrategy_service.get_treasury_data()
-    prices = microstrategy_service.get_prices()
 
 # %%

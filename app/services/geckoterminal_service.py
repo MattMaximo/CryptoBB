@@ -1,7 +1,8 @@
 from typing import Dict
 import pandas as pd
-import requests
+import aiohttp
 from app.core.settings import get_settings
+from app.core.session_manager import SessionManager
 
 settings = get_settings()
 
@@ -12,11 +13,17 @@ class GeckoTerminalService:
             "accept": "application/json",
             "x-cg-pro-api-key": self.api_key
         }
+        self.session_manager = SessionManager()
 
-    def fetch_coin_market_data(self, network_id: str, coin_ids: str) -> pd.DataFrame:
+    async def fetch_data(self, url: str, params: Dict = None) -> Dict:
+        session = await self.session_manager.get_session(self.headers)
+        async with session.get(url, params=params) as response:
+            return await response.json()
+
+    async def fetch_coin_market_data(self, network_id: str, coin_ids: str) -> pd.DataFrame:
         url = f"https://pro-api.coingecko.com/api/v3/onchain/networks/{network_id}/tokens/multi/{coin_ids}"
-        response = requests.get(url, headers=self.headers)
-        data = response.json()['data']
+        response = await self.fetch_data(url)
+        data = response['data']
 
         df = pd.DataFrame(data)
         attributes_df = df['attributes'].apply(pd.Series)
@@ -37,12 +44,12 @@ class GeckoTerminalService:
             tokens_by_chain[chain].append(address)
         return tokens_by_chain
 
-    def fetch_ai_agent_market_data(self, tokens: Dict) -> pd.DataFrame:
+    async def fetch_ai_agent_market_data(self, tokens: Dict) -> pd.DataFrame:
         tokens_by_chain = self._group_tokens_by_chain(tokens)
         dfs = []
         for chain, addresses in tokens_by_chain.items():
             address_list = ','.join(addresses)
-            df = self.fetch_coin_market_data(chain, address_list)
+            df = await self.fetch_coin_market_data(chain, address_list)
             df['chain'] = chain
             dfs.append(df)
 
@@ -50,7 +57,7 @@ class GeckoTerminalService:
         df.drop(columns=['type'], inplace=True)
         return df[['name', 'symbol', 'price_usd', 'volume_usd', 'market_cap_usd', 'fdv_usd', 'total_supply', 'total_reserve_in_usd','top_pool_id', 'chain', 'address']]
 
-    def fetch_pool_ohlcv_data(self, pool_id: str, chain: str, timeframe: str, aggregate: int) -> pd.DataFrame:
+    async def fetch_pool_ohlcv_data(self, pool_id: str, chain: str, timeframe: str, aggregate: int) -> pd.DataFrame:
         """
         Parameters:
         - pool_id (str): The ID of the pool to fetch data for.
@@ -75,8 +82,8 @@ class GeckoTerminalService:
             "currency": "usd"
         }
         
-        response = requests.get(url, headers=self.headers, params=params)
-        data = response.json()['data']['attributes']['ohlcv_list']
+        response = await self.fetch_data(url, params=params)
+        data = response['data']['attributes']['ohlcv_list']
         
         df = pd.DataFrame(data, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
         df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')

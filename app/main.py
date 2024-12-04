@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import get_settings
@@ -12,15 +13,25 @@ from app.api.microstrategy_routes import microstrategy_router
 from app.api.telegram_routes import telegram_router
 from app.api.ta_routes import ta_router
 from app.api.velo_routes import velo_router
+from app.core.session_manager import SessionManager
 
 settings = get_settings()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: No need to create session here as it's created on first use
+    yield
+    # Shutdown: Clean up the session
+    await SessionManager().close_session()
+
 app = FastAPI(
     title="OpenBB Terminal Pro Backend",
     description="API for cryptocurrency market analysis",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
+    lifespan=lifespan
 )
 
 app.add_middleware(
@@ -100,4 +111,5 @@ app.include_router(
 
 @app.get("/")
 async def root():
-    return {"message": "OpenBB Terminal Pro Backend is running"} 
+    return {"message": "OpenBB Terminal Pro Backend is running"}
+

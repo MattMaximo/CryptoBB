@@ -13,7 +13,7 @@ ccdata_service = CCDataService()
 @ta_router.get("/rsi")
 async def get_rsi(exchange: str, symbol: str, interval: str, aggregate: int):
     try:
-        data = ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
+        data = await ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
         data = pd.DataFrame(data)
         data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
         data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
@@ -89,7 +89,7 @@ async def get_rsi(exchange: str, symbol: str, interval: str, aggregate: int):
 @ta_router.get("/macd")
 async def get_macd(exchange: str, symbol: str, interval: str, aggregate: int):
     try:
-        data = ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
+        data = await ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
         data = pd.DataFrame(data)
         data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
         data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
@@ -182,7 +182,7 @@ async def get_macd(exchange: str, symbol: str, interval: str, aggregate: int):
 @ta_router.get("/fibonacci_retracement")
 async def get_fibonacci(exchange: str, symbol: str, interval: str, aggregate: int):
     try:
-        data = ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
+        data = await ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
         data = pd.DataFrame(data)
         data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
         data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
@@ -235,7 +235,7 @@ async def get_fibonacci(exchange: str, symbol: str, interval: str, aggregate: in
 @ta_router.get("/stochastic")
 async def get_stochastic(exchange: str, symbol: str, interval: str, aggregate: int):
     try:
-        data = ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
+        data = await ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
         data = pd.DataFrame(data)
         data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
         data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')

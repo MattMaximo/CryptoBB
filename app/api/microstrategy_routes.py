@@ -11,7 +11,7 @@ microstrategy_service = MicrostrategyService()
 @microstrategy_router.get("/premium")
 async def get_microstrategy_premium():
     try:
-        data = microstrategy_service.get_prices()
+        data = await microstrategy_service.get_prices()
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 
@@ -60,7 +60,7 @@ async def get_microstrategy_premium():
 @microstrategy_router.get("/info")
 async def get_microstrategy_info():
     try:
-        data = microstrategy_service.get_treasury_data()
+        data = await microstrategy_service.get_treasury_data()
         return data.to_dict(orient="records")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
