@@ -1174,4 +1174,25 @@ WIDGETS = {
         ],
         "data": {"chart": {"type": "line"}},
     },
+    "lth_nupl": {
+        "name": "Long Term Holders NUPL",
+        #TODO: implement with highcharts bc plotly cant color the lines
+        "description": "Net Unrealized Profit and Loss of long term holders",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "glassnode/lth_nupl",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Glassnode",
+        "params": [
+            {
+                "paramName": "asset",
+                "value": "btc",
+                "label": "Coin",
+                "type": "text",
+                "description": "Glassnode ID of the cryptocurrency",
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    },
+
 }

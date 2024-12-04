@@ -140,5 +140,39 @@ class GlassnodeService:
 
         return df
 
+    async def lth_nupl(
+        self,
+        asset: str = 'btc',
+        since: str = None,
+        until: str = None,
+        frequency: str = "24h",
+        format: str = "JSON",
+        timestamp_format: str = "humanized",
+    ) -> pd.DataFrame:
+        
+        url = "https://api.glassnode.com/v1/metrics/indicators/nupl_more_155_account_based"
+        params = {
+            "a": asset,
+            #'s': since,
+            #'u': until,
+            "i": frequency,
+            "f": format,
+            "timestamp_format": timestamp_format,
+            "api_key": self.api_key,
+        }
+
+        data = await self.fetch_data(url, params=params)
+
+        df = pd.DataFrame(data)
+        df.columns = ["date", "lth_nupl"]
+
+        df["date"] = pd.to_datetime(df["date"]).dt.date
+        df['lth_nupl'] = pd.to_numeric(df['lth_nupl'], errors='coerce')
+
+        return df
+
+
 
 # %%
+ 
+

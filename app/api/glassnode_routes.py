@@ -192,3 +192,55 @@ async def get_mvrv_zscore(asset: str = "btc"):
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+  
+@glassnode_router.get("/lth_nupl")
+async def get_lth_nupl(asset: str = "btc"):
+    try:
+        # Fetch and process data
+        data = await glassnode_service.lth_nupl(asset)
+        data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
+        data = data.set_index("date")
+        #TODO: implement with highcharts bc plotly cant color the lines
+
+        def assign_color(value):
+            if 0 <= value < 0.25:
+                return "orange"
+            elif 0.25 <= value < 0.5:
+                return "yellow"
+            elif 0.5 <= value < 0.75:
+                return "green"
+            elif value >= 0.75:
+                return "blue"
+            return "gray"
+
+        # Apply color assignment
+        data["color"] = data["lth_nupl"].apply(assign_color)
+
+        # Create figure layout
+        figure = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="LTH NUPL",
+                y_dtype=".4f"
+            )
+        )
+
+        # Update layout to hide legend
+        figure.update_layout(showlegend=False)
+
+        # Create a scatter trace for each color segment
+        unique_colors = data['color'].unique()
+        for color in unique_colors:
+            mask = data['color'] == color
+            figure.add_scatter(
+                x=data[mask].index,
+                y=data[mask]['lth_nupl'],
+                mode='lines',
+                line=dict(color=color, width=2),
+                hovertemplate='Value: %{y:.4f}<br>Color: ' + color + '<extra></extra>',
+                showlegend=False
+            )
+
+        return json.loads(figure.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
