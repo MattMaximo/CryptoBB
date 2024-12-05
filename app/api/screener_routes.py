@@ -7,7 +7,7 @@ screener_router = APIRouter()
 
 @screener_router.get("/watchlist")
 async def get_watchlist():
-    coin_ids = "bitcoin,ethereum,ripple,solana,tron,avalanche-2,chainlink,stellar,sui,uniswap,eigenlayer,aave,celestia,hyperliquid,dogwifcoin,injective-protocol,jupiter-exchange-solana,virtual-protocol,helium,raydium,apecoin,pendle,grass,goatseus-maximus,echelon-prime,drift-protocol,zerebro,cetus-protocol,kamino,aixbt,banana-gun,morpho,near,the-open-network,researchcoin,vitadao,blub,navi,ai16z,wormhole,tensor,vaderai-by-virtuals,arbitrum,optimism,hivemapper"
+    coin_ids = "kyber-network-crystal,bitcoin,ethereum,ripple,solana,tron,avalanche-2,chainlink,stellar,sui,uniswap,eigenlayer,aave,celestia,hyperliquid,dogwifcoin,injective-protocol,jupiter-exchange-solana,virtual-protocol,helium,raydium,apecoin,pendle,grass,goatseus-maximus,echelon-prime,drift-protocol,zerebro,cetus-protocol,kamino,aixbt,banana-gun,morpho,near,the-open-network,researchcoin,vitadao,blub,navi,ai16z,wormhole,tensor,vaderai-by-virtuals,arbitrum,optimism,hivemapper"
     data = await coingecko_service.get_coin_list_market_data(coin_ids)
     data.fillna("", inplace=True)
     data = data[['market_cap_rank', 'name', 'symbol', 'current_price', 'total_volume', 'market_cap',
