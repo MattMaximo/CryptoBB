@@ -1204,7 +1204,56 @@ WIDGETS = {
         "data": {
             "table": {  
                 "showAll": True,
-          }
+                "columnsDefs": [
+                    {
+                        "headerName": "FDV",
+                        "field": "fdv",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": r"1H %",
+                        "field": "1h_pct_change",
+                        "chartDataType": "category",
+                        "renderFn": "greenRed"
+                    },
+                    {
+                        "headerName": r"24H %",
+                        "field": "24h_pct_change",
+                        "chartDataType": "category",
+                        "renderFn": "greenRed"
+                    },
+                    {
+                        "headerName": r"7d %",
+                        "field": "7d_pct_change",
+                        "chartDataType": "category",
+                        "renderFn": "greenRed"
+                    },
+                    {
+                        "headerName": r"14d %",
+                        "field": "14d_pct_change",
+                        "chartDataType": "category",
+                        "renderFn": "greenRed"
+                    },
+                    {
+                        "headerName": r"30D %",
+                        "field": "30d_pct_change",
+                        "chartDataType": "category",
+                        "renderFn": "greenRed"
+                    },
+                    {
+                        "headerName": r"200D %",
+                        "field": "200d_pct_change",
+                        "chartDataType": "category",
+                        "renderFn": "greenRed"
+                    },
+                    {
+                        "headerName": r"1Y %",
+                        "field": "1y_pct_change",
+                        "chartDataType": "category",
+                        "renderFn": "greenRed"
+                    },
+                ]
+            }
         },
     },
 }
