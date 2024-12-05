@@ -1195,7 +1195,7 @@ WIDGETS = {
         "data": {"chart": {"type": "line"}},
     },
 "screener_watchlist": {
-        "name": "CryptoWatchlist",
+        "name": "Crypto Screener",
         "description": "List of all coins in the watchlist.",
         "category": "crypto",
         "endpoint": "screener/watchlist",
