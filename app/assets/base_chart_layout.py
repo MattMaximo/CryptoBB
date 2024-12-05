@@ -24,14 +24,19 @@ def create_base_layout(x_title: str, y_title: str, y_dtype: str = ".2s"):
         title=None,
         xaxis=dict(
             title=x_title,
-            gridcolor="#2f3338",  # Dark gray
+            showgrid=False,  # Remove x-axis gridlines
             color="#ffffff",  # White
         ),
         yaxis=dict(
             title=y_title,
-            gridcolor="#2f3338",  # Dark gray
+            showgrid=True,  # Show primary y-axis gridlines
+            gridcolor="rgba(128, 128, 128, 0.2)",  # Light gray with transparency
             color="#ffffff",  # White
-            tickformat=y_dtype  # Use the y_dtype parameter for tick format
+            tickformat=y_dtype
+        ),
+        yaxis2=dict(
+            showgrid=False,  # Hide secondary y-axis gridlines
+            color="#ffffff",  # White
         ),
         legend=dict(
             orientation="h",
@@ -41,7 +46,7 @@ def create_base_layout(x_title: str, y_title: str, y_dtype: str = ".2s"):
             x=0.5,  # Center the legend
             font=dict(color="#ffffff"),  # White
         ),
-        margin=dict(b=0, l=0, r=0, t=50),  # Adjust margin for the title
+        margin=dict(b=0, l=0, r=0, t=0),  # Adjust margin for the title
         paper_bgcolor="rgba(0,0,0,0)",  # Transparent black
         plot_bgcolor="rgba(0,0,0,0)",  # Transparent black
         font=dict(color="#ffffff"),  # White

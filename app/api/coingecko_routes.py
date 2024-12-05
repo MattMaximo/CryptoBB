@@ -34,7 +34,7 @@ async def get_market_data(coin_id: str):
             y=data[f"{coin_id}_price"],
             mode="lines",
             name="Price",
-            line=dict(color="#00b0f0"),
+            line=dict(color="#E3BF1E"),
         )
 
         return json.loads(figure.to_json())
@@ -61,7 +61,7 @@ async def get_dominance(coin_id: str):
             x=data.index,
             y=data["dominance"] * 100,
             mode="lines",
-            line=dict(color="#00b0f0"),
+            line=dict(color="#E3BF1E"),
             hovertemplate="%{y:.2f}%"  # Display hover as percentage
         )
 
@@ -105,7 +105,7 @@ async def get_vm_ratio(coin_id: str):
             y=data["vm_ratio"],
             mode="lines",
             name="Ratio",  # Added name to specify the trace name in the legend
-            line=dict(color="#00b0f0"),
+            line=dict(color="#E3BF1E"),
             hovertemplate="%{y:.2f}"  # Format hover as decimal
         )
         figure.update_yaxes(tickformat=".2f")  # Override tick format to show decimals
@@ -133,7 +133,7 @@ async def get_correlation(coin_id1: str, coin_id2: str):
             x=data.index,
             y=data["correlation"],
             mode="lines",
-            line=dict(color="#00b0f0")
+            line=dict(color="#E3BF1E")
         )
 
         return json.loads(figure.to_json())
@@ -196,7 +196,7 @@ async def get_btc_price_sma_multiplier():
             x=data.index,
             y=data['SMA_1458'],
             mode='lines',
-            line=dict(color='black', dash='dash'),
+            line=dict(color='white', dash='dash'),
             name='SMA-1458'
         ))
 

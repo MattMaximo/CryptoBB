@@ -1194,5 +1194,17 @@ WIDGETS = {
         ],
         "data": {"chart": {"type": "line"}},
     },
-
+"screener_watchlist": {
+        "name": "CryptoWatchlist",
+        "description": "List of all coins in the watchlist.",
+        "category": "crypto",
+        "endpoint": "screener/watchlist",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CoinGecko",
+        "data": {
+            "table": {  
+                "showAll": True,
+          }
+        },
+    },
 }

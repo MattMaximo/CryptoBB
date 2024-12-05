@@ -31,7 +31,7 @@ async def get_aave_lending_rate(pool: str = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3
             x=data.index,
             y=data["lending_rate"],
             mode="lines",
-            line=dict(color="#00b0f0")
+            line=dict(color="#E3BF1E")
         )
 
         return json.loads(figure.to_json())
@@ -59,7 +59,7 @@ async def get_aave_utilization_rate(pool: str = "0xa0b86991c6218b36c1d19d4a2e9eb
             x=data.index,
             y=data["utilization_rate"],
             mode="lines",
-            line=dict(color="#00b0f0")
+            line=dict(color="#E3BF1E")
         )
 
         return json.loads(figure.to_json())
@@ -87,7 +87,7 @@ async def get_aave_borrow_rate(pool: str = "0xa0b86991c6218b36c1d19d4a2e9eb0ce36
             x=data.index,
             y=data["borrow_rate"],
             mode="lines",
-            line=dict(color="#00b0f0")
+            line=dict(color="#E3BF1E")
         )
 
         return json.loads(figure.to_json())

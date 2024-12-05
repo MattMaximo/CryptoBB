@@ -26,7 +26,7 @@ async def get_historical_google_trends(search_term: str):
             x=data.index,
             y=data[search_term],
             mode="lines",
-            line=dict(color="#00b0f0")
+            line=dict(color="#E3BF1E")
         )
 
         return json.loads(figure.to_json())

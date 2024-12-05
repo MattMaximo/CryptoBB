@@ -32,7 +32,15 @@ class CoinGeckoService:
                 lambda d: ", ".join(d.keys()) if isinstance(d, dict) else ""
             )
         return df
+    
+    async def get_coin_list_market_data(self, coin_ids: str = None) -> pd.DataFrame:
+        url = f"https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={coin_ids}&order=market_cap_desc&per_page=250&sparkline=false&price_change_percentage=1h,24h,7d,14d,30d,200d,1y"
+        data = await self.fetch_data(url)
+        return pd.DataFrame(data)
 
+    
+    
+    
     async def get_total_marketcap(self) -> pd.DataFrame:
         url = "https://pro-api.coingecko.com/api/v3/global/market_cap_chart?days=max"
         data = await self.fetch_data(url)

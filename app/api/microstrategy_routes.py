@@ -38,7 +38,7 @@ async def get_microstrategy_premium():
             y=data["nav_premium"],
             mode="lines",
             name="NAV Premium",
-            line=dict(color="#00b0f0"),
+            line=dict(color="#E3BF1E"),
             hovertemplate="%{y:.2f}"
         )
 

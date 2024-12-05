@@ -27,7 +27,7 @@ async def get_lth_supply(asset: str = "btc", show_price: str = "False"):
             y=data["lth_supply"],
             mode="lines",
             name="LTH Supply",
-            line=dict(color="#00b0f0"),
+            line=dict(color="#E3BF1E"),
             hovertemplate="%{y:,.2f}",
         )
 
@@ -147,7 +147,7 @@ async def get_glassnode_price(asset: str = "btc"):
             x=data.index,
             y=data["price"],
             mode="lines",
-            line=dict(color="#00b0f0")
+            line=dict(color="#E3BF1E")
         )
         return json.loads(figure.to_json())
     except Exception as e:
@@ -186,7 +186,7 @@ async def get_mvrv_zscore(asset: str = "btc"):
             y=data["mvrv_zscore"],
             mode="lines",
             name="MVRV Z-Score",
-            line=dict(color="#00b0f0")
+            line=dict(color="#E3BF1E")
         )
         
         return json.loads(figure.to_json())
