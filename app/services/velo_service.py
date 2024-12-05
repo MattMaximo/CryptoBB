@@ -221,5 +221,33 @@ class VeloService:
         df.time = pd.to_datetime(df.time, unit='ms')
 
         return df[['time', 'dollar_open_interest_close', 'close_price', 'exchange']]
+    
+    def basis(self, coin='BTC', begin=None, resolution='1d') -> pd.DataFrame:
+        """
+        Return the basis for the specified coin by exchange.
+        """
+        if begin is None or begin == '' or begin == "None":
+            # get futures and grab earliest date
+            future = self.client.get_futures()
+            df = pd.DataFrame(future)
+            df = df[df['coin'] == coin]
+            begin_timestamp = int(df.begin.min())
+        else:
+            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+
+        params = {
+            'type': 'futures',
+            'columns': ['3m_basis_ann'],
+            'coins': [coin],
+            'begin': begin_timestamp,
+            'end': self.client.timestamp(),  # current timestamp
+            'resolution': resolution
+        }
+
+        # Fetch data
+        df = self.client.get_rows(params)
+        df.time = pd.to_datetime(df.time, unit='ms')
+
+        return df
 
 # %%

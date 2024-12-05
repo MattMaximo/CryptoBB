@@ -386,3 +386,29 @@ async def get_velo_ohlcv(ticker: str = "BTCUSDT", exchange: str = "binance", res
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@velo_router.get("/basis")
+async def get_velo_basis(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+    try:
+        data = velo_service.basis(coin.upper(), begin, resolution)
+        data = data.groupby('time', as_index=False)['3m_basis_ann'].mean()
+        data = data.set_index("time")
+
+        figure = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="3m Basis Ann %",
+                y_dtype=".0%"
+            )
+        )
+
+        figure.add_scatter(
+            x=data.index,
+            y=data["3m_basis_ann"],
+            mode="lines",
+            name="3m Basis Ann",
+        )
+
+        return json.loads(figure.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

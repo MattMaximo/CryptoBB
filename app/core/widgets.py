@@ -891,7 +891,7 @@ WIDGETS = {
         "name": "Velo OHLCV Candles",
         "description": "OHLCV data for a given symbol and exchange",
         "category": "crypto",
-        "defaultViz": "chart-highcharts",
+        "defaultViz": "chart",
         "endpoint": "velo/ohlcv",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
@@ -1256,4 +1256,37 @@ WIDGETS = {
             }
         },
     },
+"velo_basis": {
+        "name": "3m Annualized Basis",
+        "description": "3m annualized basis for a given coin.",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "velo/basis",
+        "gridData": {"w": 20, "h": 9},
+        "source": "VeloData",
+        "params": [
+            {
+                "paramName": "coin",
+                "value": "BTC",
+                "label": "Symbol",
+            },
+            {
+                "paramName": "resolution",
+                "value": "1d",
+                "label": "Resolution",
+                "options": [
+                    {
+                        "value": "1h",
+                        "label": "1h"
+                    },
+                    {
+                        "value": "1d",
+                        "label": "1d"
+                    },
+                ]
+            }
+        ],
+        "data": {"chart": {"type": "line"}},
+    }
 }
+
