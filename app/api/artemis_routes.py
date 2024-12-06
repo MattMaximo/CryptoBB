@@ -10,7 +10,7 @@ artemis_router = APIRouter()
 artemis_service = ArtemisService()
 coingecko_service = CoinGeckoService()
 @artemis_router.get("/altcoin_season_index")
-async def get_altcoin_season_index():
+async def get_altcoin_season_index(price_coin: str = 'bitcoin'):
     query = """
         WITH latest_date AS (
             SELECT MAX(date) AS max_date 
@@ -106,12 +106,13 @@ async def get_altcoin_season_index():
         altcoin_season_data['DATE'] = pd.to_datetime(altcoin_season_data['DATE'])
         altcoin_season_data['ALT_SEASON'] = altcoin_season_data['ALT_SEASON'].astype(float) / 100
 
-        btc_data = await coingecko_service.get_market_data('bitcoin')
-        btc_data = btc_data[['date', 'bitcoin_price']]
+        price_coin = price_coin.lower()
+        btc_data = await coingecko_service.get_market_data(price_coin)
+        btc_data = btc_data[['date', f'{price_coin}_price']]
         # Calculate rolling returns
-        btc_data['1m_return'] = btc_data['bitcoin_price'].pct_change(periods=30)  # 30 days
-        btc_data['3m_return'] = btc_data['bitcoin_price'].pct_change(periods=90)  # 90 days 
-        btc_data['6m_return'] = btc_data['bitcoin_price'].pct_change(periods=180) # 180 days
+        btc_data['1m_return'] = btc_data[f'{price_coin}_price'].pct_change(periods=30)  # 30 days
+        btc_data['3m_return'] = btc_data[f'{price_coin}_price'].pct_change(periods=90)  # 90 days 
+        btc_data['6m_return'] = btc_data[f'{price_coin}_price'].pct_change(periods=180) # 180 days
 
         # Convert to percentages
         btc_data[['1m_return', '3m_return', '6m_return']] = btc_data[['1m_return', '3m_return', '6m_return']] * 100
@@ -131,7 +132,7 @@ async def get_altcoin_season_index():
         # Update layout to include secondary y-axis and shared hover mode
         fig.update_layout(
             yaxis2=dict(
-                title="Bitcoin Price (USD)",
+                title=f"{price_coin.title()} Price (USD)",
                 overlaying="y",
                 side="right",
                 showgrid=False,
@@ -161,7 +162,7 @@ async def get_altcoin_season_index():
         fig.add_trace(
             go.Scatter(
                 x=merged_data['DATE'],
-                y=merged_data['bitcoin_price'],
+                y=merged_data[f'{price_coin}_price'],
                 mode='lines',
                 name='Bitcoin Price',
                 yaxis='y2',
