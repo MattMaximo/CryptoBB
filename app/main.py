@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import get_settings
 from app.api.general_routes import general_router
+from app.api.artemis_routes import artemis_router
 from app.api.aave_routes import aave_router
 from app.api.ccdata_routes import ccdata_router
 from app.api.coingecko_routes import coingecko_router
@@ -48,6 +49,12 @@ app.include_router(
     general_router,
     prefix="",
     tags=["General"]
+)
+
+app.include_router(
+    artemis_router,
+    prefix="/artemis",
+    tags=["Artemis"]
 )
 
 app.include_router(

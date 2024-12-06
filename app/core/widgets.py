@@ -1287,6 +1287,16 @@ WIDGETS = {
             }
         ],
         "data": {"chart": {"type": "line"}},
-    }
+    },
+"altcoin_season_index": {
+        "name": "Altcoin Season",
+        "description": "Altcoin Season Index",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "artemis/altcoin_season_index",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Artemis",
+        "data": {"chart": {"type": "line"}},
+    },
 }
 
