@@ -2,7 +2,8 @@ from functools import lru_cache
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    COINGECKO_API_KEY: str = "your_api_key"
+    COINGECKO_API_KEY_1: str = "your_api_key"
+    COINGECKO_API_KEY_2: str = "your_api_key"
     GLASSNODE_API_KEY: str = "your_api_key"
     VELO_API_KEY: str = "your_api_key"
     TELEGRAM_API_ID: str = "your_api_id"

@@ -8,14 +8,31 @@ settings = get_settings()
 
 class CoinGeckoService:
     def __init__(self):
-        self.api_key = settings.COINGECKO_API_KEY
-        self.headers = {"accept": "application/json", "x-cg-pro-api-key": self.api_key}
+        self.api_key_1 = settings.COINGECKO_API_KEY_1
+        self.api_key_2 = settings.COINGECKO_API_KEY_2
+        self.headers_1 = {"accept": "application/json", "x-cg-pro-api-key": self.api_key_1}
+        self.headers_2 = {"accept": "application/json", "x-cg-pro-api-key": self.api_key_2}
         self.session_manager = SessionManager()
 
     async def fetch_data(self, url: str) -> Dict:
-        session = await self.session_manager.get_session(self.headers)
+        # Try with first API key
+        session = await self.session_manager.get_session(self.headers_1)
         async with session.get(url) as response:
-            return await response.json()
+            data = await response.json()
+            
+            # If successful, return the data
+            if response.status == 200 and data:
+                return data
+                
+            # If failed, try with second API key
+            session = await self.session_manager.get_session(self.headers_2)
+            async with session.get(url) as response:
+                data = await response.json()
+                if response.status == 200 and data:
+                    return data
+                    
+                # If both failed, raise an exception
+                raise Exception(f"Failed to fetch data from CoinGecko API. Status: {response.status}, Response: {data}")
 
     async def get_coin_details(self, coin_id: str) -> Dict:
         url = f"https://pro-api.coingecko.com/api/v3/coins/{coin_id}"
