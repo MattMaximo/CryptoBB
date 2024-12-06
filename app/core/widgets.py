@@ -1289,8 +1289,8 @@ WIDGETS = {
         "data": {"chart": {"type": "line"}},
     },
 "altcoin_season_index": {
-        "name": "Altcoin Season",
-        "description": "Altcoin Season Index",
+        "name": "Altcoin Season Index",
+        "description": "Altcoin Season Index calculates the number of coins in the top 50 that outperform Bitcoin over a 90 day period.",
         "category": "crypto",
         "defaultViz": "chart",
         "endpoint": "artemis/altcoin_season_index",
