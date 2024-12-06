@@ -17,6 +17,7 @@ async def get_coin_list(include_platform: str = "true", status: str = "active"):
 @coingecko_router.get("/price")
 async def get_market_data(coin_id: str):
     try:
+        coin_id = coin_id.lower()
         data = await coingecko_service.get_market_data(coin_id)
         data = data[["date", f"{coin_id}_price"]]
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
@@ -45,6 +46,7 @@ async def get_market_data(coin_id: str):
 @coingecko_router.get("/dominance")
 async def get_dominance(coin_id: str):
     try:
+        coin_id = coin_id.lower()
         data = await coingecko_service.get_dominance(coin_id)
         print(data)
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
@@ -89,6 +91,7 @@ async def get_dominance(coin_id: str):
 @coingecko_router.get("/vm_ratio")
 async def get_vm_ratio(coin_id: str):
     try:
+        coin_id = coin_id.lower()
         data = await coingecko_service.get_vm_ratio(coin_id)
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
@@ -118,6 +121,8 @@ async def get_vm_ratio(coin_id: str):
 @coingecko_router.get("/correlation")
 async def get_correlation(coin_id1: str, coin_id2: str):
     try:
+        coin_id1 = coin_id1.lower()
+        coin_id2 = coin_id2.lower()
         data = await coingecko_service.get_correlation(coin_id1, coin_id2)
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")

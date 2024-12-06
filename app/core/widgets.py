@@ -1296,6 +1296,13 @@ WIDGETS = {
         "endpoint": "artemis/altcoin_season_index",
         "gridData": {"w": 20, "h": 9},
         "source": "Artemis",
+        "params": [
+            {
+                "paramName": "price_coin",
+                "value": "bitcoin",
+                "label": "Compare Price",
+            }
+        ],
         "data": {"chart": {"type": "line"}},
     },
 }
