@@ -164,7 +164,7 @@ async def get_altcoin_season_index(price_coin: str = 'bitcoin'):
                 x=merged_data['DATE'],
                 y=merged_data[f'{price_coin}_price'],
                 mode='lines',
-                name='Bitcoin Price',
+                name=f'{price_coin.title()}',
                 yaxis='y2',
                 line=dict(color="#f7931a"),
                 hovertemplate="<b>Price</b>: $%{y:,.0f}<br>" +

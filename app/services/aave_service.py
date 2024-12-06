@@ -24,6 +24,7 @@ class AaveService:
         data = await self.fetch_data(url)
         
         df = pd.DataFrame(data)
+        print(df.head())
 
         # Create datetime column with explicit format
         df['datetime'] = pd.to_datetime(

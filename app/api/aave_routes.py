@@ -23,7 +23,8 @@ async def get_aave_lending_rate(pool: str = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Lending Rate"
+                y_title="Lending Rate",
+                y_dtype=".2%"
             )
         )
 
@@ -51,7 +52,8 @@ async def get_aave_utilization_rate(pool: str = "0xa0b86991c6218b36c1d19d4a2e9eb
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Utilization Rate"
+                y_title="Utilization Rate",
+                y_dtype=".2%"
             )
         )
 
@@ -79,7 +81,8 @@ async def get_aave_borrow_rate(pool: str = "0xa0b86991c6218b36c1d19d4a2e9eb0ce36
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Borrow Rate"
+                y_title="Borrow Rate",
+                y_dtype=".2%"
             )
         )
 
