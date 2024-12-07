@@ -996,7 +996,7 @@ WIDGETS = {
         "description": "RSI for a given symbol and exchange",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "crypto_ta/rsi",
+        "endpoint": "ta/rsi",
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
         "params": [
@@ -1036,7 +1036,7 @@ WIDGETS = {
         "description": "MACD for a given symbol and exchange",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "crypto_ta/macd",
+        "endpoint": "ta/macd",
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
         "params": [
@@ -1076,7 +1076,7 @@ WIDGETS = {
         "description": "Fibonacci retracement for a given symbol and exchange",
         "category": "crypto",
         "defaultViz": "table",
-        "endpoint": "crypto_ta/fibonacci_retracement",
+        "endpoint": "ta/fibonacci_retracement",
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
                 "params": [
@@ -1120,7 +1120,7 @@ WIDGETS = {
         "description": "Stochastic Oscillator for a given symbol and exchange",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "crypto_ta/stochastic",
+        "endpoint": "ta/stochastic",
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
         "params": [

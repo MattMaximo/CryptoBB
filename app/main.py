@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import get_settings
-from app.api.general_routes import general_router
+from app.api.base_routes import base_router
 from app.api.artemis_routes import artemis_router
 from app.api.aave_routes import aave_router
 from app.api.ccdata_routes import ccdata_router
@@ -46,9 +46,9 @@ app.add_middleware(
 
 
 app.include_router(
-    general_router,
+    base_router,
     prefix="",
-    tags=["General"]
+    tags=["Base Routes no prefix"]
 )
 
 app.include_router(
@@ -113,8 +113,8 @@ app.include_router(
 
 app.include_router(
     ta_router,
-    prefix="/crypto_ta",
-    tags=["Crypto TA"]
+    prefix="/ta",
+    tags=["Technical Analysis"]
 )
 
 app.include_router(
