@@ -8,10 +8,8 @@ settings = get_settings()
 
 class CoinGeckoService:
     def __init__(self):
-        self.api_key_1 = settings.COINGECKO_API_KEY_1
-        self.api_key_2 = settings.COINGECKO_API_KEY_2
-        self.headers_1 = {"accept": "application/json", "x-cg-pro-api-key": self.api_key_1}
-        self.headers_2 = {"accept": "application/json", "x-cg-pro-api-key": self.api_key_2}
+        self.headers_1 = {"accept": "application/json", "x-cg-pro-api-key": settings.COINGECKO_API_KEY_1}
+        self.headers_2 = {"accept": "application/json", "x-cg-pro-api-key": settings.COINGECKO_API_KEY_2}
         self.session_manager = SessionManager()
 
     async def fetch_data(self, url: str) -> Dict:
