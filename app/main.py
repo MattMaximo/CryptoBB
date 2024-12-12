@@ -5,6 +5,7 @@ from app.core.settings import get_settings
 from app.api.base_routes import base_router
 from app.api.artemis_routes import artemis_router
 from app.api.aave_routes import aave_router
+from app.api.btc_matrix_routes import btc_matrix_router
 from app.api.ccdata_routes import ccdata_router
 from app.api.coingecko_routes import coingecko_router
 from app.api.geckoterminal_routes import geckoterminal_router
@@ -61,6 +62,12 @@ app.include_router(
     aave_router,
     prefix="/aave",
     tags=["Aave"]
+)
+
+app.include_router(
+    btc_matrix_router,
+    prefix="/btc_matrix",
+    tags=["BTC Matrix"]
 )
 
 app.include_router(

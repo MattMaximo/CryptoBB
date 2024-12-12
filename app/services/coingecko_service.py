@@ -1,8 +1,10 @@
-from typing import Dict
+from typing import Dict, Optional
 import pandas as pd
 import aiohttp
 from app.core.settings import get_settings
 from app.core.session_manager import SessionManager
+from urllib.parse import urlencode
+
 
 settings = get_settings()
 
@@ -48,8 +50,22 @@ class CoinGeckoService:
             )
         return df
     
-    async def get_coin_list_market_data(self, coin_ids: str = None) -> pd.DataFrame:
-        url = f"https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={coin_ids}&order=market_cap_desc&per_page=250&sparkline=false&price_change_percentage=1h,24h,7d,14d,30d,200d,1y"
+    async def get_coin_list_market_data(self, coin_ids: Optional[str] = None, category: Optional[str] = None) -> pd.DataFrame:
+        params = {
+            'vs_currency': 'usd',
+            'order': 'market_cap_desc',
+            'per_page': 250,
+            'sparkline': 'false',
+            'price_change_percentage': '1h,24h,7d,14d,30d,200d,1y'
+        }
+        
+        if coin_ids:
+            params['ids'] = coin_ids
+            
+        if category:
+            params['category'] = category
+            
+        url = f"https://pro-api.coingecko.com/api/v3/coins/markets?{urlencode(params)}"
         data = await self.fetch_data(url)
         return pd.DataFrame(data)
 

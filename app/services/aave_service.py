@@ -21,10 +21,12 @@ class AaveService:
         interval_hours: int = 24
     ) -> pd.DataFrame:
         url = f"https://aave-api-v2.aave.com/data/rates-history?reserveId={pool}&from={start_date}&resolutionInHours={interval_hours}"
+        
+        pool = pool.lower()
+        
         data = await self.fetch_data(url)
         
         df = pd.DataFrame(data)
-        print(df.head())
 
         # Create datetime column with explicit format
         df['datetime'] = pd.to_datetime(

@@ -1305,5 +1305,44 @@ WIDGETS = {
         ],
         "data": {"chart": {"type": "line"}},
     },
-}
+
+    "aaatest": { #TODO: fix
+        "name": "test",
+        "description": "test",
+        "category": "crypto",
+        "endpoint": "artemis/ai-testing",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Artemis",
+        "data": {
+            "table": {  
+                "showAll": True,
+            }
+        },
+    },
+"btc_reserve_matrix": {
+        "name": "BTC Reserve Matrix",
+        "description": "BTC Reserve Matrix",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "btc_matrix/reserve_dollars",
+        "gridData": {"w": 20, "h": 9},
+        "source": "VanEck Research",
+
+        "data": {"chart": {"type": "line"}},
+    },
+
+"btc_pct_matrix": {
+        "name": "BTC Percentage Matrix",
+        "description": "BTC Percentage Matrix",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "btc_matrix/reserve_pct",
+        "gridData": {"w": 20, "h": 9},
+        "source": "VanEck Research",
+
+        "data": {"chart": {"type": "line"}},
+    },
+
+
+} #end of widgets
 
