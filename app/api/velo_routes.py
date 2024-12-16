@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.velo_service import VeloService
-from app.assets.base_chart_layout import create_base_layout
+from app.assets.charts.base_chart_layout import create_base_layout
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -9,22 +9,22 @@ velo_router = APIRouter()
 velo_service = VeloService()
 
 
-@velo_router.get("/futures_products")
+@velo_router.get("/futures-products")
 async def get_velo_futures_products():
     data = velo_service.get_futures_products()
     return data.to_dict(orient="records")
 
-@velo_router.get("/spot_products")
+@velo_router.get("/spot-products")
 async def get_velo_spot_products():
     data = velo_service.get_spot_products()
     return data.to_dict(orient="records")
 
-@velo_router.get("/options_products")
+@velo_router.get("/options-products")
 async def get_velo_options_products():
     data = velo_service.get_options_products()
     return data.to_dict(orient="records")
 
-@velo_router.get("/oi_weighted_funding_rates")
+@velo_router.get("/oi-weighted-funding-rates")
 async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
     try:
         data = velo_service.oi_weighted_funding_rate(coin, begin, resolution)
@@ -78,7 +78,7 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@velo_router.get("/exchange_funding_rates")
+@velo_router.get("/exchange-funding-rates")
 async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
     try:
         # Get data from velo service
@@ -117,7 +117,7 @@ async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolutio
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing funding rates: {str(e)}")
 
-@velo_router.get("/long_liquidations")
+@velo_router.get("/long-liquidations")
 async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
     try:
         data = velo_service.liquidations(coin, begin, resolution)
@@ -169,7 +169,7 @@ async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resol
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@velo_router.get("/short_liquidations")
+@velo_router.get("/short-liquidations")
 async def get_velo_short_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
     try:
         data = velo_service.liquidations(coin, begin, resolution)
@@ -216,7 +216,7 @@ async def get_velo_short_liquidations(coin: str = "BTC", begin: str = None, reso
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@velo_router.get("/net_liquidations")
+@velo_router.get("/net-liquidations")
 async def get_velo_net_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
     try:
         data = velo_service.liquidations(coin, begin, resolution)
@@ -273,7 +273,7 @@ async def get_velo_net_liquidations(coin: str = "BTC", begin: str = None, resolu
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@velo_router.get("/open_interest")
+@velo_router.get("/open-interest")
 async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
     try:
         data = velo_service.open_interest(coin, begin, resolution)

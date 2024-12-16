@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from app.services.artemis_service import ArtemisService
 from app.services.coingecko_service import CoinGeckoService
-from app.assets.base_chart_layout import create_base_layout
-from app.assets.query_altcoin_season import altcoin_season_query
-from app.assets.query_category_data import get_category_data_query
+from app.assets.charts.base_chart_layout import create_base_layout
+from app.assets.queries.altcoin_season import altcoin_season_query
+from app.assets.queries.category_market_cap import get_category_market_cap_query
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -12,7 +12,7 @@ artemis_router = APIRouter()
 artemis_service = ArtemisService()
 coingecko_service = CoinGeckoService()
 
-@artemis_router.get("/altcoin_season_index")
+@artemis_router.get("/altcoin-season-index")
 async def get_altcoin_season_index(price_coin: str = 'bitcoin'):
 
     try:
@@ -114,7 +114,7 @@ async def ai_testing():
     ids = data['id'].tolist()
     
     # Get the dynamic query with the ids list
-    dynamic_query = get_category_data_query(ids)
+    dynamic_query = get_category_market_cap_query(ids)
     category_data = await artemis_service.execute_query(dynamic_query)
 
     return category_data.to_dict(orient="records")

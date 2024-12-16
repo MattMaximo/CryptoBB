@@ -23,21 +23,12 @@ class BTCMatrixService:
         self._cached_matrix = None
         self._cached_params = None
 
+
     def _calc_reserve_value(self, num_coins: int, cagr: float, params: dict) -> float:
         """Internal method to calculate reserve value for a single BTC/CAGR combination"""
-        end_holding_year = params['year_to_buy_btc_by'] + params['holding_years']
-        first_buy_year = params['year_to_buy_btc_by'] - params['num_years_to_acquire'] + 1
-        total_value = 0
-        
-        for year in range(first_buy_year, params['year_to_buy_btc_by'] + 1):
-            coins_per_year = num_coins / params['num_years_to_acquire']
-            years_until_end = end_holding_year - year
-            growth_factor = (1 + cagr) ** years_until_end
-            price_at_purchase = params['current_price_for_year'] * (1 + cagr) ** (year - 2024)
-            
-            total_value += coins_per_year * price_at_purchase * growth_factor
-            
-        return total_value / 1_000_000_000_000  # Convert to trillions
+
+        cell = num_coins * (params['current_price_for_year'] * (1 + cagr) **24) / 1_000_000_000_000
+        return cell
 
     def generate_reserve_matrix(self, **override_params) -> pd.DataFrame:
         """
@@ -87,15 +78,10 @@ class BTCMatrixService:
         """
         if self._cached_matrix is None:
             self._cached_matrix = self.generate_reserve_matrix()
-            
-        params = self._cached_params
+
         
-        # Calculate total years from first buy year to end of holding period
-        first_buy_year = params['year_to_buy_btc_by'] - params['num_years_to_acquire'] + 1
-        end_holding_year = params['year_to_buy_btc_by'] + params['holding_years']
-        total_years = end_holding_year - first_buy_year + 1
         
-        final_debt = starting_debt * (1 + debt_cagr) ** total_years
+        final_debt = starting_debt * (1 + debt_cagr) ** 24
         final_debt_trillions = final_debt / 1_000_000_000_000
         
         # Calculate percentage coverage

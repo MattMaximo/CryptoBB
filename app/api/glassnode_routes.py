@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.glassnode_service import GlassnodeService
-from app.assets.base_chart_layout import create_base_layout
+from app.assets.charts.base_chart_layout import create_base_layout
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -8,7 +8,7 @@ import json
 glassnode_router = APIRouter()
 glassnode_service = GlassnodeService()
 
-@glassnode_router.get("/lth_supply")
+@glassnode_router.get("/lth-supply")
 async def get_lth_supply(asset: str = "btc", show_price: str = "False"):
     try:
         data = await glassnode_service.get_lth_supply(asset)
@@ -62,7 +62,7 @@ async def get_lth_supply(asset: str = "btc", show_price: str = "False"):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@glassnode_router.get("/lth_net_change")
+@glassnode_router.get("/lth-net-change")
 async def get_lth_net_change(asset: str = "btc", show_price: str = "False"):
     try:
         data = await glassnode_service.get_lth_net_change(asset)
@@ -153,7 +153,7 @@ async def get_glassnode_price(asset: str = "btc"):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-@glassnode_router.get("/mvrv_zscore")
+@glassnode_router.get("/mvrv-zscore")
 async def get_mvrv_zscore(asset: str = "btc"):
     try:
         data = await glassnode_service.mvrv_zscore(asset)
@@ -193,7 +193,7 @@ async def get_mvrv_zscore(asset: str = "btc"):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
   
-@glassnode_router.get("/lth_nupl")
+@glassnode_router.get("/lth-nupl")
 async def get_lth_nupl(asset: str = "btc"):
     try:
         # Fetch and process data

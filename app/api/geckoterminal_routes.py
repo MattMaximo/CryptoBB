@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.geckoterminal_service import GeckoTerminalService
-from app.assets.base_chart_layout import create_base_layout
+from app.assets.charts.base_chart_layout import create_base_layout
 from app.assets.ai_agent_mapping import ai_agent_mapping
 import plotly.graph_objects as go
 import pandas as pd
@@ -9,7 +9,7 @@ import json
 geckoterminal_router = APIRouter()
 geckoterminal_service = GeckoTerminalService()
 
-@geckoterminal_router.get("/ai_agents_market_data")
+@geckoterminal_router.get("/ai-agents-market-data")
 async def get_ai_agents_market_data():
     try:
         data = await geckoterminal_service.fetch_ai_agent_market_data(ai_agent_mapping)

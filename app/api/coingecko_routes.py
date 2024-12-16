@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.coingecko_service import CoinGeckoService
-from app.assets.base_chart_layout import create_base_layout
+from app.assets.charts.base_chart_layout import create_base_layout
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -9,7 +9,7 @@ coingecko_router = APIRouter()
 coingecko_service = CoinGeckoService()
 
 
-@coingecko_router.get("/coin_list")
+@coingecko_router.get("/coin-list")
 async def get_coin_list(include_platform: str = "true", status: str = "active"):
     symbols_list = await coingecko_service.get_coin_list(include_platform, status)
     return symbols_list.to_dict(orient="records")
@@ -88,7 +88,7 @@ async def get_dominance(coin_id: str):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@coingecko_router.get("/vm_ratio")
+@coingecko_router.get("/vm-ratio")
 async def get_vm_ratio(coin_id: str):
     try:
         coin_id = coin_id.lower()
@@ -146,7 +146,7 @@ async def get_correlation(coin_id1: str, coin_id2: str):
         raise HTTPException(status_code=400, detail=str(e))
     
 
-@coingecko_router.get("/btc_price_sma_multiplier")
+@coingecko_router.get("/btc-price-sma-multiplier")
 async def get_btc_price_sma_multiplier():
     try:
         data = await coingecko_service.get_market_data("bitcoin")

@@ -40,16 +40,25 @@ class MicrostrategyService:
             'total_outstanding_shares': 'Total Outstanding Shares'
         }
 
+        # Create new columns only if the original columns exist
         for new_col, old_col in column_mappings.items():
             if old_col in df_treasury.columns:
                 if new_col == 'date':
                     df_treasury[new_col] = pd.to_datetime(df_treasury[old_col])
                 else:
                     df_treasury[new_col] = pd.to_numeric(df_treasury[old_col], errors='coerce')
+        
         df_treasury.fillna(0, inplace=True)
-        return df_treasury[['date','btc_balance', 'change', 'btc_per_share',
-                           'cost_basis', 'mstr_btc', 'mstr', 'btc',
-                           'total_outstanding_shares']]
+        
+        # Define desired columns
+        desired_columns = ['date', 'btc_balance', 'change', 'btc_per_share',
+                          'cost_basis', 'mstr_btc', 'mstr', 'btc',
+                          'total_outstanding_shares']
+        
+        # Filter to only include columns that exist in the DataFrame
+        available_columns = [col for col in desired_columns if col in df_treasury.columns]
+        
+        return df_treasury[available_columns]
 
 
 # %%

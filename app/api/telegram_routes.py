@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.telegram_service import TelegramService
-from app.assets.base_chart_layout import create_base_layout
+from app.assets.charts.base_chart_layout import create_base_layout
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -8,7 +8,7 @@ import json
 telegram_router = APIRouter()
 telegram_service = TelegramService()
 
-@telegram_router.get("/coinbase_app_store_rank")
+@telegram_router.get("/coinbase-app-store-rank")
 async def get_coinbase_app_store_rank_route():
     try:
         data = await telegram_service.get_coinbase_app_store_rank()
@@ -44,7 +44,7 @@ async def get_coinbase_app_store_rank_route():
         raise HTTPException(status_code=400, detail=str(e))
     
 
-@telegram_router.get("/coinbase_wallet_app_store_rank")
+@telegram_router.get("/coinbase-wallet-app-store-rank")
 async def get_coinbase_wallet_app_store_rank_route():
     try:
         data = await telegram_service.get_coinbase_wallet_app_store_rank()
@@ -78,7 +78,7 @@ async def get_coinbase_wallet_app_store_rank_route():
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-@telegram_router.get("/phantom_wallet_app_store_rank")
+@telegram_router.get("/phantom-wallet-app-store-rank")
 async def get_phantom_wallet_app_store_rank_route():
     try:
         data = await telegram_service.get_phantom_wallet_app_store_rank()

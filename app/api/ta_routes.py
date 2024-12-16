@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.ccdata_service import CCDataService
-from app.assets.base_chart_layout import create_base_layout
+from app.assets.charts.base_chart_layout import create_base_layout
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -179,7 +179,7 @@ async def get_macd(exchange: str, symbol: str, interval: str, aggregate: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ta_router.get("/fibonacci_retracement")
+@ta_router.get("/fibonacci-retracement")
 async def get_fibonacci(exchange: str, symbol: str, interval: str, aggregate: int):
     try:
         data = await ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)

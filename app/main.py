@@ -3,8 +3,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import get_settings
 from app.api.base_routes import base_router
-from app.api.artemis_routes import artemis_router
 from app.api.aave_routes import aave_router
+from app.api.ai_agent_routes import ai_agents_router
+from app.api.artemis_routes import artemis_router
 from app.api.btc_matrix_routes import btc_matrix_router
 from app.api.ccdata_routes import ccdata_router
 from app.api.coingecko_routes import coingecko_router
@@ -53,20 +54,26 @@ app.include_router(
 )
 
 app.include_router(
-    artemis_router,
-    prefix="/artemis",
-    tags=["Artemis"]
-)
-
-app.include_router(
     aave_router,
     prefix="/aave",
     tags=["Aave"]
 )
 
 app.include_router(
+    ai_agents_router,
+    prefix="/ai-agents",
+    tags=["AI Agents"]
+)
+
+app.include_router(
+    artemis_router,
+    prefix="/artemis",
+    tags=["Artemis"]
+)
+
+app.include_router(
     btc_matrix_router,
-    prefix="/btc_matrix",
+    prefix="/btc-matrix",
     tags=["BTC Matrix"]
 )
 
@@ -96,7 +103,7 @@ app.include_router(
 
 app.include_router(
     google_trends_router,
-    prefix="/google_trends",
+    prefix="/google-trends",
     tags=["Google Trends"]
 )
 

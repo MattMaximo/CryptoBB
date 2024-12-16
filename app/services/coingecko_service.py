@@ -19,6 +19,7 @@ class CoinGeckoService:
         session = await self.session_manager.get_session(self.headers_1)
         async with session.get(url) as response:
             data = await response.json()
+
             
             # If successful, return the data
             if response.status == 200 and data:
@@ -28,6 +29,7 @@ class CoinGeckoService:
             session = await self.session_manager.get_session(self.headers_2)
             async with session.get(url) as response:
                 data = await response.json()
+
                 if response.status == 200 and data:
                     return data
                     
@@ -35,11 +37,21 @@ class CoinGeckoService:
                 raise Exception(f"Failed to fetch data from CoinGecko API. Status: {response.status}, Response: {data}")
 
     async def get_coin_details(self, coin_id: str) -> Dict:
+        '''
+        Returns a dictionary with the coin details
+        '''
         url = f"https://pro-api.coingecko.com/api/v3/coins/{coin_id}"
         return await self.fetch_data(url)
 
     async def get_coin_list(self, include_platform: str = "true", status: str = "active") -> pd.DataFrame:
-        """Fetches active coins list from CoinGecko API."""
+        '''
+        Fetches active coins list from CoinGecko API.
+        Returns a dataframe with the following columns:
+        - id
+        - symbol
+        - name
+        - platforms
+        '''
         url = f"https://pro-api.coingecko.com/api/v3/coins/list?include_platform={include_platform}&status={status}"
         data = await self.fetch_data(url)
 
@@ -51,6 +63,20 @@ class CoinGeckoService:
         return df
     
     async def get_coin_list_market_data(self, coin_ids: Optional[str] = None, category: Optional[str] = None) -> pd.DataFrame:
+        '''
+        Returns a dataframe with the following columns:
+        - id
+        - symbol
+        - name
+        - image
+        - current_price
+        - market_cap
+        - market_cap_rank
+        - total_volume
+        - price_change_percentage_1h_in_currency
+        - price_change_percentage_24h_in_currency
+        - price_change_percentage_7d_in_currency
+        '''
         params = {
             'vs_currency': 'usd',
             'order': 'market_cap_desc',
@@ -73,6 +99,11 @@ class CoinGeckoService:
     
     
     async def get_total_marketcap(self) -> pd.DataFrame:
+        '''
+        Returns a dataframe with the following columns:
+        - date
+        - total_market_cap
+        '''
         url = "https://pro-api.coingecko.com/api/v3/global/market_cap_chart?days=max"
         data = await self.fetch_data(url)
         data = data.get("market_cap_chart", {})
@@ -84,6 +115,13 @@ class CoinGeckoService:
         return market_cap_data
 
     async def get_market_data(self, coin_id: str) -> pd.DataFrame:
+        '''
+        Returns a dataframe with the following columns:
+        - date
+        - {coin_id}_price
+        - {coin_id}_market_cap
+        - {coin_id}_volume
+        '''
         url = f"https://pro-api.coingecko.com/api/v3/coins/{coin_id}/market_chart?vs_currency=usd&days=max&interval=daily"
         data = await self.fetch_data(url)
 
@@ -101,6 +139,11 @@ class CoinGeckoService:
         return df
 
     async def get_dominance(self, coin_id: str) -> pd.DataFrame:
+        '''
+        Returns a dataframe with the following columns:
+        - date
+        - dominance
+        '''
         total_market_cap = await self.get_total_marketcap()
         coin_data = await self.get_market_data(coin_id)
         coin_data = coin_data[["date", f"{coin_id}_market_cap"]]
@@ -113,11 +156,21 @@ class CoinGeckoService:
         return dominance_data[["date", "dominance"]]
 
     async def get_vm_ratio(self, coin_id: str) -> pd.DataFrame:
+        '''
+        Returns a dataframe with the following columns:
+        - date
+        - vm_ratio
+        '''
         market_data = await self.get_market_data(coin_id)
         market_data["vm_ratio"] = market_data[f"{coin_id}_volume"] / market_data[f"{coin_id}_market_cap"]
         return market_data[["date", "vm_ratio"]]
 
     async def get_correlation(self, coin_id1: str, coin_id2: str, days: int = 30) -> pd.DataFrame:
+        '''
+        Returns a dataframe with the following columns:
+        - date
+        - correlation
+        '''
         market_data1 = await self.get_market_data(coin_id1)
         market_data2 = await self.get_market_data(coin_id2)
 

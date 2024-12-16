@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.ccdata_service import CCDataService
-from app.assets.base_chart_layout import create_base_layout
+from app.assets.charts.base_chart_layout import create_base_layout
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -8,7 +8,7 @@ import json
 ccdata_router = APIRouter()
 ccdata_service = CCDataService()
    
-@ccdata_router.get("/exchange_price_deltas")
+@ccdata_router.get("/exchange-price-deltas")
 async def get_exchange_price_deltas():
     try:
         data = await ccdata_service.get_delta_data()

@@ -26,7 +26,7 @@ WIDGETS = {
         "category": "crypto",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "coingecko/vm_ratio",
+        "endpoint": "coingecko/vm-ratio",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "params": [
@@ -44,7 +44,7 @@ WIDGETS = {
         "name": "Coingecko Coins List",
         "description": "List of all coins available on CoinGecko including ID, Name, Ticker, and available chains.",
         "category": "crypto",
-        "endpoint": "coingecko/coin_list",
+        "endpoint": "coingecko/coin-list",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "data": {
@@ -81,7 +81,7 @@ WIDGETS = {
         "description": "Net position change of long term holders",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "glassnode/lth_net_change",
+        "endpoint": "glassnode/lth-net-change",
         "gridData": {"w": 20, "h": 9},
         "source": "Glassnode",
         "params": [
@@ -118,7 +118,7 @@ WIDGETS = {
         "description": "Supply of long term holders",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "glassnode/lth_supply",
+        "endpoint": "glassnode/lth-supply",
         "gridData": {"w": 20, "h": 9},
         "source": "Glassnode",
         "params": [
@@ -156,7 +156,7 @@ WIDGETS = {
         "category": "sentiment",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "google_trends/historical_google_trends",
+        "endpoint": "google-trends/historical-google-trends",
         "gridData": {"w": 20, "h": 9},
         "source": "Google",
         "params": [
@@ -204,7 +204,7 @@ WIDGETS = {
         "description": "List of all futures products available on Velo.",
         "category": "crypto",
         #"subCategory": "crypto",
-        "endpoint": "velo/futures_products",
+        "endpoint": "velo/futures-products",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "data": {
@@ -241,7 +241,7 @@ WIDGETS = {
         "description": "List of all spot products available on Velo.",
         "category": "crypto",
         #"subCategory": "crypto",
-        "endpoint": "velo/spot_products",
+        "endpoint": "velo/spot-products",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "data": {
@@ -277,7 +277,7 @@ WIDGETS = {
         "description": "List of all options products available on Velo.",
         "category": "crypto",
         #"subCategory": "crypto",
-        "endpoint": "velo/options_products",
+        "endpoint": "velo/options-products",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "data": {
@@ -313,7 +313,7 @@ WIDGETS = {
         "description": "Historical Open Interest Weighted Funding Rates.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "velo/oi_weighted_funding_rates",
+        "endpoint": "velo/oi-weighted-funding-rates",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -347,7 +347,7 @@ WIDGETS = {
         "description": "Historical Funding Rates by Exchange.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "velo/exchange_funding_rates",
+        "endpoint": "velo/exchange-funding-rates",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -380,7 +380,7 @@ WIDGETS = {
         "description": "Historical Long Liquidations.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "velo/long_liquidations",
+        "endpoint": "velo/long-liquidations",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -413,7 +413,7 @@ WIDGETS = {
         "description": "Historical Short Liquidations.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "velo/short_liquidations",
+        "endpoint": "velo/short-liquidations",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -446,7 +446,7 @@ WIDGETS = {
         "description": "Historical Net Liquidations.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "velo/net_liquidations",
+        "endpoint": "velo/net-liquidations",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -479,7 +479,7 @@ WIDGETS = {
         "description": "Historical Open Interest.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "velo/open_interest",
+        "endpoint": "velo/open-interest",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "params": [
@@ -513,7 +513,7 @@ WIDGETS = {
         "description": "Historical Daily Aave Lending Rates. Default is USDC on Aave.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "aave/lending_rate",
+        "endpoint": "aave/lending-rate",
         "gridData": {"w": 20, "h": 9},
         "source": "Aave",
         "params": [
@@ -535,7 +535,7 @@ WIDGETS = {
         "description": "Historical Daily Aave Borrow Rates. Default is USDC on Aave.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "aave/borrow_rate",
+        "endpoint": "aave/borrow-rate",
         "gridData": {"w": 20, "h": 9},
         "source": "Aave",
         "params": [
@@ -556,7 +556,7 @@ WIDGETS = {
         "description": "Historical Daily Aave Utilization Rates. Default is USDC on Aave.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "aave/utilization_rate",
+        "endpoint": "aave/utilization-rate",
         "gridData": {"w": 20, "h": 9},
         "source": "Aave",
         "params": [
@@ -641,7 +641,7 @@ WIDGETS = {
         "category": "sentiment",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "telegram/coinbase_app_store_rank",
+        "endpoint": "telegram/coinbase-app-store-rank",
         "gridData": {"w": 20, "h": 9},
         "source": "Telegram",
         "data": {"chart": {"type": "line"}},
@@ -653,7 +653,7 @@ WIDGETS = {
         "category": "sentiment",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "telegram/coinbase_wallet_app_store_rank",
+        "endpoint": "telegram/coinbase-wallet-app-store-rank",
         "gridData": {"w": 20, "h": 9},
         "source": "Telegram",
         "data": {"chart": {"type": "line"}},
@@ -665,7 +665,7 @@ WIDGETS = {
         "category": "sentiment",
         #"subCategory": "crypto",
         "defaultViz": "chart",
-        "endpoint": "telegram/phantom_wallet_app_store_rank",
+        "endpoint": "telegram/phantom-wallet-app-store-rank",
         "gridData": {"w": 20, "h": 9},
         "source": "Telegram",
         "data": {"chart": {"type": "line"}},
@@ -768,7 +768,7 @@ WIDGETS = {
         "description": "This is the percent difference between the vwap price of BTC on each exchange and the average price of BTC across those exchanges.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "ccdata/exchange_price_deltas",
+        "endpoint": "ccdata/exchange-price-deltas",
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
         "data": {"chart": {"type": "line"}},
@@ -778,7 +778,7 @@ WIDGETS = {
         "description": "Market data for AI Agents",
         "category": "crypto",
         "defaultViz": "table",
-        "endpoint": "geckoterminal/ai_agents_market_data", 
+        "endpoint": "geckoterminal/ai-agents-market-data", 
         "gridData": {"w": 20, "h": 9},
         "source": "Geckoterminal",
         "data": {
@@ -882,7 +882,7 @@ WIDGETS = {
         "description": "Bitcoin price SMA multiplier",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "coingecko/btc_price_sma_multiplier",
+        "endpoint": "coingecko/btc-price-sma-multiplier",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "data": {"chart": {"type": "line"}},
@@ -1076,7 +1076,7 @@ WIDGETS = {
         "description": "Fibonacci retracement for a given symbol and exchange",
         "category": "crypto",
         "defaultViz": "table",
-        "endpoint": "ta/fibonacci_retracement",
+        "endpoint": "ta/fibonacci-retracement",
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
                 "params": [
@@ -1160,7 +1160,7 @@ WIDGETS = {
         "description": "MVRV Z-Score",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "glassnode/mvrv_zscore",
+        "endpoint": "glassnode/mvrv-zscore",
         "gridData": {"w": 20, "h": 9},
         "source": "Glassnode",
         "params": [
@@ -1180,7 +1180,7 @@ WIDGETS = {
         "description": "Net Unrealized Profit and Loss of long term holders",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "glassnode/lth_nupl",
+        "endpoint": "glassnode/lth-nupl",
         "gridData": {"w": 20, "h": 9},
         "source": "Glassnode",
         "params": [
@@ -1293,7 +1293,7 @@ WIDGETS = {
         "description": "Altcoin Season Index calculates the number of coins in the top 50 that outperform Bitcoin over a 90 day period.",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "artemis/altcoin_season_index",
+        "endpoint": "artemis/altcoin-season-index",
         "gridData": {"w": 20, "h": 9},
         "source": "Artemis",
         "params": [
@@ -1324,10 +1324,9 @@ WIDGETS = {
         "description": "BTC Reserve Matrix",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "btc_matrix/reserve_dollars",
+        "endpoint": "btc-matrix/reserve-dollars",
         "gridData": {"w": 20, "h": 9},
         "source": "VanEck Research",
-
         "data": {"chart": {"type": "line"}},
     },
 
@@ -1336,10 +1335,19 @@ WIDGETS = {
         "description": "BTC Percentage Matrix",
         "category": "crypto",
         "defaultViz": "chart",
-        "endpoint": "btc_matrix/reserve_pct",
+        "endpoint": "btc-matrix/reserve-pct",
         "gridData": {"w": 20, "h": 9},
         "source": "VanEck Research",
-
+        "data": {"chart": {"type": "line"}},
+    },
+"ai_agent_category_market_caps":    {
+        "name": "AI Agent Category Market Caps",
+        "description": "Historical market capitalization comparison across different AI-related token categories",
+        "category": "crypto",
+        "defaultViz": "chart",
+        "endpoint": "ai-agents/ai-agent-category-market-caps",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CoinGecko",
         "data": {"chart": {"type": "line"}},
     },
 

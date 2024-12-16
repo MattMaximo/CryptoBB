@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.microstrategy_service import MicrostrategyService
-from app.assets.base_chart_layout import create_base_layout
+from app.assets.charts.base_chart_layout import create_base_layout
 import plotly.graph_objects as go
 import pandas as pd
 import json
