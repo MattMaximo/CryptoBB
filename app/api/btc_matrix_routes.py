@@ -18,16 +18,20 @@ def _format_btc_amount(value_str):
 
 
 @btc_matrix_router.get("/reserve-dollars")
-async def get_btc_reserve_matrix():
+async def get_btc_reserve_matrix(return_fig: bool = True):
     reserve_matrix = btc_matrix_service.generate_reserve_matrix()
     reserve_matrix.index = [_format_btc_amount(idx) for idx in reserve_matrix.index]
     reserve_matrix.columns = [col.strip('%') for col in reserve_matrix.columns]
     
     fig_reserves = get_matrix_figure(reserve_matrix, y_label="BTC Reserve Amount", hover_label="BTC ($T)")
-    return json.loads(fig_reserves.to_json())
+    if return_fig:
+        return json.loads(fig_reserves.to_json())
+
+    else:
+        return reserve_matrix
 
 @btc_matrix_router.get("/reserve-pct")
-async def get_btc_reserve_matrix_pct():
+async def get_btc_reserve_matrix_pct(return_fig: bool = True):
     pct_matrix = btc_matrix_service.generate_pct_matrix(
         starting_debt=37_000_000_000_000,
         debt_cagr=0.05
@@ -37,6 +41,9 @@ async def get_btc_reserve_matrix_pct():
     pct_matrix.columns = [col.strip('%') for col in pct_matrix.columns]
     
     fig_pct = get_matrix_figure(pct_matrix, y_label="BTC Reserve Amount", hover_label=r"% of Debt")
-    return json.loads(fig_pct.to_json())
+    if return_fig:
+        return json.loads(fig_pct.to_json())
+    else:
+        return pct_matrix
 
 # %%

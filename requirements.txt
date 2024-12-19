@@ -10,6 +10,7 @@ asttokens==2.4.1
 async-timeout==5.0.1
 asyncio==3.4.3
 attrs==24.2.0
+beautifulsoup4==4.12.3
 certifi==2024.8.30
 cffi==1.17.1
 charset-normalizer==3.4.0
@@ -49,6 +50,7 @@ parso==0.8.4
 pendulum==3.0.0
 pexpect==4.9.0
 platformdirs==4.3.6
+playwright==1.42.0
 plotly==5.24.1
 prompt_toolkit==3.0.48
 propcache==0.2.0

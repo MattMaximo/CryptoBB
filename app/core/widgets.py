@@ -1351,6 +1351,92 @@ WIDGETS = {
         "data": {"chart": {"type": "line"}},
     },
 
+    "daos_table": {
+        "name": "DAOs Fun Data",
+        "description": "Overview of major DAOs including TVL, treasury, and social metrics.",
+        "category": "crypto",
+        "endpoint": "daos_fun/daos-data",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Daos Fun",
+        "data": {
+            "table": {  
+                "showAll": True,
+                "columnsDefs": [
+                    {
+                        "headerName": "Name",
+                        "field": "dao_name",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Twitter",
+                        "field": "twitter_handle",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "TVL",
+                        "field": "tvl",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "TVL Change",
+                        "field": "tvl_change",
+                        "chartDataType": "category",
+                        "renderFn": "greenRed"
+                    },
+                    {
+                        "headerName": "Volume",
+                        "field": "volume",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Treasury",
+                        "field": "treasury",
+                        "chartDataType": "category",
+                    },
+                    {
+                        "headerName": "Treasury Change",
+                        "field": "treasury_change",
+                        "chartDataType": "category",
+                        "renderFn": "greenRed"
+                    },
+                    {
+                        "headerName": "Multiplier",
+                        "field": "multiplier",
+                        "chartDataType": "category",
+                    }
+                ],
+           
+            }
+        },
+    },
 
+    "vvaifu_agents": {
+        "name": "VVaifu Agents Data",
+        "description": "Overview of VVaifu agents including market data and metrics.",
+        "category": "crypto",
+        "endpoint": "vvaifu/agents-data",
+        "gridData": {"w": 20, "h": 9},
+        "source": "VVaifu",
+        "data": {
+            "table": {  
+                "showAll": True,
+            }
+        },
+    },
+
+    "virtuals_agents": {
+        "name": "Virtuals Agents Data",
+        "description": "Overview of Virtuals agents including market data and metrics.",
+        "category": "crypto",
+        "endpoint": "virtuals/agents-data",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Virtuals",
+        "data": {
+            "table": {  
+                "showAll": True,
+            }
+        },
+    },
+    
 } #end of widgets
 

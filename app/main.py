@@ -9,6 +9,7 @@ from app.api.artemis_routes import artemis_router
 from app.api.btc_matrix_routes import btc_matrix_router
 from app.api.ccdata_routes import ccdata_router
 from app.api.coingecko_routes import coingecko_router
+from app.api.daos_fun_routes import daos_fun_router
 from app.api.geckoterminal_routes import geckoterminal_router
 from app.api.glassnode_routes import glassnode_router
 from app.api.google_trends_routes import google_trends_router
@@ -17,6 +18,8 @@ from app.api.screener_routes import screener_router
 from app.api.telegram_routes import telegram_router
 from app.api.ta_routes import ta_router
 from app.api.velo_routes import velo_router
+from app.api.vvaifu_routes import vvaifu_router
+from app.api.virtuals_routes import virtuals_router
 from app.core.session_manager import SessionManager
 
 settings = get_settings()
@@ -90,6 +93,12 @@ app.include_router(
 )
 
 app.include_router(
+    daos_fun_router,
+    prefix="/daos_fun",
+    tags=["DAOs Fun"]
+)
+
+app.include_router(
     geckoterminal_router,
     prefix="/geckoterminal",
     tags=["GeckoTerminal"]
@@ -135,6 +144,18 @@ app.include_router(
     velo_router,
     prefix="/velo",
     tags=["Velo"]
+)
+
+app.include_router(
+    vvaifu_router,
+    prefix="/vvaifu",
+    tags=["VVaifu"]
+)
+
+app.include_router(
+    virtuals_router,
+    prefix="/virtuals",
+    tags=["Virtuals"]
 )
 
 @app.get("/")
