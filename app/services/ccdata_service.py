@@ -32,20 +32,69 @@ class CCDataService:
         
         session = await self.session_manager.get_session(self.headers)
         params = {
-            "market": exchange,
             "instrument": pair,
+            "market": exchange,
             "limit": limit,
             "aggregate": aggregate,
             "fill": "true",
             "apply_mapping": "true",
             "response_format": "JSON",
             "groups": "OHLC,VOLUME",
-            "api_key": self.api_key,
+            "api_key": self.api_key
         }
         
-        async with session.get(f"{self.base_url}/spot/v1/historical/{interval}", params=params) as response:
+        try:
+            endpoint = "days" if interval == "day" else interval
+            url = f"{self.base_url}/spot/v1/historical/{endpoint}"
+            
+            async with session.get(url, params=params) as response:
+                if response.status != 200:
+                    return []
+                
+                data = await response.json()
+                if 'Data' not in data or not data['Data']:
+                    return []
+                
+                return data['Data']
+                
+        except Exception:
+            return []
+
+    async def _fetch_exchange_instruments(self, exchange: str, pairs: List[str] = None) -> List[str]:
+        '''
+        Fetches all active instruments for a given exchange and optionally filters by pairs.
+
+        Args:
+            exchange: str - Required. The exchange to fetch instruments for (e.g., "binance")
+            pairs: List[str] - Optional. List of pairs to filter by (e.g., ["BTC-USDT"])
+
+        Returns:
+            List[str]: List of mapped instruments (e.g., ["BTC-USDT", "ETH-USDT", ...])
+        '''
+        session = await self.session_manager.get_session(self.headers)
+        params = {
+            "instrument_status": "ACTIVE",
+            "market": exchange,
+            "api_key": self.api_key
+        }
+        
+        if pairs:
+            params["instruments"] = ",".join(pairs)
+        
+        async with session.get(f'{self.base_url}/spot/v1/markets/instruments', params=params) as response:
             data = await response.json()
-            return data['Data']
+            instruments = []
+            
+            if exchange not in data['Data']:
+                return instruments
+                
+            exchange_instruments = data['Data'][exchange].get('instruments', {})
+            for instrument_info in exchange_instruments.values():
+                mapped_instrument = instrument_info.get('MAPPED_INSTRUMENT')
+                if mapped_instrument:
+                    instruments.append(mapped_instrument)
+            
+            return instruments
 
     async def get_delta_data(self) -> pd.DataFrame:
         # Create list of all exchange-pair combinations
@@ -111,6 +160,51 @@ class CCDataService:
         delta_cols = [col for col in result_df.columns if col.endswith('_delta')]
         return result_df[['timestamp'] + delta_cols + ['average_price']]
 
+    async def get_total_exchange_volume(self, exchange: str) -> pd.DataFrame:
+        instruments = await self._fetch_exchange_instruments(exchange)
+        
+        if not instruments:
+            return pd.DataFrame(columns=['timestamp', 'total_volume'])
+        
+        tasks = [
+            self._fetch_spot_data(
+                (exchange, instrument),
+                interval='day',
+                aggregate=1,
+                limit=1000
+            ) 
+            for instrument in instruments
+        ]
+        
+        results = await asyncio.gather(*tasks)
+        
+        all_dfs = []
+        for data, instrument in zip(results, instruments):
+            if not data:
+                continue
+                
+            try:
+                df = pd.DataFrame(data)[['TIMESTAMP', 'QUOTE_VOLUME']]
+                df['TIMESTAMP'] = pd.to_datetime(df['TIMESTAMP'], unit='s')
+                df.columns = ['timestamp', f'volume_{instrument.lower()}']
+                all_dfs.append(df)
+            except Exception:
+                continue
+            
+        if not all_dfs:
+            return pd.DataFrame(columns=['timestamp', 'total_volume'])
+            
+        result_df = all_dfs[0]
+        for df in all_dfs[1:]:
+            result_df = pd.merge(result_df, df, on='timestamp', how='outer')
+            
+        volume_cols = [col for col in result_df.columns if col.startswith('volume_')]
+        result_df['total_volume'] = result_df[volume_cols].sum(axis=1)
+        
+        return result_df[['timestamp', 'total_volume']].sort_values('timestamp')
+
+
+    
 if __name__ == "__main__":
     import time
     import asyncio

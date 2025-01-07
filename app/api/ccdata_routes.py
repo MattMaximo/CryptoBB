@@ -3,7 +3,9 @@ from app.services.ccdata_service import CCDataService
 from app.assets.charts.base_chart_layout import create_base_layout
 import plotly.graph_objects as go
 import pandas as pd
+from typing import List
 import json
+import asyncio
 
 ccdata_router = APIRouter()
 ccdata_service = CCDataService()
@@ -62,6 +64,7 @@ async def get_exchange_price_deltas():
 
 @ccdata_router.get("/candles")
 async def get_ccdata_candles(exchange: str, symbol: str, interval: str, aggregate: int):
+
     try:
         data = await ccdata_service._fetch_spot_data((exchange, symbol), interval=interval, aggregate=aggregate, limit=2000)
         data = pd.DataFrame(data)
@@ -118,3 +121,36 @@ async def get_ccdata_candles(exchange: str, symbol: str, interval: str, aggregat
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+
+
+
+
+@ccdata_router.get("/exchange-spot-volume")
+async def get_exchange_data(exchange: str):
+    try:
+        # First get all instruments for the exchange
+        data = await ccdata_service.get_total_exchange_volume(exchange)
+        data['timestamp'] = data['timestamp'].dt.strftime("%Y-%m-%d %H:%M:%S")
+        data = data.set_index("timestamp")
+
+        fig = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Volume",
+                y_dtype=",.2f"
+            )
+        )
+
+        fig.add_scatter(
+            x=data.index,
+            y=data['total_volume'],
+            mode="lines",
+            name="Total Volume",
+            hovertemplate="%{y:,.2f}"
+        )
+
+        return json.loads(fig.to_json())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+

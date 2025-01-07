@@ -1447,5 +1447,22 @@ WIDGETS = {
         "data": {"chart": {"type": "line"}},
     },
     
+    "spot_exchange_volume": {
+        "name": "Total Spot Exchange Volume",
+        "description": "Total spot volume for a given exchange.",
+        "category": "crypto",
+        "endpoint": "ccdata/exchange-spot-volume",
+        "gridData": {"w": 20, "h": 9},
+        "params": [
+            {
+                "paramName": "exchange",
+                "value": "binance",
+                "label": "Exchange",
+            }
+        ],
+        "source": "CCData",
+        "type": "chart",
+    },
 } #end of widgets
+
 
