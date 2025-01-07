@@ -1,9 +1,10 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, Union, List
 import pandas as pd
 import aiohttp
 from app.core.settings import get_settings
 from app.core.session_manager import SessionManager
 from urllib.parse import urlencode
+import asyncio
 
 
 settings = get_settings()
@@ -114,29 +115,60 @@ class CoinGeckoService:
         market_cap_data["date"] = pd.to_datetime(market_cap_data["date"], unit="ms")
         return market_cap_data
 
-    async def get_market_data(self, coin_id: str) -> pd.DataFrame:
+    async def get_market_data(self, coin_id: Union[str, List[str]]) -> pd.DataFrame:
         '''
         Returns a dataframe with the following columns:
-        - date
-        - {coin_id}_price
-        - {coin_id}_market_cap
-        - {coin_id}_volume
+        For single coin:
+            - date
+            - {coin_id}_price
+            - {coin_id}_market_cap
+            - {coin_id}_volume
+        For multiple coins:
+            - date
+            - price
+            - market_cap
+            - volume
+            - coingecko_id
         '''
-        url = f"https://pro-api.coingecko.com/api/v3/coins/{coin_id}/market_chart?vs_currency=usd&days=max&interval=daily"
-        data = await self.fetch_data(url)
+        # Handle single coin case (maintain existing behavior)
+        if isinstance(coin_id, str):
+            url = f"https://pro-api.coingecko.com/api/v3/coins/{coin_id}/market_chart?vs_currency=usd&days=max&interval=daily"
+            data = await self.fetch_data(url)
 
-        prices = pd.DataFrame(data["prices"], columns=["date", f"{coin_id}_price"])
-        market_cap = pd.DataFrame(
-            data["market_caps"], columns=["date", f"{coin_id}_market_cap"]
-        )
-        volume = pd.DataFrame(
-            data["total_volumes"], columns=["date", f"{coin_id}_volume"]
-        )
+            prices = pd.DataFrame(data["prices"], columns=["date", f"{coin_id}_price"])
+            market_cap = pd.DataFrame(
+                data["market_caps"], columns=["date", f"{coin_id}_market_cap"]
+            )
+            volume = pd.DataFrame(
+                data["total_volumes"], columns=["date", f"{coin_id}_volume"]
+            )
 
-        df = prices.merge(market_cap, on="date").merge(volume, on="date")
-        df["date"] = pd.to_datetime(df["date"], unit="ms")
-        df = df[df["date"].dt.time == pd.to_datetime("00:00:00").time()]
-        return df
+            df = prices.merge(market_cap, on="date").merge(volume, on="date")
+            df["date"] = pd.to_datetime(df["date"], unit="ms")
+            df = df[df["date"].dt.time == pd.to_datetime("00:00:00").time()]
+            return df
+
+        # Handle multiple coins case
+        async def fetch_single_coin(cid: str) -> pd.DataFrame:
+            url = f"https://pro-api.coingecko.com/api/v3/coins/{cid}/market_chart?vs_currency=usd&days=max&interval=daily"
+            data = await self.fetch_data(url)
+            
+            prices = pd.DataFrame(data["prices"], columns=["date", "price"])
+            market_cap = pd.DataFrame(data["market_caps"], columns=["date", "market_cap"])
+            volume = pd.DataFrame(data["total_volumes"], columns=["date", "volume"])
+            
+            df = prices.merge(market_cap, on="date").merge(volume, on="date")
+            df["date"] = pd.to_datetime(df["date"], unit="ms")
+            df = df[df["date"].dt.time == pd.to_datetime("00:00:00").time()]
+            df["coingecko_id"] = cid
+            return df
+
+        # Fetch all coins concurrently
+        tasks = [fetch_single_coin(cid) for cid in coin_id]
+        results = await asyncio.gather(*tasks)
+        
+        # Combine all dataframes
+        return pd.concat(results, ignore_index=True)
 
     async def get_dominance(self, coin_id: str) -> pd.DataFrame:
         '''

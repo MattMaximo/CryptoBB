@@ -1437,6 +1437,15 @@ WIDGETS = {
             }
         },
     },
+    "virtuals_agents_market_caps": {
+        "name": "Virtuals Agents Market Caps",
+        "description": "Market caps of Virtuals agents.",
+        "category": "crypto",
+        "endpoint": "virtuals/agents-market-caps",
+        "gridData": {"w": 20, "h": 9},
+        "source": "CoinGecko",
+        "data": {"chart": {"type": "line"}},
+    },
     
 } #end of widgets
 
