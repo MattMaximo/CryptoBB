@@ -38,6 +38,32 @@ async def get_market_data(coin_id: str):
             line=dict(color="#E3BF1E"),
         )
 
+        figure.update_layout(
+            uirevision='constant',  # Maintains view state during updates
+            autosize=True,  # Enables auto-sizing for responsive behavior
+            dragmode='zoom',  # Sets default mode to zoom instead of pan
+            hovermode='closest',  # Improves hover experience
+            clickmode='event',  # Makes clicking more responsive
+            transition={
+                'duration': 50,  # Small transition for smoother feel
+                'easing': 'cubic-in-out'  # Smooth easing function
+            },
+            modebar={
+                'orientation': 'v',  # Vertical orientation for modebar
+                'activecolor': '#9ED3CD'  # Highlight color for active buttons
+            },
+            xaxis={
+                'rangeslider': {'visible': False},  # Disable rangeslider
+                'autorange': True,  # Enable autorange
+                'constrain': 'domain'  # Constrain to domain for better zoom
+            },
+            yaxis={
+                'autorange': True,  # Enable autorange
+                'constrain': 'domain',  # Constrain to domain
+                'fixedrange': False  # Allow y-axis zooming
+            }
+        )
+
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -167,6 +193,32 @@ async def get_correlation(coin_id1: str, coin_id2: str):
             line=dict(color="#E3BF1E")
         )
 
+        figure.update_layout(
+            uirevision='constant',  # Maintains view state during updates
+            autosize=True,  # Enables auto-sizing for responsive behavior
+            dragmode='zoom',  # Sets default mode to zoom instead of pan
+            hovermode='closest',  # Improves hover experience
+            clickmode='event',  # Makes clicking more responsive
+            transition={
+                'duration': 50,  # Small transition for smoother feel
+                'easing': 'cubic-in-out'  # Smooth easing function
+            },
+            modebar={
+                'orientation': 'v',  # Vertical orientation for modebar
+                'activecolor': '#9ED3CD'  # Highlight color for active buttons
+            },
+            xaxis={
+                'rangeslider': {'visible': False},  # Disable rangeslider
+                'autorange': True,  # Enable autorange
+                'constrain': 'domain'  # Constrain to domain for better zoom
+            },
+            yaxis={
+                'autorange': True,  # Enable autorange
+                'constrain': 'domain',  # Constrain to domain
+                'fixedrange': False  # Allow y-axis zooming
+            }
+        )
+
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -241,4 +293,39 @@ async def get_btc_price_sma_multiplier():
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
+
+@coingecko_router.get("/coin-list-formatted")
+async def get_coin_list_formatted(
+    include_platform: str = "true", 
+    status: str = "active"
+):
+    """
+    Returns a list of coins in the format:
+    {
+        "label": "BTC",  # symbol
+        "value": "bitcoin"  # id
+    }
+    """
+    symbols_list = await coingecko_service.get_coin_list(include_platform, status)
+    
+    # Convert to the requested format
+    formatted_list = []
+    for _, row in symbols_list.iterrows():
+        # Create the formatted entry with label, value, and extraInfo
+        entry = {
+            "label": row["symbol"].upper(),
+            "value": row["id"],
+            "extraInfo": {
+                "description": row["name"]
+            }
+        }
+        
+        # Add platform information to rightOfDescription if available
+        if isinstance(row.get("platforms"), dict) and row["platforms"]:
+            platforms = list(row["platforms"].keys())
+            if platforms:
+                entry["extraInfo"]["rightOfDescription"] = ", ".join(platforms)
+        
+        formatted_list.append(entry)
+    return formatted_list
 

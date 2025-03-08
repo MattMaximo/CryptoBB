@@ -14,8 +14,13 @@ WIDGETS = {
                 "paramName": "coin_id",
                 "value": "bitcoin",
                 "label": "Coin",
-                "type": "text",
+                "show": True,
+                "type": "endpoint",
+                "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the cryptocurrency",
+                "style": {
+                    "popupWidth": 600
+                }
             }
         ],
         "data": {"chart": {"type": "line"}},
@@ -24,7 +29,6 @@ WIDGETS = {
         "name": "Volume/Market Cap Ratio",
         "description": "Total Trading Volume / Total Market Cap",
         "category": "crypto",
-        #"subCategory": "crypto",
         "defaultViz": "chart",
         "endpoint": "coingecko/vm-ratio",
         "gridData": {"w": 20, "h": 9},
@@ -34,8 +38,13 @@ WIDGETS = {
                 "paramName": "coin_id",
                 "value": "bitcoin",
                 "label": "Coin",
-                "type": "text",
+                "show": True,
+                "type": "endpoint",
+                "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the cryptocurrency",
+                "style": {
+                    "popupWidth": 600
+                }
             }
         ],
         "data": {"chart": {"type": "line"}},
@@ -184,16 +193,26 @@ WIDGETS = {
             {
                 "paramName": "coin_id1",
                 "value": "bitcoin",
-                "label": "Coin 1",
-                "type": "text",
+                "label": "Coin",
+                "show": True,
+                "type": "endpoint",
+                "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the first cryptocurrency",
+                "style": {
+                    "popupWidth": 600
+                }
             },
             {
                 "paramName": "coin_id2",
                 "value": "ethereum",
-                "label": "Coin 2",
-                "type": "text",
+                "label": "Coin",
+                "show": True,
+                "type": "endpoint",
+                "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the second cryptocurrency",
+                "style": {
+                    "popupWidth": 600
+                }
             }
         ],
         "data": {"chart": {"type": "line"}},
@@ -628,8 +647,13 @@ WIDGETS = {
                 "paramName": "coin_id",
                 "value": "bitcoin",
                 "label": "Coin",
-                "type": "text",
+                "show": True,
+                "type": "endpoint",
+                "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the cryptocurrency",
+                "style": {
+                    "popupWidth": 600
+                }
             }
         ],
         "data": {"chart": {"type": "line"}},
@@ -1462,6 +1486,27 @@ WIDGETS = {
         ],
         "source": "CCData",
         "type": "chart",
+    },
+    "custom_widget": {
+        "name": "Dynamic Options Widget",
+        "description": "Widget with dynamic options loaded from an endpoint",
+        "category": "custom",
+        "defaultViz": "chart",
+        "endpoint": "custom-endpoint",
+        "gridData": {"w": 20, "h": 9},
+        "source": "Custom Source",
+        "params": [
+            {
+                "paramName": "company",
+                "value": "",  # Default value, can be empty but should be defined
+                "label": "Company",
+                "show": True,
+                "type": "endpoint",
+                "optionsEndpoint": "/api/companies",
+                "description": "Select a company"
+            }
+        ],
+        "data": {"chart": {"type": "line"}},  # Default chart type
     },
 } #end of widgets
 
