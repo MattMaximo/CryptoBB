@@ -83,6 +83,32 @@ async def get_dominance(coin_id: str):
                 annotation_position="top right",
             )
 
+            figure.update_layout(
+                uirevision='constant',  # Maintains view state during updates
+                autosize=True,  # Enables auto-sizing for responsive behavior
+                dragmode='zoom',  # Sets default mode to zoom instead of pan
+                hovermode='closest',  # Improves hover experience
+                clickmode='event',  # Makes clicking more responsive
+                transition={
+                    'duration': 50,  # Small transition for smoother feel
+                    'easing': 'cubic-in-out'  # Smooth easing function
+                },
+                modebar={
+                    'orientation': 'v',  # Vertical orientation for modebar
+                    'activecolor': '#9ED3CD'  # Highlight color for active buttons
+                },
+                xaxis={
+                    'rangeslider': {'visible': False},  # Disable rangeslider
+                    'autorange': True,  # Enable autorange
+                    'constrain': 'domain'  # Constrain to domain for better zoom
+                },
+                yaxis={
+                    'autorange': True,  # Enable autorange
+                    'constrain': 'domain',  # Constrain to domain
+                    'fixedrange': False  # Allow y-axis zooming
+                }
+            )
+
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
