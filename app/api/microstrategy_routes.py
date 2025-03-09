@@ -5,6 +5,7 @@ from app.assets.charts.plotly_config import (
     apply_config_to_figure, 
     get_chart_colors
 )
+from app.core.widget_decorator import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -16,6 +17,19 @@ microstrategy_service = MicrostrategyService()
 
 
 @microstrategy_router.get("/premium")
+@register_widget({
+    "name": "Microstrategy Premium",
+    "description": (
+        "Premium/discount of Microstrategy's stock price relative to "
+        "its Bitcoin holdings"
+    ),
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "microstrategy/premium",
+    "gridData": {"w": 20, "h": 9},
+    "source": "Microstrategy",
+    "data": {"chart": {"type": "line"}},
+})
 async def get_microstrategy_premium(theme: str = "dark"):
     try:
         data = await microstrategy_service.get_prices()
@@ -80,6 +94,45 @@ async def get_microstrategy_premium(theme: str = "dark"):
 
 
 @microstrategy_router.get("/info")
+@register_widget({
+    "name": "Microstrategy Info",
+    "description": (
+        "Historical info for Microstrategy's Bitcoin holdings, including "
+        "balance, cost basis, and share metrics"
+    ),
+    "category": "crypto",
+    "defaultViz": "table",
+    "endpoint": "microstrategy/info",
+    "gridData": {"w": 20, "h": 9},
+    "source": "Microstrategy",
+    "data": {
+        "table": {
+            "showAll": True,
+            "columnsDefs": [
+                {
+                    "headerName": "Date",
+                    "field": "date",
+                    "chartDataType": "category",
+                },
+                {
+                    "headerName": "BTC Balance",
+                    "field": "btc_balance",
+                    "chartDataType": "series",
+                },
+                {
+                    "headerName": "Cost Basis",
+                    "field": "cost_basis",
+                    "chartDataType": "series",
+                },
+                {
+                    "headerName": "BTC per Share",
+                    "field": "btc_per_share",
+                    "chartDataType": "series",
+                },
+            ],
+        }
+    },
+})
 async def get_microstrategy_info():
     try:
         data = await microstrategy_service.get_treasury_data()

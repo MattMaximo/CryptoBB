@@ -5,6 +5,7 @@ from app.assets.charts.plotly_config import (
     apply_config_to_figure, 
     get_chart_colors
 )
+from app.core.widget_decorator import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 from typing import List
@@ -15,6 +16,19 @@ ccdata_router = APIRouter()
 ccdata_service = CCDataService()
    
 @ccdata_router.get("/exchange-price-deltas")
+@register_widget({
+    "name": "Exchange Price Deltas",
+    "description": (
+        "This is the percent difference between the vwap price of BTC on each "
+        "exchange and the average price of BTC across those exchanges."
+    ),
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "ccdata/exchange-price-deltas",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CCData",
+    "data": {"chart": {"type": "line"}},
+})
 async def get_exchange_price_deltas(theme: str = "dark"):
     try:
         data = await ccdata_service.get_delta_data()
@@ -80,6 +94,46 @@ async def get_exchange_price_deltas(theme: str = "dark"):
     
 
 @ccdata_router.get("/candles")
+@register_widget({
+    "name": "CCData Candles",
+    "description": "OHLCV data for a given pool",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "ccdata/candles",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CCData",
+    "params": [
+        {
+            "paramName": "exchange",
+            "value": "binance",
+            "label": "Exchange",
+            "type": "text",
+            "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)",
+        },
+        {
+            "paramName": "symbol",
+            "value": "BTC-USDT",
+            "label": "Pair",
+            "type": "text",
+            "description": "Pair (e.g. BTC-USDT) to fetch data for",
+        },
+        {
+            "paramName": "interval",
+            "value": "hours",
+            "label": "Interval",
+            "type": "text",
+            "description": "Interval to fetch data for (options: minutes, hours, days)",
+        },
+        {
+            "paramName": "aggregate",
+            "value": "1",
+            "label": "Aggregate",
+            "type": "text",
+            "description": "Aggregation interval. Options: day = [1], hour = [1, 4, 12], minute = [1, 5, 15]",
+        },
+    ],
+    "data": {"chart": {"type": "candlestick"}},
+})
 async def get_ccdata_candles(
     exchange: str, 
     symbol: str, 
@@ -169,6 +223,23 @@ async def get_ccdata_candles(
 
 
 @ccdata_router.get("/exchange-spot-volume")
+@register_widget({
+    "name": "Total Spot Exchange Volume",
+    "description": "Total spot volume for a given exchange.",
+    "category": "crypto",
+    "endpoint": "ccdata/exchange-spot-volume",
+    "gridData": {"w": 20, "h": 9},
+    "params": [
+        {
+            "paramName": "exchange",
+            "value": "binance",
+            "label": "Exchange",
+        }
+    ],
+    "source": "CCData",
+    "defaultViz": "chart",
+    "data": {"chart": {"type": "line"}},
+})
 async def get_exchange_data(exchange: str, theme: str = "dark"):
     try:
         # First get all instruments for the exchange

@@ -1,6 +1,7 @@
 from functools import wraps
-from app.core.widgets import WIDGETS
 
+# Initialize an empty WIDGETS dictionary here instead of importing from widgets.py
+WIDGETS = {}
 
 def register_widget(widget_config):
     """

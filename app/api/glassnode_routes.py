@@ -5,6 +5,7 @@ from app.assets.charts.plotly_config import (
     apply_config_to_figure, 
     get_chart_colors
 )
+from app.core.widget_decorator import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -13,6 +14,38 @@ glassnode_router = APIRouter()
 glassnode_service = GlassnodeService()
 
 @glassnode_router.get("/lth-supply")
+@register_widget({
+    "name": "Long Term Holders Supply",
+    "description": (
+        "Supply of long term holders"
+    ),
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "glassnode/lth-supply",
+    "gridData": {"w": 20, "h": 9},
+    "source": "Glassnode",
+    "params": [
+        {
+            "paramName": "asset",
+            "value": "btc",
+            "label": "Coin",
+            "type": "text",
+            "description": "Glassnode ID of the cryptocurrency",
+        },
+        {
+            "paramName": "show_price",
+            "value": "False",
+            "label": "Show Price",
+            "type": "text",
+            "description": "Overlay price on chart",
+            "options": [
+                {"value": "True", "label": "True"},
+                {"value": "False", "label": "False"},
+            ],
+        },
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_lth_supply(
     asset: str = "btc", 
     show_price: str = "False", 
@@ -87,6 +120,38 @@ async def get_lth_supply(
         raise HTTPException(status_code=400, detail=str(e))
 
 @glassnode_router.get("/lth-net-change")
+@register_widget({
+    "name": "Long Term Holders Net Position Change",
+    "description": (
+        "Net position change of long term holders"
+    ),
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "glassnode/lth-net-change",
+    "gridData": {"w": 20, "h": 9},
+    "source": "Glassnode",
+    "params": [
+        {
+            "paramName": "asset",
+            "value": "btc",
+            "label": "Coin",
+            "type": "text",
+            "description": "Glassnode ID of the cryptocurrency",
+        },
+        {
+            "paramName": "show_price",
+            "value": "False",
+            "label": "Show Price",
+            "type": "text",
+            "description": "Overlay price on chart",
+            "options": [
+                {"value": "True", "label": "True"},
+                {"value": "False", "label": "False"},
+            ],
+        },
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_lth_net_change(
     asset: str = "btc", 
     show_price: str = "False", 
@@ -176,6 +241,25 @@ async def get_lth_net_change(
 
 
 @glassnode_router.get("/price")
+@register_widget({
+    "name": "Glassnode Price",
+    "description": "Historical price data from Glassnode",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "glassnode/price",
+    "gridData": {"w": 20, "h": 9},
+    "source": "Glassnode",
+    "params": [
+        {
+            "paramName": "asset",
+            "value": "btc",
+            "label": "Coin",
+            "type": "text",
+            "description": "Glassnode ID of the cryptocurrency",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_glassnode_price(asset: str = "btc", theme: str = "dark"):
     try:
         data = await glassnode_service.get_price(asset)
@@ -215,6 +299,28 @@ async def get_glassnode_price(asset: str = "btc", theme: str = "dark"):
         raise HTTPException(status_code=400, detail=str(e))
     
 @glassnode_router.get("/mvrv-zscore")
+@register_widget({
+    "name": "MVRV Z-Score",
+    "description": (
+        "Market Value to Realized Value Z-Score, a metric to assess if "
+        "Bitcoin is over or undervalued"
+    ),
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "glassnode/mvrv-zscore",
+    "gridData": {"w": 20, "h": 9},
+    "source": "Glassnode",
+    "params": [
+        {
+            "paramName": "asset",
+            "value": "btc",
+            "label": "Coin",
+            "type": "text",
+            "description": "Glassnode ID of the cryptocurrency",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_mvrv_zscore(asset: str = "btc", theme: str = "dark"):
     try:
         data = await glassnode_service.mvrv_zscore(asset)
@@ -269,6 +375,27 @@ async def get_mvrv_zscore(asset: str = "btc", theme: str = "dark"):
         raise HTTPException(status_code=400, detail=str(e))
   
 @glassnode_router.get("/lth-nupl")
+@register_widget({
+    "name": "Long Term Holders NUPL",
+    "description": (
+        "Net Unrealized Profit/Loss for long term holders"
+    ),
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "glassnode/lth-nupl",
+    "gridData": {"w": 20, "h": 9},
+    "source": "Glassnode",
+    "params": [
+        {
+            "paramName": "asset",
+            "value": "btc",
+            "label": "Coin",
+            "type": "text",
+            "description": "Glassnode ID of the cryptocurrency",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_lth_nupl(asset: str = "btc", theme: str = "dark"):
     try:
         # Fetch and process data

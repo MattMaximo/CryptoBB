@@ -6,6 +6,7 @@ from app.assets.charts.plotly_config import (
     get_chart_colors
 )
 from app.assets.ai_agent_mapping import ai_agent_mapping
+from app.core.widget_decorator import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -14,6 +15,47 @@ geckoterminal_router = APIRouter()
 geckoterminal_service = GeckoTerminalService()
 
 @geckoterminal_router.get("/ai-agents-market-data")
+@register_widget({
+    "name": "AI Agents Market Data",
+    "description": "Market data for AI agent tokens",
+    "category": "crypto",
+    "endpoint": "geckoterminal/ai-agents-market-data",
+    "gridData": {"w": 20, "h": 9},
+    "source": "GeckoTerminal",
+    "defaultViz": "table",
+    "data": {
+        "table": {
+            "showAll": True,
+            "columnsDefs": [
+                {
+                    "headerName": "Name",
+                    "field": "name",
+                    "chartDataType": "category",
+                },
+                {
+                    "headerName": "Symbol",
+                    "field": "symbol",
+                    "chartDataType": "category",
+                },
+                {
+                    "headerName": "Price",
+                    "field": "price_usd",
+                    "chartDataType": "series",
+                },
+                {
+                    "headerName": "Volume",
+                    "field": "volume_usd",
+                    "chartDataType": "series",
+                },
+                {
+                    "headerName": "Market Cap",
+                    "field": "market_cap_usd",
+                    "chartDataType": "series",
+                },
+            ],
+        }
+    },
+})
 async def get_ai_agents_market_data():
     try:
         data = await geckoterminal_service.fetch_ai_agent_market_data(ai_agent_mapping)
@@ -30,6 +72,39 @@ async def get_ai_agents_market_data():
         raise HTTPException(status_code=400, detail=str(e))
     
 @geckoterminal_router.get("/candles")
+@register_widget({
+    "name": "GeckoTerminal Candles",
+    "description": "OHLCV data for a given pool from GeckoTerminal",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "geckoterminal/candles",
+    "gridData": {"w": 20, "h": 9},
+    "source": "GeckoTerminal",
+    "params": [
+        {
+            "paramName": "symbol",
+            "value": "ethereum:0x60594a405d53811d3bc4766596efd80fd545a270",
+            "label": "Pool ID",
+            "type": "text",
+            "description": "Pool ID in format chain:address",
+        },
+        {
+            "paramName": "timeframe",
+            "value": "1h",
+            "label": "Timeframe",
+            "type": "text",
+            "description": "Timeframe (e.g. 1m, 5m, 15m, 1h, 4h, 1d)",
+        },
+        {
+            "paramName": "aggregate",
+            "value": "1",
+            "label": "Aggregate",
+            "type": "text",
+            "description": "Number of periods to aggregate",
+        },
+    ],
+    "data": {"chart": {"type": "candlestick"}},
+})
 async def get_geckoterminal_candles(
     symbol: str, 
     timeframe: str, 

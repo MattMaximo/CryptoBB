@@ -8,6 +8,7 @@ from app.assets.charts.plotly_config import (
 )
 from app.assets.queries.altcoin_season import altcoin_season_query
 from app.assets.queries.category_market_cap import get_category_market_cap_query
+from app.core.widget_decorator import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -17,6 +18,26 @@ artemis_service = ArtemisService()
 coingecko_service = CoinGeckoService()
 
 @artemis_router.get("/altcoin-season-index")
+@register_widget({
+    "name": "Altcoin Season Index",
+    "description": (
+        "Altcoin Season Index calculates the number of coins in the top 50 "
+        "that outperform Bitcoin over a 90 day period."
+    ),
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "artemis/altcoin-season-index",
+    "gridData": {"w": 20, "h": 9},
+    "source": "Artemis",
+    "params": [
+        {
+            "paramName": "price_coin",
+            "value": "bitcoin",
+            "label": "Compare Price",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_altcoin_season_index(
     price_coin: str = 'bitcoin', 
     theme: str = "dark"

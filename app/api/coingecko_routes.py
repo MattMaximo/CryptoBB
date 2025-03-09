@@ -17,6 +17,44 @@ coingecko_router = APIRouter()
 coingecko_service = CoinGeckoService()
 
 @coingecko_router.get("/coin-list")
+@register_widget({
+    "name": "Coingecko Coins List",
+    "description": (
+        "List of all coins available on CoinGecko including ID, Name, "
+        "Ticker, and available chains."
+    ),
+    "category": "crypto",
+    "endpoint": "coingecko/coin-list",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CoinGecko",
+    "data": {
+        "table": {
+            "showAll": True,
+            "columnsDefs": [
+                {
+                    "headerName": "Name",
+                    "field": "name",
+                    "chartDataType": "category",
+                },
+                {
+                    "headerName": "Ticker",
+                    "field": "symbol",
+                    "chartDataType": "category",
+                },
+                {
+                    "headerName": "Chains",
+                    "field": "platforms",
+                    "chartDataType": "category",
+                },
+                {
+                    "headerName": "ID",
+                    "field": "id",
+                    "chartDataType": "category",
+                },
+            ],
+        }
+    },
+})
 async def get_coin_list(
     include_platform: str = "true", 
     status: str = "active"
@@ -70,6 +108,28 @@ async def get_market_data(coin_id: str, theme: str = "dark"):
 
 
 @coingecko_router.get("/dominance")
+@register_widget({
+    "name": "Crypto Market Dominance",
+    "description": "Market dominance of major cryptocurrencies",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "coingecko/dominance",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CoinGecko",
+    "params": [
+        {
+            "paramName": "coin_id",
+            "value": "bitcoin",
+            "label": "Coin",
+            "show": True,
+            "type": "endpoint",
+            "optionsEndpoint": "coingecko/coin-list-formatted",
+            "description": "CoinGecko ID of the cryptocurrency",
+            "style": {"popupWidth": 600},
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_dominance(coin_id: str, theme: str = "dark"):
     try:
         coin_id = coin_id.lower()
@@ -131,6 +191,28 @@ async def get_dominance(coin_id: str, theme: str = "dark"):
 
 
 @coingecko_router.get("/vm-ratio")
+@register_widget({
+    "name": "Volume/Market Cap Ratio",
+    "description": "Total Trading Volume / Total Market Cap",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "coingecko/vm-ratio",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CoinGecko",
+    "params": [
+        {
+            "paramName": "coin_id",
+            "value": "bitcoin",
+            "label": "Coin",
+            "show": True,
+            "type": "endpoint",
+            "optionsEndpoint": "coingecko/coin-list-formatted",
+            "description": "CoinGecko ID of the cryptocurrency",
+            "style": {"popupWidth": 600},
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_vm_ratio(coin_id: str, theme: str = "dark"):
     try:
         coin_id = coin_id.lower()
@@ -380,6 +462,16 @@ async def get_correlation(
     
 
 @coingecko_router.get("/btc-price-sma-multiplier")
+@register_widget({
+    "name": "BTC Price / SMA Multiplier",
+    "description": "Bitcoin price divided by the 1458-day Simple Moving Average",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "coingecko/btc-price-sma-multiplier",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CoinGecko",
+    "data": {"chart": {"type": "scatter"}},
+})
 async def get_btc_price_sma_multiplier(theme: str = "dark"):
     try:
         data = await coingecko_service.get_market_data("bitcoin")
@@ -487,6 +579,17 @@ async def get_btc_price_sma_multiplier(theme: str = "dark"):
     
 
 @coingecko_router.get("/coin-list-formatted")
+@register_widget({
+    "name": "Coingecko Coins List Formatted",
+    "description": (
+        "Formatted list of all coins available on CoinGecko "
+        "for dropdown selection"
+    ),
+    "category": "crypto",
+    "endpoint": "coingecko/coin-list-formatted",
+    "source": "CoinGecko",
+    "isUtility": True,
+})
 async def get_coin_list_formatted(
     include_platform: str = "true", 
     status: str = "active"

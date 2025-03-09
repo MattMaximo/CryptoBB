@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from app.services.btc_matrix_service import BTCMatrixService
 from app.assets.charts.base_matrix_layout import get_matrix_figure
 from app.assets.charts.plotly_config import apply_config_to_figure
+from app.core.widget_decorator import register_widget
 import pandas as pd
 import json
 
@@ -39,6 +40,18 @@ def _update_figure_for_theme(fig, theme="dark"):
 
 
 @btc_matrix_router.get("/reserve-dollars")
+@register_widget({
+    "name": "BTC Reserve Matrix (USD)",
+    "description": (
+        "Matrix showing Bitcoin reserves of countries and companies in USD"
+    ),
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "btc-matrix/reserve-dollars",
+    "gridData": {"w": 20, "h": 9},
+    "source": "BTCMatrix",
+    "data": {"chart": {"type": "heatmap"}},
+})
 async def get_btc_reserve_matrix(return_fig: bool = True, theme: str = "dark"):
     reserve_matrix = btc_matrix_service.generate_reserve_matrix()
     reserve_matrix.index = [
@@ -70,6 +83,19 @@ async def get_btc_reserve_matrix(return_fig: bool = True, theme: str = "dark"):
 
 
 @btc_matrix_router.get("/reserve-pct")
+@register_widget({
+    "name": "BTC Reserve Matrix (%)",
+    "description": (
+        "Matrix showing Bitcoin reserves of countries and companies as a "
+        "percentage of their total reserves"
+    ),
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "btc-matrix/reserve-pct",
+    "gridData": {"w": 20, "h": 9},
+    "source": "BTCMatrix",
+    "data": {"chart": {"type": "heatmap"}},
+})
 async def get_btc_reserve_matrix_pct(
     return_fig: bool = True, 
     theme: str = "dark"
