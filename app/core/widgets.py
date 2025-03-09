@@ -1256,7 +1256,7 @@ WIDGETS = {
                 "paramName": "price_coin",
                 "value": "bitcoin",
                 "label": "Compare Price",
-            }
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
