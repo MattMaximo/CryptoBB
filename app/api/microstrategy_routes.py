@@ -1,24 +1,35 @@
 from fastapi import APIRouter, HTTPException
 from app.services.microstrategy_service import MicrostrategyService
 from app.assets.charts.base_chart_layout import create_base_layout
+from app.assets.charts.plotly_config import (
+    apply_config_to_figure, 
+    get_chart_colors
+)
 import plotly.graph_objects as go
 import pandas as pd
 import json
 
+
 microstrategy_router = APIRouter()
+
 microstrategy_service = MicrostrategyService()
 
+
 @microstrategy_router.get("/premium")
-async def get_microstrategy_premium():
+async def get_microstrategy_premium(theme: str = "dark"):
     try:
         data = await microstrategy_service.get_prices()
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
+
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Nav Premium"
+                y_title="Nav Premium",
+                theme=theme
             )
         )
 
@@ -28,8 +39,8 @@ async def get_microstrategy_premium():
                 title="Price",
                 overlaying="y", 
                 side="right",
-                gridcolor="#2f3338",
-                color="#ffffff"
+                gridcolor="#2f3338" if theme == "dark" else "#dddddd",
+                color=colors['text']
             )
         )
 
@@ -38,7 +49,7 @@ async def get_microstrategy_premium():
             y=data["nav_premium"],
             mode="lines",
             name="NAV Premium",
-            line=dict(color="#D8232E"),
+            line=dict(color=colors['negative']),
             hovertemplate="%{y:.2f}"
         )
 
@@ -48,14 +59,25 @@ async def get_microstrategy_premium():
             y=data["btc_price"],
             mode="lines", 
             name="BTC Price",
-            line=dict(color="#F7931A"),
+            line=dict(color=colors['main_line']),
             yaxis="y2",
             hovertemplate="%{y:,.2f}"
         )
 
-        return json.loads(figure.to_json())
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
+
+        # Convert figure to JSON with the config
+        figure_json = figure.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        # Add config to the figure dictionary
+        figure_dict["config"] = config
+        
+        return figure_dict
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @microstrategy_router.get("/info")
 async def get_microstrategy_info():
