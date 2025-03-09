@@ -1,32 +1,47 @@
 from fastapi import APIRouter, HTTPException
 from app.services.coingecko_service import CoinGeckoService
 from app.assets.charts.base_chart_layout import create_base_layout
+from app.assets.charts.plotly_config import (
+    apply_config_to_figure, 
+    get_chart_colors
+)
 import plotly.graph_objects as go
 import pandas as pd
 import json
 
+
 coingecko_router = APIRouter()
+
+# Initialize the CoinGecko service
 coingecko_service = CoinGeckoService()
 
-
 @coingecko_router.get("/coin-list")
-async def get_coin_list(include_platform: str = "true", status: str = "active"):
+async def get_coin_list(
+    include_platform: str = "true", 
+    status: str = "active"
+):
     symbols_list = await coingecko_service.get_coin_list(include_platform, status)
     return symbols_list.to_dict(orient="records")
 
+
 @coingecko_router.get("/price")
-async def get_market_data(coin_id: str):
+async def get_market_data(coin_id: str, theme: str = "dark"):
     try:
         coin_id = coin_id.lower()
+        # Get price data directly from the service
         data = await coingecko_service.get_market_data(coin_id)
-        data = data[["date", f"{coin_id}_price"]]
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
+
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
 
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Price"
+                y_title="Price (USD)",
+                y_dtype=".2f",
+                theme=theme
             )
         )
 
@@ -35,53 +50,42 @@ async def get_market_data(coin_id: str):
             y=data[f"{coin_id}_price"],
             mode="lines",
             name="Price",
-            line=dict(color="#E3BF1E"),
+            line=dict(color=colors['main_line']),
         )
 
-        figure.update_layout(
-            uirevision='constant',  # Maintains view state during updates
-            autosize=True,  # Enables auto-sizing for responsive behavior
-            dragmode='zoom',  # Sets default mode to zoom instead of pan
-            hovermode='closest',  # Improves hover experience
-            clickmode='event',  # Makes clicking more responsive
-            transition={
-                'duration': 50,  # Small transition for smoother feel
-                'easing': 'cubic-in-out'  # Smooth easing function
-            },
-            modebar={
-                'orientation': 'v',  # Vertical orientation for modebar
-                'activecolor': '#9ED3CD'  # Highlight color for active buttons
-            },
-            xaxis={
-                'rangeslider': {'visible': False},  # Disable rangeslider
-                'autorange': True,  # Enable autorange
-                'constrain': 'domain'  # Constrain to domain for better zoom
-            },
-            yaxis={
-                'autorange': True,  # Enable autorange
-                'constrain': 'domain',  # Constrain to domain
-                'fixedrange': False  # Allow y-axis zooming
-            }
-        )
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
 
-        return json.loads(figure.to_json())
+        # Convert figure to JSON with the config
+        figure_json = figure.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        # Add config to the figure dictionary
+        figure_dict["config"] = config
+        
+        return figure_dict
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
 @coingecko_router.get("/dominance")
-async def get_dominance(coin_id: str):
+async def get_dominance(coin_id: str, theme: str = "dark"):
     try:
         coin_id = coin_id.lower()
+        # Get dominance data directly from the service
         data = await coingecko_service.get_dominance(coin_id)
-        print(data)
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
+
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
 
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Dominance (%)"
+                y_title="Dominance (%)",
+                y_dtype=".2f",
+                theme=theme
             )
         )
 
@@ -89,69 +93,70 @@ async def get_dominance(coin_id: str):
             x=data.index,
             y=data["dominance"] * 100,
             mode="lines",
-            line=dict(color="#E3BF1E"),
+            name="Dominance",
+            line=dict(color=colors['main_line']),
             hovertemplate="%{y:.2f}%"  # Display hover as percentage
         )
 
         if coin_id == "bitcoin":
             figure.add_hline(
                 y=40,
-                line_color="red",
+                line_color=colors['negative'],
                 line_dash="dash",
                 annotation_text="Top",
                 annotation_position="bottom right",
             )
             figure.add_hline(
                 y=65,
-                line_color="green",
+                line_color=colors['positive'],
                 line_dash="dash",
                 annotation_text="Bottom",
                 annotation_position="top right",
             )
 
-            figure.update_layout(
-                uirevision='constant',  # Maintains view state during updates
-                autosize=True,  # Enables auto-sizing for responsive behavior
-                dragmode='zoom',  # Sets default mode to zoom instead of pan
-                hovermode='closest',  # Improves hover experience
-                clickmode='event',  # Makes clicking more responsive
-                transition={
-                    'duration': 50,  # Small transition for smoother feel
-                    'easing': 'cubic-in-out'  # Smooth easing function
-                },
-                modebar={
-                    'orientation': 'v',  # Vertical orientation for modebar
-                    'activecolor': '#9ED3CD'  # Highlight color for active buttons
-                },
-                xaxis={
-                    'rangeslider': {'visible': False},  # Disable rangeslider
-                    'autorange': True,  # Enable autorange
-                    'constrain': 'domain'  # Constrain to domain for better zoom
-                },
-                yaxis={
-                    'autorange': True,  # Enable autorange
-                    'constrain': 'domain',  # Constrain to domain
-                    'fixedrange': False  # Allow y-axis zooming
-                }
-            )
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
 
-        return json.loads(figure.to_json())
+        # Convert figure to JSON with the config
+        figure_json = figure.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        # Add config to the figure dictionary
+        figure_dict["config"] = config
+        
+        return figure_dict
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
 @coingecko_router.get("/vm-ratio")
-async def get_vm_ratio(coin_id: str):
+async def get_vm_ratio(coin_id: str, theme: str = "dark"):
     try:
         coin_id = coin_id.lower()
-        data = await coingecko_service.get_vm_ratio(coin_id)
+        data = await coingecko_service.get_market_data(coin_id)
+        # Fix the column name from _total_volume to _volume
+        columns = [
+            "date", 
+            f"{coin_id}_price", 
+            f"{coin_id}_market_cap", 
+            f"{coin_id}_volume"
+        ]
+        data = data[columns]
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
+        # Update the calculation to use _volume instead of _total_volume
+        market_cap_col = f"{coin_id}_market_cap"
+        volume_col = f"{coin_id}_volume"
+        data["vm_ratio"] = data[volume_col] / data[market_cap_col]
         data = data.set_index("date")
+
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
 
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Ratio"
+                y_title="Volume/Market Cap Ratio",
+                theme=theme
             )
         )
 
@@ -160,72 +165,90 @@ async def get_vm_ratio(coin_id: str):
             y=data["vm_ratio"],
             mode="lines",
             name="Ratio",  # Added name to specify the trace name in the legend
-            line=dict(color="#E3BF1E"),
+            line=dict(color=colors['main_line']),
             hovertemplate="%{y:.2f}"  # Format hover as decimal
         )
-        figure.update_yaxes(tickformat=".2f")  # Override tick format to show decimals
+        # Override tick format to show decimals
+        figure.update_yaxes(tickformat=".2f")
 
-        return json.loads(figure.to_json())
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
+
+        # Convert figure to JSON with the config
+        figure_json = figure.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        # Add config to the figure dictionary
+        figure_dict["config"] = config
+        
+        return figure_dict
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
 @coingecko_router.get("/correlation")
-async def get_correlation(coin_id1: str, coin_id2: str):
+async def get_correlation(coin_id1: str, coin_id2: str, theme: str = "dark"):
     try:
         coin_id1 = coin_id1.lower()
         coin_id2 = coin_id2.lower()
-        data = await coingecko_service.get_correlation(coin_id1, coin_id2)
-        data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
-        data = data.set_index("date")
-
+        
+        data1 = await coingecko_service.get_market_data(coin_id1)
+        data2 = await coingecko_service.get_market_data(coin_id2)
+        
+        # Merge the data on date
+        merged_data = pd.merge(
+            data1[["date", f"{coin_id1}_price"]], 
+            data2[["date", f"{coin_id2}_price"]], 
+            on="date"
+        )
+        
+        merged_data["date"] = pd.to_datetime(merged_data["date"]).dt.strftime("%Y-%m-%d")
+        merged_data = merged_data.set_index("date")
+        
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
+        
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Correlation"
+                y_title=f"{coin_id1.upper()} Price",
+                theme=theme
             )
         )
 
         figure.add_scatter(
-            x=data.index,
-            y=data["correlation"],
+            x=merged_data.index,
+            y=merged_data[f"{coin_id1}_price"],
             mode="lines",
-            line=dict(color="#E3BF1E")
+            line=dict(color=colors['main_line']),
+            name=f"{coin_id1.upper()} Price"
         )
 
-        figure.update_layout(
-            uirevision='constant',  # Maintains view state during updates
-            autosize=True,  # Enables auto-sizing for responsive behavior
-            dragmode='zoom',  # Sets default mode to zoom instead of pan
-            hovermode='closest',  # Improves hover experience
-            clickmode='event',  # Makes clicking more responsive
-            transition={
-                'duration': 50,  # Small transition for smoother feel
-                'easing': 'cubic-in-out'  # Smooth easing function
-            },
-            modebar={
-                'orientation': 'v',  # Vertical orientation for modebar
-                'activecolor': '#9ED3CD'  # Highlight color for active buttons
-            },
-            xaxis={
-                'rangeslider': {'visible': False},  # Disable rangeslider
-                'autorange': True,  # Enable autorange
-                'constrain': 'domain'  # Constrain to domain for better zoom
-            },
-            yaxis={
-                'autorange': True,  # Enable autorange
-                'constrain': 'domain',  # Constrain to domain
-                'fixedrange': False  # Allow y-axis zooming
-            }
+        figure.add_scatter(
+            x=merged_data.index,
+            y=merged_data[f"{coin_id2}_price"],
+            mode="lines",
+            line=dict(color=colors['secondary']),
+            name=f"{coin_id2.upper()} Price"
         )
 
-        return json.loads(figure.to_json())
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
+
+        # Convert figure to JSON with the config
+        figure_json = figure.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        # Add config to the figure dictionary
+        figure_dict["config"] = config
+        
+        return figure_dict
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
 
 @coingecko_router.get("/btc-price-sma-multiplier")
-async def get_btc_price_sma_multiplier():
+async def get_btc_price_sma_multiplier(theme: str = "dark"):
     try:
         data = await coingecko_service.get_market_data("bitcoin")
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
@@ -236,23 +259,50 @@ async def get_btc_price_sma_multiplier():
         data['SMA_1458'] = data['bitcoin_price'].rolling(window=sma_days).mean()
         data['multiplier'] = data['bitcoin_price'] / data['SMA_1458']
 
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
+        
+        # Define color schemes based on theme
+        if theme == "dark":
+            color_map = {
+                'very_low': '#00ff00',    # Bright green
+                'low': '#ffff00',         # Bright yellow
+                'medium': '#ffa500',      # Bright orange
+                'high': '#ff0000',        # Bright red
+                'very_high': '#ff00ff',   # Bright magenta
+                'extreme': '#00ffff',     # Bright cyan
+                'ultra': '#0080ff',       # Bright blue
+                'max': '#ffffff'          # White
+            }
+        else:
+            color_map = {
+                'very_low': '#008800',    # Dark green
+                'low': '#888800',         # Dark yellow
+                'medium': '#884400',      # Dark orange
+                'high': '#880000',        # Dark red
+                'very_high': '#880088',   # Dark magenta
+                'extreme': '#008888',     # Dark cyan
+                'ultra': '#0044aa',       # Dark blue
+                'max': '#000000'          # Black
+            }
+
         def get_color(multiplier):
             if multiplier < 1.5:
-                return '#00ff00'  # Bright green
+                return color_map['very_low']
             elif 1.5 <= multiplier < 2:
-                return '#ffff00'  # Bright yellow
+                return color_map['low']
             elif 2 <= multiplier < 2.5:
-                return '#ffa500'  # Bright orange
+                return color_map['medium']
             elif 2.5 <= multiplier < 3:
-                return '#ff0000'  # Bright red
+                return color_map['high']
             elif 3 <= multiplier < 4:
-                return '#ff00ff'  # Bright magenta
+                return color_map['very_high']
             elif 4 <= multiplier < 5:
-                return '#00ffff'  # Bright cyan
+                return color_map['extreme']
             elif 5 <= multiplier < 6:
-                return '#0080ff'  # Bright blue
+                return color_map['ultra']
             else:
-                return '#ffffff'  # White
+                return color_map['max']
 
         data['color'] = data['multiplier'].apply(get_color)
         data = data.dropna(subset=['SMA_1458'])
@@ -261,7 +311,7 @@ async def get_btc_price_sma_multiplier():
             layout=create_base_layout(
                 x_title="Date",
                 y_title="Price",
-                y_dtype=".2f"
+                theme=theme
             )
         )
 
@@ -279,7 +329,7 @@ async def get_btc_price_sma_multiplier():
             x=data.index,
             y=data['SMA_1458'],
             mode='lines',
-            line=dict(color='white', dash='dash'),
+            line=dict(color=colors['sma_line'], dash='dash'),
             name='SMA-1458'
         ))
 
@@ -289,7 +339,17 @@ async def get_btc_price_sma_multiplier():
             showlegend=False
         )
 
-        return json.loads(fig.to_json())
+        # Apply the standard configuration to the figure with theme
+        fig, config = apply_config_to_figure(fig, theme=theme)
+
+        # Convert figure to JSON with the config
+        fig_json = fig.to_json()
+        fig_dict = json.loads(fig_json)
+        
+        # Add config to the figure dictionary
+        fig_dict["config"] = config
+        
+        return fig_dict
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
@@ -300,32 +360,20 @@ async def get_coin_list_formatted(
     status: str = "active"
 ):
     """
-    Returns a list of coins in the format:
+    Returns a formatted list of coins in the format:
     {
-        "label": "BTC",  # symbol
-        "value": "bitcoin"  # id
+        "value": "bitcoin",
+        "label": "Bitcoin (BTC)"
     }
     """
     symbols_list = await coingecko_service.get_coin_list(include_platform, status)
     
     # Convert to the requested format
     formatted_list = []
-    for _, row in symbols_list.iterrows():
-        # Create the formatted entry with label, value, and extraInfo
-        entry = {
-            "label": row["symbol"].upper(),
-            "value": row["id"],
-            "extraInfo": {
-                "description": row["name"]
-            }
-        }
-        
-        # Add platform information to rightOfDescription if available
-        if isinstance(row.get("platforms"), dict) and row["platforms"]:
-            platforms = list(row["platforms"].keys())
-            if platforms:
-                entry["extraInfo"]["rightOfDescription"] = ", ".join(platforms)
-        
-        formatted_list.append(entry)
+    for coin in symbols_list.to_dict(orient="records"):
+        formatted_list.append({
+            "value": coin["id"],
+            "label": f"{coin['name']} ({coin['symbol'].upper()})"
+        })
+    
     return formatted_list
-
