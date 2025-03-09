@@ -5,6 +5,7 @@ from app.assets.charts.plotly_config import (
     apply_config_to_figure, 
     get_chart_colors
 )
+from app.core.widget_decorator import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -187,6 +188,46 @@ async def get_vm_ratio(coin_id: str, theme: str = "dark"):
 
 
 @coingecko_router.get("/correlation")
+@register_widget({
+    "name": "Coingecko Correlation",
+    "description": "Historical correlation between two search tokens",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "coingecko/correlation",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CoinGecko",
+    "params": [
+        {
+            "paramName": "coin_id1",
+            "value": "bitcoin",
+            "label": "Coin",
+            "show": True,
+            "type": "endpoint",
+            "optionsEndpoint": "coingecko/coin-list-formatted",
+            "description": "CoinGecko ID of the first cryptocurrency",
+            "style": {"popupWidth": 600},
+        },
+        {
+            "paramName": "coin_id2",
+            "value": "ethereum",
+            "label": "Coin",
+            "show": True,
+            "type": "endpoint",
+            "optionsEndpoint": "coingecko/coin-list-formatted",
+            "description": "CoinGecko ID of the second cryptocurrency",
+            "style": {"popupWidth": 600},
+        },
+        {
+            "type": "date",
+            "paramName": "start_date",
+            "value": "2024-01-01",
+            "label": "Start Date",
+            "show": True,
+            "description": "The start date for the data",
+        },
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_correlation(
     coin_id1: str, 
     coin_id2: str, 
