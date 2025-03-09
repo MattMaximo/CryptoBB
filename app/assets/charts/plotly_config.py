@@ -114,15 +114,21 @@ def get_layout_update(theme="dark"):
         grid_color = 'rgba(221, 221, 221, 0.3)'  # Very faded grid
         line_color = '#AAAAAA'
         tick_color = '#AAAAAA'
-        bg_color = 'rgba(255,255,255,0.5)'
+        bg_color = '#ffffff'  # More opaque background
         active_color = '#3366CC'  # Nice blue color for light theme
+        # Black text for better contrast in light mode
+        legend_text_color = '#000000'
+        # Darker border for better visibility
+        legend_border_color = '#ffffff'
     else:  # dark theme (default)
         text_color = '#FFFFFF'
         grid_color = 'rgba(51, 51, 51, 0.3)'  # Very faded grid
         line_color = '#444444'
         tick_color = '#444444'
-        bg_color = 'rgba(0,0,0,0.5)'
+        bg_color = '#151518'  # More opaque background
         active_color = '#FF8000'  # Orange color for dark theme
+        legend_text_color = text_color  # Use the same text color
+        legend_border_color = "#151518"  # Use the same border color
     
     return {
         'uirevision': 'constant',  # Maintains view state during updates
@@ -181,9 +187,11 @@ def get_layout_update(theme="dark"):
             'tickwidth': 1  # Consistent tick width
         },
         'legend': {
-            'font': {'color': text_color},  # Legend text color based on theme
-            'bgcolor': bg_color,  # Semi-transparent background based on theme
-            'bordercolor': line_color  # Border color based on theme
+            # Legend text color with better contrast
+            'font': {'color': legend_text_color},
+            'bgcolor': bg_color,  # More opaque background
+            'bordercolor': legend_border_color,  # Better visible border
+            'borderwidth': 1  # Add border width for better visibility
         },
     }
 

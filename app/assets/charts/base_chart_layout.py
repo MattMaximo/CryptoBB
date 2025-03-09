@@ -32,18 +32,24 @@ def create_base_layout(
     # Define colors based on theme
     if theme == "light":
         text_color = "#333333"  # Dark gray for light theme
+        legend_text_color = "#000000"  # Black for legend text in light mode
         grid_color = "rgba(128, 128, 128, 0.2)"
         paper_bgcolor = "rgba(255,255,255,0)"  # Transparent white
         plot_bgcolor = "rgba(255,255,255,0)"  # Transparent white
         hoverlabel_bgcolor = "black"
         hoverlabel_font_color = "white"
+        legend_bgcolor = "rgba(255, 255, 255, 0.9)"  # Opaque white background
+        legend_bordercolor = "#666666"  # Dark gray border
     else:  # dark theme (default)
         text_color = "#ffffff"  # White for dark theme
+        legend_text_color = text_color  # Same as text color for dark mode
         grid_color = "rgba(128, 128, 128, 0.2)"
         paper_bgcolor = "rgba(0,0,0,0)"  # Transparent black
         plot_bgcolor = "rgba(0,0,0,0)"  # Transparent black
         hoverlabel_bgcolor = "white"
         hoverlabel_font_color = "black"
+        legend_bgcolor = "rgba(0, 0, 0, 0.7)"  # Semi-transparent black
+        legend_bordercolor = "#444444"  # Light gray border
 
     if x_title.lower() in ['date', 'time', 'timestamp', 'datetime']:
         x_title = None
@@ -71,7 +77,10 @@ def create_base_layout(
             y=1.02,  # Position above the plot
             xanchor="center",
             x=0.5,  # Center the legend
-            font=dict(color=text_color),
+            font=dict(color=legend_text_color),  # Use dedicated legend text color
+            bgcolor=legend_bgcolor,  # Add background color
+            bordercolor=legend_bordercolor,  # Add border color
+            borderwidth=1,  # Add border width
         ),
         margin=dict(b=0, l=0, r=0, t=0),  # Adjust margin for the title
         paper_bgcolor=paper_bgcolor,
