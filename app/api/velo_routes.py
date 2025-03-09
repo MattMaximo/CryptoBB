@@ -1,6 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from app.services.velo_service import VeloService
 from app.assets.charts.base_chart_layout import create_base_layout
+from app.assets.charts.plotly_config import (
+    get_chart_colors, 
+    apply_config_to_figure
+)
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -25,15 +29,24 @@ async def get_velo_options_products():
     return data.to_dict(orient="records")
 
 @velo_router.get("/oi-weighted-funding-rates")
-async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+async def get_velo_oi_weighted_funding_rates(
+    coin: str = "BTC", 
+    begin: str = None, 
+    resolution: str = "1d", 
+    theme: str = "dark"
+):
     try:
         data = velo_service.oi_weighted_funding_rate(coin, begin, resolution)
         data = data.set_index("time")
+        
+        # Get theme-based colors
+        colors = get_chart_colors(theme)
 
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="OI Weighted Funding Rate"
+                y_title="OI Weighted Funding Rate",
+                theme=theme
             )
         )
 
@@ -53,7 +66,7 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
             y=data["close_price"],
             mode="lines",
             name="Price",
-            line=dict(color="#F7931A"),
+            line=dict(color=colors['main_line']),
             yaxis="y2",
             hovertemplate="%{y:,.2f}"
         )
@@ -61,17 +74,16 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
         figure.update_layout(
             yaxis=dict(
                 tickformat=".0%",  # Format as percentage with no decimals
-                gridcolor="#2f3338",
-                color="#ffffff"
             ),
             yaxis2=dict(
                 title="Price",
                 overlaying="y",
                 side="right",
-                gridcolor="#2f3338",
-                color="#ffffff",
             )
         )
+        
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -79,13 +91,19 @@ async def get_velo_oi_weighted_funding_rates(coin: str = "BTC", begin: str = Non
 
 
 @velo_router.get("/exchange-funding-rates")
-async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+async def get_velo_funding_rates(
+    coin: str = "BTC", 
+    begin: str = None, 
+    resolution: str = "1d", 
+    theme: str = "dark"
+):
     try:
         # Get data from velo service
         data = velo_service.funding_rates(coin, begin, resolution)
         data['time'] = pd.to_datetime(data['time'])
+        
         # Define colors for exchanges
-        colors = {
+        exchange_colors = {
             'binance-futures': '#F3BA2F',  # Binance yellow
             'bybit': '#4982D4',           # Bybit blue
             'okex-swap': '#BB81F6',       # OKX purple
@@ -96,7 +114,8 @@ async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolutio
         figure = go.Figure(layout=create_base_layout(
             x_title="Date",
             y_title="Annualized Funding Rate (%)",
-            y_dtype=".2%"
+            y_dtype=".2%",
+            theme=theme
         ))
 
         # Group by exchange and add a trace for each
@@ -107,9 +126,12 @@ async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolutio
                     y=group_data['annualized_funding_rate'],
                     mode='lines',
                     name=exchange,
-                    line=dict(color=colors.get(exchange, '#000000'))  # Default to black if exchange is not in colors
+                    line=dict(color=exchange_colors.get(exchange, '#000000'))
                 )
             )
+        
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
 
         # Return the chart as JSON
         return json.loads(figure.to_json())
@@ -118,7 +140,12 @@ async def get_velo_funding_rates(coin: str = "BTC", begin: str = None, resolutio
         raise HTTPException(status_code=400, detail=f"Error processing funding rates: {str(e)}")
 
 @velo_router.get("/long-liquidations")
-async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+async def get_velo_long_liquidations(
+    coin: str = "BTC", 
+    begin: str = None, 
+    resolution: str = "1d", 
+    theme: str = "dark"
+):
     try:
         data = velo_service.liquidations(coin, begin, resolution)
         data = data.groupby('time').agg({
@@ -126,11 +153,15 @@ async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resol
             'buy_liquidations_dollar_volume': 'sum'
         }).reset_index()
         data = data.set_index("time")
+        
+        # Get theme-based colors
+        colors = get_chart_colors(theme)
 
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Long Liquidations"
+                y_title="Long Liquidations",
+                theme=theme
             )
         )
 
@@ -139,19 +170,7 @@ async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resol
             x=data.index,
             y=data["buy_liquidations_dollar_volume"],
             name="Long Liquidations",
-            marker_color="rgba(255,0,0,0.5)"
-        )
-
-        # Update layout for secondary y-axis and hover mode
-        figure.update_layout(
-            yaxis2=dict(
-                title="Price",
-                overlaying="y",
-                side="right",
-                gridcolor="#2f3338",
-                color="#ffffff"
-            ),
-            hovermode='x unified'
+            marker_color=colors['negative']
         )
 
         # Add price line
@@ -160,26 +179,48 @@ async def get_velo_long_liquidations(coin: str = "BTC", begin: str = None, resol
             y=data["close_price"],
             mode="lines",
             name="Price",
-            line=dict(color="#F7931A"),
+            line=dict(color=colors['main_line']),
             yaxis="y2",
             hovertemplate="%{y:,.2f}"
         )
+        
+        # Update layout for secondary y-axis and hover mode
+        figure.update_layout(
+            yaxis2=dict(
+                title="Price",
+                overlaying="y",
+                side="right",
+            ),
+            hovermode='x unified'
+        )
+        
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @velo_router.get("/short-liquidations")
-async def get_velo_short_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+async def get_velo_short_liquidations(
+    coin: str = "BTC", 
+    begin: str = None, 
+    resolution: str = "1d", 
+    theme: str = "dark"
+):
     try:
         data = velo_service.liquidations(coin, begin, resolution)
         data = data.rename(columns={"time": "date"})
         data = data.set_index("date")
+        
+        # Get theme-based colors
+        colors = get_chart_colors(theme)
 
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Short Liquidations"
+                y_title="Short Liquidations",
+                theme=theme
             )
         )
 
@@ -187,19 +228,7 @@ async def get_velo_short_liquidations(coin: str = "BTC", begin: str = None, reso
             x=data.index,
             y=data["sell_liquidations_dollar_volume"],
             name="Short Liquidations",
-            marker=dict(color="#ff0000")
-        )
-
-        # Update layout for secondary y-axis and hover mode
-        figure.update_layout(
-            yaxis2=dict(
-                title="Price",
-                overlaying="y",
-                side="right",
-                gridcolor="#2f3338",
-                color="#ffffff"
-            ),
-            hovermode='x unified'
+            marker_color=colors['negative']
         )
 
         figure.add_scatter(
@@ -207,17 +236,35 @@ async def get_velo_short_liquidations(coin: str = "BTC", begin: str = None, reso
             y=data["close_price"],
             mode="lines",
             name="Price",
-            line=dict(color="#ffffff"),
+            line=dict(color=colors['main_line']),
             yaxis="y2",
             hovertemplate="%{y:,.2f}"
         )
+        
+        # Update layout for secondary y-axis and hover mode
+        figure.update_layout(
+            yaxis2=dict(
+                title="Price",
+                overlaying="y",
+                side="right",
+            ),
+            hovermode='x unified'
+        )
+        
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @velo_router.get("/net-liquidations")
-async def get_velo_net_liquidations(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+async def get_velo_net_liquidations(
+    coin: str = "BTC", 
+    begin: str = None, 
+    resolution: str = "1d", 
+    theme: str = "dark"
+):
     try:
         data = velo_service.liquidations(coin, begin, resolution)
         
@@ -227,13 +274,20 @@ async def get_velo_net_liquidations(coin: str = "BTC", begin: str = None, resolu
             'sell_liquidations_dollar_volume': 'sum'
         }).reset_index()
         
-        data['net_liquidations'] = data['buy_liquidations_dollar_volume'] - data['sell_liquidations_dollar_volume']
+        data['net_liquidations'] = (
+            data['buy_liquidations_dollar_volume'] - 
+            data['sell_liquidations_dollar_volume']
+        )
         data = data.set_index("time")
+        
+        # Get theme-based colors
+        colors = get_chart_colors(theme)
 
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Net Liquidations ($)"
+                y_title="Net Liquidations ($)",
+                theme=theme
             )
         )
 
@@ -242,20 +296,10 @@ async def get_velo_net_liquidations(coin: str = "BTC", begin: str = None, resolu
             x=data.index,
             y=data["net_liquidations"],
             name="Net Liquidations",
-            marker_color=['rgba(0,255,0,0.5)' if x >= 0 else 'rgba(255,0,0,0.5)' 
-                        for x in data["net_liquidations"]]
-        )
-
-        # Update layout for secondary y-axis
-        figure.update_layout(
-            yaxis2=dict(
-                title="Price ($)",
-                overlaying="y",
-                side="right",
-                gridcolor="#2f3338",
-                color="#ffffff"
-            ),
-            hovermode='x unified'
+            marker_color=[
+                colors['positive'] if x >= 0 else colors['negative'] 
+                for x in data["net_liquidations"]
+            ]
         )
 
         # Add price line
@@ -264,32 +308,49 @@ async def get_velo_net_liquidations(coin: str = "BTC", begin: str = None, resolu
             y=data["close_price"],
             mode="lines",
             name="Price",
-            line=dict(color="#F7931A"),
+            line=dict(color=colors['main_line']),
             yaxis="y2",
             hovertemplate="%{y:,.2f}"
         )
+        
+        # Update layout for secondary y-axis
+        figure.update_layout(
+            yaxis2=dict(
+                title="Price ($)",
+                overlaying="y",
+                side="right",
+            ),
+            hovermode='x unified'
+        )
+        
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @velo_router.get("/open-interest")
-async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolution: str = "1d", theme: str = "dark"):
     try:
         data = velo_service.open_interest(coin, begin, resolution)
         
         oi_data = data.groupby(['time', 'exchange'])['dollar_open_interest_close'].sum().reset_index()
         price_data = data.groupby('time')['close_price'].mean().reset_index()
         
+        # Get theme-based colors
+        colors = get_chart_colors(theme)
+
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
-                y_title="Open Interest ($)"
+                y_title="Open Interest ($)",
+                theme=theme
             )
         )
 
         # Define exchange colors
-        colors = {
+        exchange_colors = {
             'binance-futures': '#F3BA2F',
             'bybit': '#4982D4',
             'okex-swap': '#BB81F6',
@@ -306,26 +367,9 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
                     name=exchange,
                     mode='lines',
                     stackgroup='oi',
-                    line=dict(color=colors[exchange]),
+                    line=dict(color=exchange_colors.get(exchange, colors['main_line'])),
                 )
             )
-
-        # Update layout for secondary y-axis
-        figure.update_layout(
-            yaxis=dict(
-                title="Open Interest ($)",
-                gridcolor="#2f3338",
-                color="#ffffff",
-            ),
-            yaxis2=dict(
-                title="Price ($)", 
-                overlaying="y",
-                side="right",
-                gridcolor="#2f3338",
-                color="#ffffff"
-            ),
-            hovermode='x unified'
-        )
 
         # Add price line
         figure.add_trace(
@@ -333,18 +377,36 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
                 x=price_data['time'],
                 y=price_data['close_price'],
                 name="Price",
-                line=dict(color="#ffffff"),
+                line=dict(color=colors['main_line']),
                 yaxis="y2",
                 hovertemplate="%{y:,.2f}"
             )
         )
+        
+        # Update layout for secondary y-axis
+        figure.update_layout(
+            yaxis2=dict(
+                title="Price ($)", 
+                overlaying="y",
+                side="right",
+            ),
+            hovermode='x unified'
+        )
+        
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @velo_router.get("/ohlcv")
-async def get_velo_ohlcv(ticker: str = "BTCUSDT", exchange: str = "binance", resolution: str = "1d"):
+async def get_velo_ohlcv(
+    ticker: str = "BTCUSDT", 
+    exchange: str = "binance", 
+    resolution: str = "1d",
+    theme: str = "dark"
+):
     try:
         from highcharts_stock.options.series.candlestick import CandlestickSeries
         from highcharts_stock.options.chart import ChartOptions
@@ -364,13 +426,54 @@ async def get_velo_ohlcv(ticker: str = "BTCUSDT", exchange: str = "binance", res
 
         chart = Chart()
         
-        # Configure chart options
+        # Configure chart options with theme-based styling
+        bg_color = '#121212' if theme == 'dark' else '#FFFFFF'
+        text_color = '#FFFFFF' if theme == 'dark' else '#333333'
+        grid_color = 'rgba(255,255,255,0.1)' if theme == 'dark' else 'rgba(0,0,0,0.1)'
+        
         chart.chart = ChartOptions(
             type='candlestick',            
             style={
                 'fontFamily': 'Arial, sans-serif'
-            }
+            },
+            backgroundColor=bg_color
         )
+        
+        # Set theme-based colors
+        chart.colors = ['#FF8000', '#00B140', '#F4284D', '#2D9BF0'] if theme == 'dark' else [
+            '#2E5090', '#00AA44', '#CC0000', '#3366CC'
+        ]
+        
+        # Configure tooltip and other styling
+        chart.tooltip = {
+            'backgroundColor': bg_color,
+            'borderColor': grid_color,
+            'style': {
+                'color': text_color
+            }
+        }
+        
+        chart.xAxis = {
+            'gridLineColor': grid_color,
+            'lineColor': grid_color,
+            'tickColor': grid_color,
+            'labels': {
+                'style': {
+                    'color': text_color
+                }
+            }
+        }
+        
+        chart.yAxis = {
+            'gridLineColor': grid_color,
+            'lineColor': grid_color,
+            'tickColor': grid_color,
+            'labels': {
+                'style': {
+                    'color': text_color
+                }
+            }
+        }
 
         chart.add_series(CandlestickSeries(
             data=chart_data,
@@ -388,17 +491,21 @@ async def get_velo_ohlcv(ticker: str = "BTCUSDT", exchange: str = "binance", res
         raise HTTPException(status_code=400, detail=str(e))
     
 @velo_router.get("/basis")
-async def get_velo_basis(coin: str = "BTC", begin: str = None, resolution: str = "1d"):
+async def get_velo_basis(coin: str = "BTC", begin: str = None, resolution: str = "1d", theme: str = "dark"):
     try:
         data = velo_service.basis(coin.upper(), begin, resolution)
         data = data.groupby('time', as_index=False)['3m_basis_ann'].mean()
         data = data.set_index("time")
+        
+        # Get theme-based colors
+        colors = get_chart_colors(theme)
 
         figure = go.Figure(
             layout=create_base_layout(
                 x_title="Date",
                 y_title="3m Basis Ann %",
-                y_dtype=".0%"
+                y_dtype=".0%",
+                theme=theme
             )
         )
 
@@ -407,7 +514,11 @@ async def get_velo_basis(coin: str = "BTC", begin: str = None, resolution: str =
             y=data["3m_basis_ann"],
             mode="lines",
             name="3m Basis Ann",
+            line=dict(color=colors['main_line']),
         )
+        
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
