@@ -408,85 +408,88 @@ async def get_velo_ohlcv(
     theme: str = "dark"
 ):
     try:
-        from highcharts_stock.options.series.candlestick import CandlestickSeries
-        from highcharts_stock.options.chart import ChartOptions
-        from highcharts_stock.chart import Chart
-        
         # Get data from velo service
         data = velo_service.get_ohlcv(ticker, exchange, resolution)
-                
-        # Create data points for Highcharts - format: [timestamp, open, high, low, close]
-        chart_data = [[
-            row['time'],  # timestamp is already in milliseconds
-            row['open_price'],
-            row['high_price'],
-            row['low_price'],
-            row['close_price'],
-        ] for _, row in data.iterrows()]
-
-        chart = Chart()
         
-        # Configure chart options with theme-based styling
-        bg_color = '#121212' if theme == 'dark' else '#FFFFFF'
-        text_color = '#FFFFFF' if theme == 'dark' else '#333333'
-        grid_color = 'rgba(255,255,255,0.1)' if theme == 'dark' else 'rgba(0,0,0,0.1)'
+        if data.empty:
+            raise HTTPException(status_code=404, detail="No data found for the specified parameters")
         
-        chart.chart = ChartOptions(
-            type='candlestick',            
-            style={
-                'fontFamily': 'Arial, sans-serif'
-            },
-            backgroundColor=bg_color
+        # Convert to Plotly format instead of Highcharts
+        figure = go.Figure()
+        
+        # Add candlestick trace
+        figure.add_trace(
+            go.Candlestick(
+                x=data['time'],
+                open=data['open_price'],
+                high=data['high_price'],
+                low=data['low_price'],
+                close=data['close_price'],
+                name=ticker,
+                increasing_line_color='#00B140',  # Green for increasing candles
+                decreasing_line_color='#F4284D',  # Red for decreasing candles
+            )
         )
         
-        # Set theme-based colors
-        chart.colors = ['#FF8000', '#00B140', '#F4284D', '#2D9BF0'] if theme == 'dark' else [
-            '#2E5090', '#00AA44', '#CC0000', '#3366CC'
-        ]
+        # Add volume as a bar chart at the bottom with a separate y-axis
+        figure.add_trace(
+            go.Bar(
+                x=data['time'],
+                y=data['coin_volume'],
+                name='Volume',
+                marker_color='rgba(128, 128, 128, 0.5)',
+                yaxis='y2',
+                hovertemplate='Volume: %{y:,.0f}<extra></extra>'
+            )
+        )
         
-        # Configure tooltip and other styling
-        chart.tooltip = {
-            'backgroundColor': bg_color,
-            'borderColor': grid_color,
-            'style': {
-                'color': text_color
-            }
-        }
+        # Set up the layout with theme-based styling
+        dark_theme = theme == 'dark'
+        bg_color = '#121212' if dark_theme else '#FFFFFF'
+        text_color = '#FFFFFF' if dark_theme else '#333333'
+        grid_color = 'rgba(255,255,255,0.1)' if dark_theme else 'rgba(0,0,0,0.1)'
         
-        chart.xAxis = {
-            'gridLineColor': grid_color,
-            'lineColor': grid_color,
-            'tickColor': grid_color,
-            'labels': {
-                'style': {
-                    'color': text_color
-                }
-            }
-        }
+        # Create base layout
+        layout = create_base_layout(
+            x_title="Date",
+            y_title="Price",
+            theme=theme
+        )
         
-        chart.yAxis = {
-            'gridLineColor': grid_color,
-            'lineColor': grid_color,
-            'tickColor': grid_color,
-            'labels': {
-                'style': {
-                    'color': text_color
-                }
-            }
-        }
-
-        chart.add_series(CandlestickSeries(
-            data=chart_data,
-            name=ticker,
-            tooltip={
-                'valueDecimals': 2
-            },
-        ))
-
-        obj = json.loads(chart.to_json())
-        obj["constructorType"] = "stockChart"
-        return obj
-
+        # Update layout for candlestick chart
+        figure.update_layout(
+            layout,
+            title=f"{ticker} on {exchange.capitalize()}",
+            xaxis_rangeslider_visible=False,  # Hide the range slider
+            yaxis=dict(
+                title="Price",
+                side="left",
+                showgrid=True,
+                gridcolor=grid_color,
+            ),
+            yaxis2=dict(
+                title="Volume",
+                overlaying="y",
+                side="right",
+                showgrid=False,
+                rangemode='normal',
+                anchor="x",
+            ),
+            hovermode='x unified',
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            )
+        )
+        
+        # Apply the standard configuration to the figure with theme
+        figure, config = apply_config_to_figure(figure, theme=theme)
+        
+        return json.loads(figure.to_json())
+        
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
@@ -523,3 +526,29 @@ async def get_velo_basis(coin: str = "BTC", begin: str = None, resolution: str =
         return json.loads(figure.to_json())
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@velo_router.get("/resolution-options")
+async def get_resolution_options():
+    """
+    Returns a formatted list of resolution options in the format:
+    {
+        "value": "1d",
+        "label": "1 Day"
+    }
+    """
+    resolution_options = [
+        {"value": "1m", "label": "1 Minute"},
+        {"value": "5m", "label": "5 Minutes"},
+        {"value": "30m", "label": "30 Minutes"},
+        {"value": "1h", "label": "1 Hour"},
+        {"value": "4h", "label": "4 Hours"},
+        {"value": "12h", "label": "12 Hours"},
+        {"value": "1d", "label": "1 Day"},
+        {"value": "3d", "label": "3 Days"},
+        {"value": "5d", "label": "5 Days"},
+        {"value": "1w", "label": "1 Week"},
+        {"value": "2w", "label": "2 Weeks"},
+        {"value": "4w", "label": "4 Weeks"}
+    ]
+    
+    return resolution_options
