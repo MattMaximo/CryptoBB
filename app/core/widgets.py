@@ -1,10 +1,9 @@
 WIDGETS = {
-
     "crypto_dominance": {
         "name": "Crypto Market Dominance",
         "description": "Market dominance of major cryptocurrencies",
         "category": "crypto",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "defaultViz": "chart",
         "endpoint": "coingecko/dominance",
         "gridData": {"w": 20, "h": 9},
@@ -18,9 +17,7 @@ WIDGETS = {
                 "type": "endpoint",
                 "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the cryptocurrency",
-                "style": {
-                    "popupWidth": 600
-                }
+                "style": {"popupWidth": 600},
             }
         ],
         "data": {"chart": {"type": "line"}},
@@ -42,9 +39,7 @@ WIDGETS = {
                 "type": "endpoint",
                 "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the cryptocurrency",
-                "style": {
-                    "popupWidth": 600
-                }
+                "style": {"popupWidth": 600},
             }
         ],
         "data": {"chart": {"type": "line"}},
@@ -57,7 +52,7 @@ WIDGETS = {
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
                 "columnsDefs": [
                     {
@@ -84,7 +79,6 @@ WIDGETS = {
             }
         },
     },
-    
     "long_term_holders_net_change": {
         "name": "Long Term Holders Net Position Change",
         "description": "Net position change of long term holders",
@@ -100,7 +94,7 @@ WIDGETS = {
                 "label": "Coin",
                 "type": "text",
                 "description": "Glassnode ID of the cryptocurrency",
-            },  
+            },
             {
                 "paramName": "show_price",
                 "value": "False",
@@ -108,20 +102,13 @@ WIDGETS = {
                 "type": "text",
                 "description": "Overlay price on chart",
                 "options": [
-                    {
-                        "value": "True",
-                        "label": "True"
-                    },
-                    {
-                        "value": "False",
-                        "label": "False"
-                    },
-        ]
-      }
+                    {"value": "True", "label": "True"},
+                    {"value": "False", "label": "False"},
+                ],
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
-
     "long_term_holders_supply": {
         "name": "Long Term Holders Supply",
         "description": "Supply of long term holders",
@@ -145,25 +132,18 @@ WIDGETS = {
                 "type": "text",
                 "description": "Overlay price on chart",
                 "options": [
-                    {
-                        "value": "True",
-                        "label": "True"
-                    },
-                    {
-                        "value": "False",
-                        "label": "False"
-                    },
-        ]
-      }
+                    {"value": "True", "label": "True"},
+                    {"value": "False", "label": "False"},
+                ],
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
-
     "google_trends": {
         "name": "Google Trends",
         "description": "Historical and current search trends for a given keyword",
         "category": "sentiment",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "defaultViz": "chart",
         "endpoint": "google-trends/historical-google-trends",
         "gridData": {"w": 20, "h": 9},
@@ -179,18 +159,17 @@ WIDGETS = {
         ],
         "data": {"chart": {"type": "line"}},
     },
-
     "coingecko_correlation": {
         "name": "Coingecko Correlation",
         "description": "Historical correlation between two search tokens",
         "category": "crypto",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "defaultViz": "chart",
         "endpoint": "coingecko/correlation",
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "params": [
-            {   
+            {
                 "paramName": "coin_id1",
                 "value": "bitcoin",
                 "label": "Coin",
@@ -198,11 +177,9 @@ WIDGETS = {
                 "type": "endpoint",
                 "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the first cryptocurrency",
-                "style": {
-                    "popupWidth": 600
-                }
+                "style": {"popupWidth": 600},
             },
-            {   
+            {
                 "paramName": "coin_id2",
                 "value": "ethereum",
                 "label": "Coin",
@@ -210,9 +187,7 @@ WIDGETS = {
                 "type": "endpoint",
                 "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the second cryptocurrency",
-                "style": {
-                    "popupWidth": 600
-                }
+                "style": {"popupWidth": 600},
             },
             {
                 "type": "date",
@@ -221,21 +196,20 @@ WIDGETS = {
                 "label": "Start Date",
                 "show": True,
                 "description": "The start date for the data",
-            }
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
-
- "velo_futures_products": {
+    "velo_futures_products": {
         "name": "Velo Futures Products",
         "description": "List of all futures products available on Velo.",
         "category": "crypto",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "endpoint": "velo/futures-products",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
                 "columnsDefs": [
                     {
@@ -262,17 +236,16 @@ WIDGETS = {
             }
         },
     },
-
- "velo_spot_products": {
+    "velo_spot_products": {
         "name": "Velo Spot Products",
         "description": "List of all spot products available on Velo.",
         "category": "crypto",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "endpoint": "velo/spot-products",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
                 "columnsDefs": [
                     {
@@ -299,16 +272,16 @@ WIDGETS = {
             }
         },
     },
- "velo_options_products": {
+    "velo_options_products": {
         "name": "Velo Options Products",
         "description": "List of all options products available on Velo.",
         "category": "crypto",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "endpoint": "velo/options-products",
         "gridData": {"w": 20, "h": 9},
         "source": "VeloData",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
                 "columnsDefs": [
                     {
@@ -364,11 +337,10 @@ WIDGETS = {
                 "label": "Start Date",
                 "type": "text",
                 "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
-            }
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
-    
     "exchange_funding_rates": {
         "name": "Funding Rates by Exchange",
         "description": "Historical Funding Rates by Exchange.",
@@ -398,7 +370,7 @@ WIDGETS = {
                 "label": "Start Date",
                 "type": "text",
                 "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
-            }
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
@@ -431,7 +403,7 @@ WIDGETS = {
                 "label": "Start Date",
                 "type": "text",
                 "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
-            }
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
@@ -464,7 +436,7 @@ WIDGETS = {
                 "label": "Start Date",
                 "type": "text",
                 "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
-            }
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
@@ -497,7 +469,7 @@ WIDGETS = {
                 "label": "Start Date",
                 "type": "text",
                 "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
-            }
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
@@ -530,11 +502,10 @@ WIDGETS = {
                 "label": "Start Date",
                 "type": "text",
                 "description": "Start date of the data (YYYY-MM-DD). Leave blank for full history.",
-            }
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
-
     "aave_lending_rate": {
         "name": "Aave Lending Rate",
         "description": "Historical Daily Aave Lending Rates. Default is USDC on Aave.",
@@ -551,12 +522,9 @@ WIDGETS = {
                 "type": "text",
                 "description": "Aave Pool to get lending rates for",
             },
-
         ],
         "data": {"chart": {"type": "line"}},
     },
-
-
     "aave_borrow_rate": {
         "name": "Aave Borrow Rate",
         "description": "Historical Daily Aave Borrow Rates. Default is USDC on Aave.",
@@ -573,11 +541,9 @@ WIDGETS = {
                 "type": "text",
                 "description": "Aave Pool to get borrow rates for",
             },
-
         ],
         "data": {"chart": {"type": "line"}},
     },
-
     "aave_utilization_rate": {
         "name": "Aave Utilization Rate",
         "description": "Historical Daily Aave Utilization Rates. Default is USDC on Aave.",
@@ -596,19 +562,17 @@ WIDGETS = {
             },
         ],
         "data": {"chart": {"type": "line"}},
-    },      
-
-
- "aave_pools": {
+    },
+    "aave_pools": {
         "name": "Aave Pools",
         "description": "List of all Aave Lending Pools.",
         "category": "crypto",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "endpoint": "aave/pools",
         "gridData": {"w": 20, "h": 9},
         "source": "Aave",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
                 "columnsDefs": [
                     {
@@ -640,12 +604,11 @@ WIDGETS = {
             }
         },
     },
-
     "coingecko_price": {
         "name": "Coingecko Price",
         "description": "Historical and current price for a given coin",
         "category": "crypto",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "defaultViz": "chart",
         "endpoint": "coingecko/price",
         "gridData": {"w": 20, "h": 9},
@@ -659,56 +622,49 @@ WIDGETS = {
                 "type": "endpoint",
                 "optionsEndpoint": "coingecko/coin-list-formatted",
                 "description": "CoinGecko ID of the cryptocurrency",
-                "style": {
-                    "popupWidth": 600
-                }
+                "style": {"popupWidth": 600},
             }
         ],
         "data": {"chart": {"type": "line"}},
     },
-
     "coinbase_app_store_rank": {
         "name": "Coinbase App Store Rank",
         "description": "Historical and current rank of Coinbase in the App Store",
         "category": "sentiment",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "defaultViz": "chart",
         "endpoint": "telegram/coinbase-app-store-rank",
         "gridData": {"w": 20, "h": 9},
         "source": "Telegram",
         "data": {"chart": {"type": "line"}},
     },
-
     "coinbase_wallet_app_store_rank": {
         "name": "Coinbase Wallet App Store Rank",
         "description": "Historical and current rank of Coinbase Wallet in the App Store",
         "category": "sentiment",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "defaultViz": "chart",
         "endpoint": "telegram/coinbase-wallet-app-store-rank",
         "gridData": {"w": 20, "h": 9},
         "source": "Telegram",
         "data": {"chart": {"type": "line"}},
     },
-
     "phantom_wallet_app_store_rank": {
         "name": "Phantom Wallet App Store Rank",
         "description": "Historical and current rank of Phantom Wallet in the App Store",
         "category": "sentiment",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "defaultViz": "chart",
         "endpoint": "telegram/phantom-wallet-app-store-rank",
         "gridData": {"w": 20, "h": 9},
         "source": "Telegram",
         "data": {"chart": {"type": "line"}},
     },
-
-
     "glassnode_price": {
         "name": "Glassnode Price",
         "description": "Historical and current price for a given coin",
         "category": "crypto",
-        #"subCategory": "crypto",
+        # "subCategory": "crypto",
         "defaultViz": "chart",
         "endpoint": "glassnode/price",
         "gridData": {"w": 20, "h": 9},
@@ -739,7 +695,7 @@ WIDGETS = {
         "description": "Historical info for Microstrategy's Bitcoin holdings, including balance, cost basis, and share metrics",
         "category": "crypto",
         "defaultViz": "table",
-        "endpoint": "microstrategy/info", 
+        "endpoint": "microstrategy/info",
         "gridData": {"w": 20, "h": 9},
         "source": "MSTR Tracker",
         "data": {
@@ -749,51 +705,51 @@ WIDGETS = {
                     {
                         "headerName": "Date",
                         "field": "date",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "BTC Held",
                         "field": "btc_balance",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Bal Change",
-                        "field": "change", 
-                        "chartDataType": "category"
+                        "field": "change",
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "BTC per Share",
                         "field": "btc_per_share",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Cost Basis",
                         "field": "cost_basis",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "MSTR/BTC",
                         "field": "mstr_btc",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "MSTR Price",
                         "field": "mstr",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "BTC Price",
                         "field": "btc",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Outstanding Shares",
                         "field": "total_outstanding_shares",
-                        "chartDataType": "category"
-                    }
-                ]
+                        "chartDataType": "category",
+                    },
+                ],
             }
-        }
+        },
     },
     "exchange_price_deltas": {
         "name": "Exchange Price Deltas",
@@ -810,7 +766,7 @@ WIDGETS = {
         "description": "Market data for AI Agents",
         "category": "crypto",
         "defaultViz": "table",
-        "endpoint": "geckoterminal/ai-agents-market-data", 
+        "endpoint": "geckoterminal/ai-agents-market-data",
         "gridData": {"w": 20, "h": 9},
         "source": "Geckoterminal",
         "data": {
@@ -820,62 +776,62 @@ WIDGETS = {
                     {
                         "headerName": "Name",
                         "field": "name",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Symbol",
                         "field": "symbol",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Price USD",
                         "field": "price_usd",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Volume USD",
                         "field": "volume_usd",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Market Cap USD",
                         "field": "market_cap_usd",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "FDV USD",
                         "field": "fdv_usd",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Total Supply",
                         "field": "total_supply",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Total Reserve USD",
                         "field": "total_reserve_in_usd",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Top Pool ID",
                         "field": "top_pool_id",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Chain",
                         "field": "chain",
-                        "chartDataType": "category"
+                        "chartDataType": "category",
                     },
                     {
                         "headerName": "Address",
                         "field": "address",
-                        "chartDataType": "category"
-                    }
-                ]
+                        "chartDataType": "category",
+                    },
+                ],
             }
-        }
-    }, 
+        },
+    },
     "geckoterminal_candles": {
         "name": "Geckoterminal OHLCV Candles",
         "description": "OHLCV data for a given pool",
@@ -890,22 +846,22 @@ WIDGETS = {
                 "value": "GOAT",
                 "label": "Symbol",
                 "type": "text",
-                "description": "Symbol of the AI Agent token"
+                "description": "Symbol of the AI Agent token",
             },
             {
-                "paramName": "timeframe", 
+                "paramName": "timeframe",
                 "value": "hour",
                 "label": "Timeframe",
                 "type": "text",
-                "description": "Options: day, hour, minute"
+                "description": "Options: day, hour, minute",
             },
             {
                 "paramName": "aggregate",
                 "value": "4",
                 "label": "Aggregate",
-                "type": "text", 
-                "description": "Aggregation interval. Options: day = [1], hour = [1, 4, 12], minute = [1, 5, 15]"
-            }
+                "type": "text",
+                "description": "Aggregation interval. Options: day = [1], hour = [1, 4, 12], minute = [1, 5, 15]",
+            },
         ],
         "data": {"chart": {"type": "candlestick"}},
     },
@@ -943,44 +899,17 @@ WIDGETS = {
                 "value": "1d",
                 "label": "Resolution",
                 "options": [
-                    {
-                        "value": "1m",
-                        "label": "1m"
-                    },
-                    {
-                        "value": "5m",
-                        "label": "5m"
-                    },
-                    {
-                        "value": "10m",
-                        "label": "10m"
-                    },
-                    {
-                        "value": "30m",
-                        "label": "30m"
-                    },
-                    {
-                        "value": "1h",
-                        "label": "1h"
-                    },
-                    {
-                        "value": "4h",
-                        "label": "4h"
-                    },
-                    {
-                        "value": "1d",
-                        "label": "1d"
-                    },
-                    {
-                        "value": "1w",
-                        "label": "1w"
-                    },
-                    {
-                        "value": "1M",
-                        "label": "1M"
-                    }
-                ]
-            }
+                    {"value": "1m", "label": "1m"},
+                    {"value": "5m", "label": "5m"},
+                    {"value": "10m", "label": "10m"},
+                    {"value": "30m", "label": "30m"},
+                    {"value": "1h", "label": "1h"},
+                    {"value": "4h", "label": "4h"},
+                    {"value": "1d", "label": "1d"},
+                    {"value": "1w", "label": "1w"},
+                    {"value": "1M", "label": "1M"},
+                ],
+            },
         ],
     },
     "ccdata_candles": {
@@ -997,29 +926,29 @@ WIDGETS = {
                 "value": "binance",
                 "label": "Exchange",
                 "type": "text",
-                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)"
+                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)",
             },
             {
-                "paramName": "symbol", 
+                "paramName": "symbol",
                 "value": "BTC-USDT",
                 "label": "Pair",
                 "type": "text",
-                "description": "Pair (e.g. BTC-USDT) to fetch data for"
+                "description": "Pair (e.g. BTC-USDT) to fetch data for",
             },
             {
-                "paramName": "interval", 
+                "paramName": "interval",
                 "value": "hours",
                 "label": "Interval",
                 "type": "text",
-                "description": "Interval to fetch data for (options: minutes, hours, days)"
+                "description": "Interval to fetch data for (options: minutes, hours, days)",
             },
             {
                 "paramName": "aggregate",
                 "value": "1",
                 "label": "Aggregate",
-                "type": "text", 
-                "description": "Aggregation interval."
-            }
+                "type": "text",
+                "description": "Aggregation interval.",
+            },
         ],
         "data": {"chart": {"type": "candlestick"}},
     },
@@ -1037,29 +966,29 @@ WIDGETS = {
                 "value": "binance",
                 "label": "Exchange",
                 "type": "text",
-                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)"
+                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)",
             },
             {
-                "paramName": "symbol", 
+                "paramName": "symbol",
                 "value": "BTC-USDT",
                 "label": "Pair",
                 "type": "text",
-                "description": "Pair (e.g. BTC-USDT) to fetch data for"
+                "description": "Pair (e.g. BTC-USDT) to fetch data for",
             },
             {
-                "paramName": "interval", 
+                "paramName": "interval",
                 "value": "hours",
                 "label": "Interval",
                 "type": "text",
-                "description": "Interval to fetch data for (options: minutes, hours, days)"
+                "description": "Interval to fetch data for (options: minutes, hours, days)",
             },
             {
                 "paramName": "aggregate",
                 "value": "1",
                 "label": "Aggregate",
-                "type": "text", 
-                "description": "Aggregation interval."
-            }
+                "type": "text",
+                "description": "Aggregation interval.",
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
@@ -1077,29 +1006,29 @@ WIDGETS = {
                 "value": "binance",
                 "label": "Exchange",
                 "type": "text",
-                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)"
+                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)",
             },
             {
-                "paramName": "symbol", 
+                "paramName": "symbol",
                 "value": "BTC-USDT",
                 "label": "Pair",
                 "type": "text",
-                "description": "Pair (e.g. BTC-USDT) to fetch data for"
+                "description": "Pair (e.g. BTC-USDT) to fetch data for",
             },
             {
-                "paramName": "interval", 
+                "paramName": "interval",
                 "value": "hours",
                 "label": "Interval",
                 "type": "text",
-                "description": "Interval to fetch data for (options: minutes, hours, days)"
+                "description": "Interval to fetch data for (options: minutes, hours, days)",
             },
             {
                 "paramName": "aggregate",
                 "value": "1",
                 "label": "Aggregate",
-                "type": "text", 
-                "description": "Aggregation interval."
-            }
+                "type": "text",
+                "description": "Aggregation interval.",
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
@@ -1111,38 +1040,38 @@ WIDGETS = {
         "endpoint": "ta/fibonacci-retracement",
         "gridData": {"w": 20, "h": 9},
         "source": "CCData",
-                "params": [
+        "params": [
             {
                 "paramName": "exchange",
                 "value": "binance",
                 "label": "Exchange",
                 "type": "text",
-                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)"
+                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)",
             },
             {
-                "paramName": "symbol", 
+                "paramName": "symbol",
                 "value": "BTC-USDT",
                 "label": "Pair",
                 "type": "text",
-                "description": "Pair (e.g. BTC-USDT) to fetch data for"
+                "description": "Pair (e.g. BTC-USDT) to fetch data for",
             },
             {
-                "paramName": "interval", 
+                "paramName": "interval",
                 "value": "hours",
                 "label": "Interval",
                 "type": "text",
-                "description": "Interval to fetch data for (options: minutes, hours, days)"
+                "description": "Interval to fetch data for (options: minutes, hours, days)",
             },
             {
                 "paramName": "aggregate",
                 "value": "1",
                 "label": "Aggregate",
-                "type": "text", 
-                "description": "Aggregation interval."
-            }
+                "type": "text",
+                "description": "Aggregation interval.",
+            },
         ],
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
             }
         },
@@ -1161,29 +1090,29 @@ WIDGETS = {
                 "value": "binance",
                 "label": "Exchange",
                 "type": "text",
-                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)"
+                "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)",
             },
             {
-                "paramName": "symbol", 
+                "paramName": "symbol",
                 "value": "BTC-USDT",
                 "label": "Pair",
                 "type": "text",
-                "description": "Pair (e.g. BTC-USDT) to fetch data for"
+                "description": "Pair (e.g. BTC-USDT) to fetch data for",
             },
             {
-                "paramName": "interval", 
+                "paramName": "interval",
                 "value": "hours",
                 "label": "Interval",
                 "type": "text",
-                "description": "Interval to fetch data for (options: minutes, hours, days)"
+                "description": "Interval to fetch data for (options: minutes, hours, days)",
             },
             {
                 "paramName": "aggregate",
                 "value": "1",
                 "label": "Aggregate",
-                "type": "text", 
-                "description": "Aggregation interval."
-            }
+                "type": "text",
+                "description": "Aggregation interval.",
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
@@ -1208,7 +1137,7 @@ WIDGETS = {
     },
     "lth_nupl": {
         "name": "Long Term Holders NUPL",
-        #TODO: implement with highcharts bc plotly cant color the lines
+        # TODO: implement with highcharts bc plotly cant color the lines
         "description": "Net Unrealized Profit and Loss of long term holders",
         "category": "crypto",
         "defaultViz": "chart",
@@ -1226,7 +1155,7 @@ WIDGETS = {
         ],
         "data": {"chart": {"type": "line"}},
     },
-"screener_watchlist": {
+    "screener_watchlist": {
         "name": "Crypto Screener",
         "description": "List of all coins in the watchlist.",
         "category": "crypto",
@@ -1234,7 +1163,7 @@ WIDGETS = {
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
                 "columnsDefs": [
                     {
@@ -1246,49 +1175,49 @@ WIDGETS = {
                         "headerName": r"1H %",
                         "field": "1h_pct_change",
                         "chartDataType": "category",
-                        "renderFn": "greenRed"
+                        "renderFn": "greenRed",
                     },
                     {
                         "headerName": r"24H %",
                         "field": "24h_pct_change",
                         "chartDataType": "category",
-                        "renderFn": "greenRed"
+                        "renderFn": "greenRed",
                     },
                     {
                         "headerName": r"7d %",
                         "field": "7d_pct_change",
                         "chartDataType": "category",
-                        "renderFn": "greenRed"
+                        "renderFn": "greenRed",
                     },
                     {
                         "headerName": r"14d %",
                         "field": "14d_pct_change",
                         "chartDataType": "category",
-                        "renderFn": "greenRed"
+                        "renderFn": "greenRed",
                     },
                     {
                         "headerName": r"30D %",
                         "field": "30d_pct_change",
                         "chartDataType": "category",
-                        "renderFn": "greenRed"
+                        "renderFn": "greenRed",
                     },
                     {
                         "headerName": r"200D %",
                         "field": "200d_pct_change",
                         "chartDataType": "category",
-                        "renderFn": "greenRed"
+                        "renderFn": "greenRed",
                     },
                     {
                         "headerName": r"1Y %",
                         "field": "1y_pct_change",
                         "chartDataType": "category",
-                        "renderFn": "greenRed"
+                        "renderFn": "greenRed",
                     },
-                ]
+                ],
             }
         },
     },
-"velo_basis": {
+    "velo_basis": {
         "name": "3m Annualized Basis",
         "description": "3m annualized basis for a given coin.",
         "category": "crypto",
@@ -1307,20 +1236,14 @@ WIDGETS = {
                 "value": "1d",
                 "label": "Resolution",
                 "options": [
-                    {
-                        "value": "1h",
-                        "label": "1h"
-                    },
-                    {
-                        "value": "1d",
-                        "label": "1d"
-                    },
-                ]
-            }
+                    {"value": "1h", "label": "1h"},
+                    {"value": "1d", "label": "1d"},
+                ],
+            },
         ],
         "data": {"chart": {"type": "line"}},
     },
-"altcoin_season_index": {
+    "altcoin_season_index": {
         "name": "Altcoin Season Index",
         "description": "Altcoin Season Index calculates the number of coins in the top 50 that outperform Bitcoin over a 90 day period.",
         "category": "crypto",
@@ -1337,8 +1260,7 @@ WIDGETS = {
         ],
         "data": {"chart": {"type": "line"}},
     },
-
-    "aaatest": { #TODO: fix
+    "aaatest": {  # TODO: fix
         "name": "test",
         "description": "test",
         "category": "crypto",
@@ -1346,12 +1268,12 @@ WIDGETS = {
         "gridData": {"w": 20, "h": 9},
         "source": "Artemis",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
             }
         },
     },
-"btc_reserve_matrix": {
+    "btc_reserve_matrix": {
         "name": "BTC Reserve Matrix",
         "description": "BTC Reserve Matrix",
         "category": "crypto",
@@ -1361,8 +1283,7 @@ WIDGETS = {
         "source": "VanEck Research",
         "data": {"chart": {"type": "line"}},
     },
-
-"btc_pct_matrix": {
+    "btc_pct_matrix": {
         "name": "BTC Percentage Matrix",
         "description": "BTC Percentage Matrix",
         "category": "crypto",
@@ -1372,7 +1293,7 @@ WIDGETS = {
         "source": "VanEck Research",
         "data": {"chart": {"type": "line"}},
     },
-"ai_agent_category_market_caps":    {
+    "ai_agent_category_market_caps": {
         "name": "AI Agent Category Market Caps",
         "description": "Historical market capitalization comparison across different AI-related token categories",
         "category": "crypto",
@@ -1382,7 +1303,6 @@ WIDGETS = {
         "source": "AI Agents",
         "data": {"chart": {"type": "line"}},
     },
-
     "daos_table": {
         "name": "DAOs Fun Data",
         "description": "Overview of major DAOs including TVL, treasury, and social metrics.",
@@ -1391,7 +1311,7 @@ WIDGETS = {
         "gridData": {"w": 20, "h": 9},
         "source": "Daos Fun",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
                 "columnsDefs": [
                     {
@@ -1413,7 +1333,7 @@ WIDGETS = {
                         "headerName": "TVL Change",
                         "field": "tvl_change",
                         "chartDataType": "category",
-                        "renderFn": "greenRed"
+                        "renderFn": "greenRed",
                     },
                     {
                         "headerName": "Volume",
@@ -1429,19 +1349,17 @@ WIDGETS = {
                         "headerName": "Treasury Change",
                         "field": "treasury_change",
                         "chartDataType": "category",
-                        "renderFn": "greenRed"
+                        "renderFn": "greenRed",
                     },
                     {
                         "headerName": "Multiplier",
                         "field": "multiplier",
                         "chartDataType": "category",
-                    }
+                    },
                 ],
-           
             }
         },
     },
-
     "vvaifu_agents": {
         "name": "VVaifu Agents Data",
         "description": "Overview of VVaifu agents including market data and metrics.",
@@ -1450,12 +1368,11 @@ WIDGETS = {
         "gridData": {"w": 20, "h": 9},
         "source": "VVaifu",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
             }
         },
     },
-
     "virtuals_agents": {
         "name": "Virtuals Agents Data",
         "description": "Overview of Virtuals agents including market data and metrics.",
@@ -1464,7 +1381,7 @@ WIDGETS = {
         "gridData": {"w": 20, "h": 9},
         "source": "Virtuals",
         "data": {
-            "table": {  
+            "table": {
                 "showAll": True,
             }
         },
@@ -1478,7 +1395,6 @@ WIDGETS = {
         "source": "Virtuals",
         "data": {"chart": {"type": "line"}},
     },
-    
     "spot_exchange_volume": {
         "name": "Total Spot Exchange Volume",
         "description": "Total spot volume for a given exchange.",
@@ -1511,11 +1427,9 @@ WIDGETS = {
                 "show": True,
                 "type": "endpoint",
                 "optionsEndpoint": "/api/companies",
-                "description": "Select a company"
+                "description": "Select a company",
             }
         ],
         "data": {"chart": {"type": "line"}},  # Default chart type
     },
-} #end of widgets
-
-
+}  # end of widgets
