@@ -180,8 +180,8 @@ WIDGETS = {
         "data": {"chart": {"type": "line"}},
     },
 
-    "token_correlation": {
-        "name": "Token Correlation",
+    "coingecko_correlation": {
+        "name": "Coingecko Correlation",
         "description": "Historical correlation between two search tokens",
         "category": "crypto",
         #"subCategory": "crypto",
@@ -190,7 +190,7 @@ WIDGETS = {
         "gridData": {"w": 20, "h": 9},
         "source": "CoinGecko",
         "params": [
-            {
+            {   
                 "paramName": "coin_id1",
                 "value": "bitcoin",
                 "label": "Coin",
@@ -202,7 +202,7 @@ WIDGETS = {
                     "popupWidth": 600
                 }
             },
-            {
+            {   
                 "paramName": "coin_id2",
                 "value": "ethereum",
                 "label": "Coin",
@@ -213,6 +213,14 @@ WIDGETS = {
                 "style": {
                     "popupWidth": 600
                 }
+            },
+            {
+                "type": "date",
+                "paramName": "start_date",
+                "value": "2024-01-01",
+                "label": "Start Date",
+                "show": True,
+                "description": "The start date for the data",
             }
         ],
         "data": {"chart": {"type": "line"}},
@@ -1371,7 +1379,7 @@ WIDGETS = {
         "defaultViz": "chart",
         "endpoint": "ai-agents/ai-agent-category-market-caps",
         "gridData": {"w": 20, "h": 9},
-        "source": "CoinGecko",
+        "source": "AI Agents",
         "data": {"chart": {"type": "line"}},
     },
 
@@ -1467,7 +1475,7 @@ WIDGETS = {
         "category": "crypto",
         "endpoint": "virtuals/agents-market-caps",
         "gridData": {"w": 20, "h": 9},
-        "source": "CoinGecko",
+        "source": "Virtuals",
         "data": {"chart": {"type": "line"}},
     },
     

@@ -67,6 +67,7 @@ def get_chart_colors(theme="dark"):
     if theme == "light":
         return {
             # Main chart line colors
+            'text': '#2E5090',
             'main_line': '#2E5090',   # Navy blue for light theme
             'positive': '#00AA44',    # Forest green for positive values
             'negative': '#CC0000',    # Red for negative values
@@ -79,6 +80,7 @@ def get_chart_colors(theme="dark"):
     else:  # dark theme (default)
         return {
             # Main chart line colors
+            'text': '#FF8000',
             'main_line': '#FF8000',   # orange
             'positive': '#00B140',    # green
             'negative': '#F4284D',    # red

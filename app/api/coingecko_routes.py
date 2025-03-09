@@ -187,54 +187,145 @@ async def get_vm_ratio(coin_id: str, theme: str = "dark"):
 
 
 @coingecko_router.get("/correlation")
-async def get_correlation(coin_id1: str, coin_id2: str, theme: str = "dark"):
+async def get_correlation(
+    coin_id1: str, 
+    coin_id2: str, 
+    start_date: str = "2025-01-01", 
+    theme: str = "dark"
+):
     try:
         coin_id1 = coin_id1.lower()
         coin_id2 = coin_id2.lower()
         
+        # Get market data for both coins
         data1 = await coingecko_service.get_market_data(coin_id1)
         data2 = await coingecko_service.get_market_data(coin_id2)
         
+        # Ensure data is not empty
+        if data1.empty or data2.empty:
+            raise ValueError(
+                f"No data available for one or both coins: {coin_id1}, {coin_id2}"
+            )
+        
+        # Check if price columns exist
+        price_col1 = f"{coin_id1}_price"
+        price_col2 = f"{coin_id2}_price"
+        
+        if price_col1 not in data1.columns:
+            raise ValueError(f"Price column {price_col1} not found in data")
+        if price_col2 not in data2.columns:
+            raise ValueError(f"Price column {price_col2} not found in data")
+        
+        # Convert date columns to datetime for filtering
+        data1["date"] = pd.to_datetime(data1["date"])
+        data2["date"] = pd.to_datetime(data2["date"])
+        
+        # Filter by start_date if provided
+        if start_date:
+            start_date = pd.to_datetime(start_date)
+            data1 = data1[data1["date"] >= start_date]
+            data2 = data2[data2["date"] >= start_date]
+            
+            # Check if filtered data is empty
+            if data1.empty or data2.empty:
+                raise ValueError(
+                    f"No data available after {start_date} for one or both coins"
+                )
+        
         # Merge the data on date
         merged_data = pd.merge(
-            data1[["date", f"{coin_id1}_price"]], 
-            data2[["date", f"{coin_id2}_price"]], 
-            on="date"
+            data1[["date", price_col1]], 
+            data2[["date", price_col2]], 
+            on="date",
+            how="inner"  # Only keep dates that exist in both datasets
         )
         
-        merged_data["date"] = pd.to_datetime(merged_data["date"]).dt.strftime("%Y-%m-%d")
-        merged_data = merged_data.set_index("date")
+        # Check if merged data is empty
+        if merged_data.empty:
+            raise ValueError(
+                "No overlapping dates found between the two coins"
+            )
+        
+        # Calculate correlation before setting index
+        correlation = merged_data[price_col1].corr(merged_data[price_col2])
+        
+        # Format date after calculations
+        merged_data["date_str"] = merged_data["date"].dt.strftime("%Y-%m-%d")
+        merged_data = merged_data.set_index("date_str")
         
         # Get chart colors based on theme
         colors = get_chart_colors(theme)
         
-        figure = go.Figure(
-            layout=create_base_layout(
+        # Create figure with dual y-axes for different price scales
+        figure = go.Figure()
+        
+        # Set base layout
+        figure.update_layout(
+            **create_base_layout(
                 x_title="Date",
                 y_title=f"{coin_id1.upper()} Price",
                 theme=theme
             )
         )
-
+        
+        # Add second y-axis with color matching the second line
+        figure.update_layout(
+            yaxis=dict(
+                title=dict(
+                    text=f"{coin_id1.upper()} Price",
+                    font=dict(color=colors['main_line'])
+                )
+            ),
+            yaxis2=dict(
+                title=dict(
+                    text=f"{coin_id2.upper()} Price",
+                    font=dict(color=colors['secondary'])
+                ),
+                overlaying="y",
+                side="right",
+                showgrid=False
+            )
+        )
+        
+        # Add first coin to primary y-axis
         figure.add_scatter(
             x=merged_data.index,
-            y=merged_data[f"{coin_id1}_price"],
+            y=merged_data[price_col1],
             mode="lines",
             line=dict(color=colors['main_line']),
             name=f"{coin_id1.upper()} Price"
         )
-
+        
+        # Add second coin to secondary y-axis
         figure.add_scatter(
             x=merged_data.index,
-            y=merged_data[f"{coin_id2}_price"],
+            y=merged_data[price_col2],
             mode="lines",
             line=dict(color=colors['secondary']),
-            name=f"{coin_id2.upper()} Price"
+            name=f"{coin_id2.upper()} Price",
+            yaxis="y2"
         )
-
+        
+        # Add correlation annotation with theme-appropriate color
+        correlation_color = "white" if theme == "dark" else "black"
+        figure.add_annotation(
+            x=0.02,
+            y=0.98,
+            xref="paper",
+            yref="paper",
+            text=f"Correlation: {correlation:.2f}",
+            showarrow=False,
+            font=dict(
+                color=correlation_color,
+                size=14
+            ),
+            borderwidth=1,
+            borderpad=4
+        )
+        
         # Apply the standard configuration to the figure with theme
         figure, config = apply_config_to_figure(figure, theme=theme)
-
+        
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
@@ -321,7 +412,7 @@ async def get_btc_price_sma_multiplier(theme: str = "dark"):
                 x=subset.index,
                 y=subset['bitcoin_price'],
                 mode='markers',
-                marker=dict(color=color, size=5),
+                marker=dict(color=color, size=3),  # Reduced marker size from 5 to 3
                 name=color
             ))
 
@@ -373,7 +464,10 @@ async def get_coin_list_formatted(
     for coin in symbols_list.to_dict(orient="records"):
         formatted_list.append({
             "value": coin["id"],
-            "label": f"{coin['name']} ({coin['symbol'].upper()})"
+            "label": f"{coin['name']} ({coin['symbol'].upper()})",
+            "extraInfo": {
+                "description": coin['name']
+            }
         })
     
     return formatted_list
