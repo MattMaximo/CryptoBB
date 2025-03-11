@@ -33,7 +33,7 @@ ccdata_service = CCDataService()
             "description": "Exchange to fetch data from",
         },
         {
-            "paramName": "symbol",
+            "paramName": "coin_id",
             "value": "BTC-USDT",
             "label": "Symbol",
             "show": True,
@@ -58,14 +58,14 @@ ccdata_service = CCDataService()
 })
 async def get_rsi(
     exchange: str, 
-    symbol: str, 
+    coin_id: str, 
     interval: str, 
     aggregate: int, 
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
-            (exchange, symbol), 
+            (exchange, coin_id), 
             interval=interval, 
             aggregate=aggregate, 
             limit=2000
@@ -178,7 +178,7 @@ async def get_rsi(
             "description": "Exchange to fetch data from",
         },
         {
-            "paramName": "symbol",
+            "paramName": "coin_id",
             "value": "BTC-USDT",
             "label": "Symbol",
             "show": True,
@@ -203,14 +203,14 @@ async def get_rsi(
 })
 async def get_macd(
     exchange: str, 
-    symbol: str, 
+    coin_id: str, 
     interval: str, 
     aggregate: int, 
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
-            (exchange, symbol), 
+            (exchange, coin_id), 
             interval=interval, 
             aggregate=aggregate, 
             limit=2000
@@ -348,7 +348,7 @@ async def get_macd(
             "description": "Exchange to fetch data from",
         },
         {
-            "paramName": "symbol",
+            "paramName": "coin_id",
             "value": "BTC-USDT",
             "label": "Symbol",
             "show": True,
@@ -373,13 +373,14 @@ async def get_macd(
 })
 async def get_fibonacci(
     exchange: str, 
-    symbol: str, 
+    coin_id: str, 
     interval: str, 
-    aggregate: int
+    aggregate: int,
+    theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
-            (exchange, symbol), 
+            (exchange, coin_id), 
             interval=interval, 
             aggregate=aggregate, 
             limit=2000
@@ -428,9 +429,70 @@ async def get_fibonacci(
             for ratio in fibonacci_ratios
         }
 
-        # Create a DataFrame for visualization or further analysis
+        # Create a DataFrame for visualization
         levels_df = pd.DataFrame(list(levels.items()), columns=['Level', 'Price'])
-        return levels_df.to_dict(orient="records")
+        
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
+        
+        # Create the chart with modified layout
+        layout = create_base_layout(
+            x_title="Fibonacci Level", 
+            y_title="Price", 
+            y_dtype="$,.2f",
+            theme=theme
+        )
+        
+        fig = go.Figure(layout=layout)
+        
+        # Add price line for current price
+        current_price = data['CLOSE'].iloc[-1]
+        
+        # Add candlestick chart for recent price action (last 30 data points)
+        recent_data = data.iloc[-30:]
+        fig.add_candlestick(
+            x=recent_data.index,
+            open=recent_data['OPEN'],
+            high=recent_data['HIGH'],
+            low=recent_data['LOW'],
+            close=recent_data['CLOSE'],
+            name="Price",
+            increasing_line_color=colors['positive'],
+            decreasing_line_color=colors['negative'],
+            showlegend=True
+        )
+        
+        # Add horizontal lines for each Fibonacci level
+        for level_name, price in levels.items():
+            ratio = float(level_name.split(' ')[1])
+            # Different colors for different level ranges
+            if ratio <= 0.382:
+                line_color = colors['positive']
+            elif ratio <= 0.786:
+                line_color = colors['neutral']
+            else:
+                line_color = colors['negative']
+                
+            fig.add_hline(
+                y=price,
+                line_dash="dash",
+                line_color=line_color,
+                annotation_text=f"{level_name} ({price:.2f})",
+                annotation_position="right",
+                opacity=0.7
+            )
+        
+        # Apply the standard configuration to the figure with theme
+        fig, config = apply_config_to_figure(fig, theme=theme)
+        
+        # Convert figure to JSON with the config
+        figure_json = fig.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        # Add config to the figure dictionary
+        figure_dict["config"] = config
+        
+        return figure_dict
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -453,7 +515,7 @@ async def get_fibonacci(
             "description": "Exchange to fetch data from",
         },
         {
-            "paramName": "symbol",
+            "paramName": "coin_id",
             "value": "BTC-USDT",
             "label": "Symbol",
             "show": True,
@@ -478,14 +540,14 @@ async def get_fibonacci(
 })
 async def get_stochastic(
     exchange: str, 
-    symbol: str, 
+    coin_id: str, 
     interval: str, 
     aggregate: int,
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
-            (exchange, symbol), 
+            (exchange, coin_id), 
             interval=interval, 
             aggregate=aggregate, 
             limit=2000

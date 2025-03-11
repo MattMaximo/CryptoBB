@@ -76,6 +76,8 @@ async def get_velo_options_products():
             "label": "Resolution",
             "show": True,
             "description": "Time resolution for data points",
+            "type": "endpoint",
+            "optionsEndpoint": "velo/resolution-options",
         },
         {
             "paramName": "begin",
@@ -171,6 +173,8 @@ async def get_velo_oi_weighted_funding_rates(
             "label": "Resolution",
             "show": True,
             "description": "Time resolution for data points",
+            "type": "endpoint",
+            "optionsEndpoint": "velo/resolution-options",
         },
         {
             "paramName": "begin",
@@ -253,6 +257,8 @@ async def get_velo_funding_rates(
             "label": "Resolution",
             "show": True,
             "description": "Time resolution for data points",
+            "type": "endpoint",
+            "optionsEndpoint": "velo/resolution-options",
         },
         {
             "paramName": "begin",
@@ -348,6 +354,8 @@ async def get_velo_long_liquidations(
             "label": "Resolution",
             "show": True,
             "description": "Time resolution for data points",
+            "type": "endpoint",
+            "optionsEndpoint": "velo/resolution-options",
         },
         {
             "paramName": "begin",
@@ -438,6 +446,8 @@ async def get_velo_short_liquidations(
             "label": "Resolution",
             "show": True,
             "description": "Time resolution for data points",
+            "type": "endpoint",
+            "optionsEndpoint": "velo/resolution-options",
         },
         {
             "paramName": "begin",
@@ -543,6 +553,8 @@ async def get_velo_net_liquidations(
             "label": "Resolution",
             "show": True,
             "description": "Time resolution for data points",
+            "type": "endpoint",
+            "optionsEndpoint": "velo/resolution-options",
         },
         {
             "paramName": "begin",
@@ -634,18 +646,11 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
     "source": "VeloData",
     "params": [
         {
-            "paramName": "ticker",
-            "value": "BTCUSDT",
-            "label": "Ticker",
+            "paramName": "coin",
+            "value": "BTC",
+            "label": "Coin",
             "show": True,
-            "description": "Trading pair ticker",
-        },
-        {
-            "paramName": "exchange",
-            "value": "binance",
-            "label": "Exchange",
-            "show": True,
-            "description": "Exchange to fetch data from",
+            "description": "Cryptocurrency to display data for",
         },
         {
             "paramName": "resolution",
@@ -653,6 +658,15 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
             "label": "Resolution",
             "show": True,
             "description": "Time resolution for data points",
+            "type": "endpoint",
+            "optionsEndpoint": "velo/resolution-options",
+        },
+        {
+            "paramName": "begin",
+            "value": "2024-01-01",
+            "label": "Start Date",
+            "show": True,
+            "description": "Start date for the data",
         }
     ],
     "data": {"chart": {"type": "candlestick"}},
@@ -772,6 +786,8 @@ async def get_velo_ohlcv(
             "label": "Resolution",
             "show": True,
             "description": "Time resolution for data points",
+            "type": "endpoint",
+            "optionsEndpoint": "velo/resolution-options",
         },
         {
             "paramName": "begin",

@@ -171,7 +171,8 @@ TEMPLATES = [
           "velo/oi-weighted-funding-rates",
           "velo/exchange-funding-rates",
           "velo/open-interest",
-          "velo/basis"
+          "velo/basis",
+          "velo/ohlcv"
         ]
       },
       {
@@ -186,7 +187,9 @@ TEMPLATES = [
           "velo/oi-weighted-funding-rates",
           "velo/exchange-funding-rates",
           "velo/open-interest",
-          "velo/basis"
+          "velo/basis",
+          "velo/ohlcv",
+          "velo/ohlcv"
         ]
       },
       {
@@ -201,80 +204,7 @@ TEMPLATES = [
           "velo/oi-weighted-funding-rates",
           "velo/exchange-funding-rates",
           "velo/open-interest",
-          "velo/basis"
-        ]
-      },
-      {
-        "name": "Group 4",
-        "type": "param",
-        "paramName": "exchange",
-        "defaultValue": "binance",
-        "widgetIds": [
-          "ta/stochastic"
-        ]
-      },
-      {
-        "name": "Group 5",
-        "type": "param",
-        "paramName": "symbol",
-        "defaultValue": "BTC-USDT",
-        "widgetIds": [
-          "ta/stochastic"
-        ]
-      },
-      {
-        "name": "Group 6",
-        "type": "param",
-        "paramName": "interval",
-        "defaultValue": "days",
-        "widgetIds": [
-          "ta/stochastic"
-        ]
-      },
-      {
-        "name": "Group 7",
-        "type": "param",
-        "paramName": "aggregate",
-        "defaultValue": "1",
-        "widgetIds": [
-          "ta/stochastic"
-        ]
-      },
-      {
-        "name": "Group 8",
-        "type": "endpointParam",
-        "paramName": "pool",
-        "defaultValue": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e1",
-        "widgetIds": [
-          "aave/utilization-rate",
-          "aave/lending-rate",
-          "aave/borrow-rate"
-        ]
-      },
-      {
-        "name": "Group 9",
-        "type": "param",
-        "paramName": "ticker",
-        "defaultValue": "BTCUSDT",
-        "widgetIds": [
-          "velo/ohlcv"
-        ]
-      },
-      {
-        "name": "Group 10",
-        "type": "param",
-        "paramName": "exchange",
-        "defaultValue": "binance",
-        "widgetIds": [
-          "velo/ohlcv"
-        ]
-      },
-      {
-        "name": "Group 11",
-        "type": "endpointParam",
-        "paramName": "resolution",
-        "defaultValue": "1d",
-        "widgetIds": [
+          "velo/basis",
           "velo/ohlcv"
         ]
       }
@@ -492,7 +422,7 @@ TEMPLATES = [
             "h": 12,
             "state": {
               "params": {
-                "interval": "days"
+                "exchange": "binance", "coin_id": "BTC-USDT", "interval": "days", "aggregate": "1"
               },
               "chartView": {
                 "enabled": False,
@@ -607,7 +537,66 @@ TEMPLATES = [
         "paramName": "exchange",
         "defaultValue": "binance",
         "widgetIds": [
+          "ta/macd",
+          "ta/rsi",
+          "ta/fibonacci-retracement",
+          "ta/stochastic"
+        ]
+      },
+      {
+        "name": "Group 6",
+        "type": "param",
+        "paramName": "coin_id",
+        "defaultValue": "BTC-USDT",
+        "widgetIds": [
+          "ta/macd",
+          "ta/rsi",
+          "ta/fibonacci-retracement",
+          "ta/stochastic"
+        ]
+      },
+      {
+        "name": "Group 7",
+        "type": "param",
+        "paramName": "interval",
+        "defaultValue": "days",
+        "widgetIds": [
+          "ta/macd",
+          "ta/rsi",
+          "ta/fibonacci-retracement",
+          "ta/stochastic"
+        ]
+      },
+      {
+        "name": "Group 9",
+        "type": "param",
+        "paramName": "aggregate",
+        "defaultValue": "1",
+        "widgetIds": [
+          "ta/macd",
+          "ta/rsi",
+          "ta/fibonacci-retracement",
+          "ta/stochastic"
+        ]
+      },
+      {
+        "name": "Group 9",
+        "type": "param",
+        "paramName": "exchange",
+        "defaultValue": "binance",
+        "widgetIds": [
           "ccdata/exchange-spot-volume"
+        ]
+      },
+      {
+        "name": "Group 6",
+        "type": "endpointParam",
+        "paramName": "pool",
+        "defaultValue": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "widgetIds": [
+          "aave/utilization-rate",
+          "aave/lending-rate",
+          "aave/borrow-rate"
         ]
       }
     ]
