@@ -85,6 +85,7 @@ async def get_velo_options_products():
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
+            "type": "date",
         }
     ],
     "data": {"chart": {"type": "line"}},
@@ -182,6 +183,7 @@ async def get_velo_oi_weighted_funding_rates(
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
+            "type": "date",
         }
     ],
     "data": {"chart": {"type": "line"}},
@@ -266,6 +268,7 @@ async def get_velo_funding_rates(
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
+            "type": "date",
         }
     ],
     "data": {"chart": {"type": "line"}},
@@ -347,6 +350,7 @@ async def get_velo_long_liquidations(
             "label": "Coin",
             "show": True,
             "description": "Cryptocurrency to display data for",
+            "type": "text",
         },
         {
             "paramName": "resolution",
@@ -363,6 +367,7 @@ async def get_velo_long_liquidations(
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
+            "type": "date",
         }
     ],
     "data": {"chart": {"type": "line"}},
@@ -455,6 +460,7 @@ async def get_velo_short_liquidations(
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
+            "type": "date",
         }
     ],
     "data": {"chart": {"type": "line"}},
@@ -562,6 +568,7 @@ async def get_velo_net_liquidations(
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
+            "type": "date",
         }
     ],
     "data": {"chart": {"type": "line"}},
@@ -667,6 +674,7 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
+            "type": "date",
         }
     ],
     "data": {"chart": {"type": "candlestick"}},
@@ -795,6 +803,7 @@ async def get_velo_ohlcv(
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
+            "type": "date",
         }
     ],
     "data": {"chart": {"type": "line"}},
