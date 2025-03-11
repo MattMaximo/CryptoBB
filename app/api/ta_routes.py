@@ -5,6 +5,7 @@ from app.assets.charts.plotly_config import (
     apply_config_to_figure, 
     get_chart_colors
 )
+from app.core.widget_decorator import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -15,6 +16,46 @@ ta_router = APIRouter()
 ccdata_service = CCDataService()
 
 @ta_router.get("/rsi")
+@register_widget({
+    "name": "Relative Strength Index (RSI)",
+    "description": "Technical indicator that measures the magnitude of recent price changes to evaluate overbought or oversold conditions",
+    "category": "technical",
+    "defaultViz": "chart",
+    "endpoint": "ta/rsi",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CryptoCompare",
+    "params": [
+        {
+            "paramName": "exchange",
+            "value": "binance",
+            "label": "Exchange",
+            "show": True,
+            "description": "Exchange to fetch data from",
+        },
+        {
+            "paramName": "symbol",
+            "value": "BTC-USDT",
+            "label": "Symbol",
+            "show": True,
+            "description": "Trading pair",
+        },
+        {
+            "paramName": "interval",
+            "value": "days",
+            "label": "Interval",
+            "show": True,
+            "description": "Time interval for data points",
+        },
+        {
+            "paramName": "aggregate",
+            "value": "1",
+            "label": "Aggregate",
+            "show": True,
+            "description": "Number of time units to aggregate",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_rsi(
     exchange: str, 
     symbol: str, 
@@ -120,6 +161,46 @@ async def get_rsi(
 
 
 @ta_router.get("/macd")
+@register_widget({
+    "name": "Moving Average Convergence Divergence (MACD)",
+    "description": "Trend-following momentum indicator that shows the relationship between two moving averages of a security's price",
+    "category": "technical",
+    "defaultViz": "chart",
+    "endpoint": "ta/macd",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CryptoCompare",
+    "params": [
+        {
+            "paramName": "exchange",
+            "value": "binance",
+            "label": "Exchange",
+            "show": True,
+            "description": "Exchange to fetch data from",
+        },
+        {
+            "paramName": "symbol",
+            "value": "BTC-USDT",
+            "label": "Symbol",
+            "show": True,
+            "description": "Trading pair",
+        },
+        {
+            "paramName": "interval",
+            "value": "days",
+            "label": "Interval",
+            "show": True,
+            "description": "Time interval for data points",
+        },
+        {
+            "paramName": "aggregate",
+            "value": "1",
+            "label": "Aggregate",
+            "show": True,
+            "description": "Number of time units to aggregate",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_macd(
     exchange: str, 
     symbol: str, 
@@ -250,6 +331,46 @@ async def get_macd(
 
 
 @ta_router.get("/fibonacci-retracement")
+@register_widget({
+    "name": "Fibonacci Retracement",
+    "description": "Technical analysis tool that uses horizontal lines to indicate areas of support or resistance at key Fibonacci levels",
+    "category": "technical",
+    "defaultViz": "chart",
+    "endpoint": "ta/fibonacci-retracement",
+    "gridData": {"w": 12, "h": 12},
+    "source": "CryptoCompare",
+    "params": [
+        {
+            "paramName": "exchange",
+            "value": "binance",
+            "label": "Exchange",
+            "show": True,
+            "description": "Exchange to fetch data from",
+        },
+        {
+            "paramName": "symbol",
+            "value": "BTC-USDT",
+            "label": "Symbol",
+            "show": True,
+            "description": "Trading pair",
+        },
+        {
+            "paramName": "interval",
+            "value": "days",
+            "label": "Interval",
+            "show": True,
+            "description": "Time interval for data points",
+        },
+        {
+            "paramName": "aggregate",
+            "value": "1",
+            "label": "Aggregate",
+            "show": True,
+            "description": "Number of time units to aggregate",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_fibonacci(
     exchange: str, 
     symbol: str, 
@@ -315,6 +436,46 @@ async def get_fibonacci(
 
 
 @ta_router.get("/stochastic")
+@register_widget({
+    "name": "Stochastic Oscillator",
+    "description": "Momentum indicator comparing a particular closing price of a security to a range of its prices over a certain period of time",
+    "category": "technical",
+    "defaultViz": "chart",
+    "endpoint": "ta/stochastic",
+    "gridData": {"w": 28, "h": 12},
+    "source": "CryptoCompare",
+    "params": [
+        {
+            "paramName": "exchange",
+            "value": "binance",
+            "label": "Exchange",
+            "show": True,
+            "description": "Exchange to fetch data from",
+        },
+        {
+            "paramName": "symbol",
+            "value": "BTC-USDT",
+            "label": "Symbol",
+            "show": True,
+            "description": "Trading pair",
+        },
+        {
+            "paramName": "interval",
+            "value": "days",
+            "label": "Interval",
+            "show": True,
+            "description": "Time interval for data points",
+        },
+        {
+            "paramName": "aggregate",
+            "value": "1",
+            "label": "Aggregate",
+            "show": True,
+            "description": "Number of time units to aggregate",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_stochastic(
     exchange: str, 
     symbol: str, 

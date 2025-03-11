@@ -64,6 +64,30 @@ async def get_coin_list(
 
 
 @coingecko_router.get("/price")
+@register_widget({
+    "name": "CoinGecko Price Chart",
+    "description": "Historical price data for cryptocurrencies from CoinGecko",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "coingecko/price",
+    "gridData": {"w": 20, "h": 12},
+    "source": "CoinGecko",
+    "params": [
+        {
+            "paramName": "coin_id",
+            "value": "bitcoin",
+            "label": "Coin",
+            "show": True,
+            "type": "endpoint",
+            "optionsEndpoint": "coingecko/coin-list-formatted",
+            "description": "CoinGecko ID of the cryptocurrency",
+            "style": {"popupWidth": 600},
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
+
+@coingecko_router.get("/price")
 async def get_market_data(coin_id: str, theme: str = "dark"):
     try:
         coin_id = coin_id.lower()

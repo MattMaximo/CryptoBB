@@ -25,6 +25,7 @@ ccdata_service = CCDataService()
     "category": "crypto",
     "defaultViz": "chart",
     "endpoint": "ccdata/exchange-price-deltas",
+    "widgetId": "ccdata/exchange-price-deltas",
     "gridData": {"w": 20, "h": 9},
     "source": "CCData",
     "data": {"chart": {"type": "line"}},
@@ -100,6 +101,7 @@ async def get_exchange_price_deltas(theme: str = "dark"):
     "category": "crypto",
     "defaultViz": "chart",
     "endpoint": "ccdata/candles",
+    "widgetId": "ccdata/candles",
     "gridData": {"w": 20, "h": 9},
     "source": "CCData",
     "params": [
@@ -228,6 +230,7 @@ async def get_ccdata_candles(
     "description": "Total spot volume for a given exchange.",
     "category": "crypto",
     "endpoint": "ccdata/exchange-spot-volume",
+    "widgetId": "ccdata/exchange-spot-volume",
     "gridData": {"w": 20, "h": 9},
     "params": [
         {

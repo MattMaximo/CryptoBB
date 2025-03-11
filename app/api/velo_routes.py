@@ -5,6 +5,7 @@ from app.assets.charts.plotly_config import (
     get_chart_colors, 
     apply_config_to_figure
 )
+from app.core.widget_decorator import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -14,21 +15,78 @@ velo_service = VeloService()
 
 
 @velo_router.get("/futures-products")
+@register_widget({
+    "name": "Velo Futures Products",
+    "description": "List of all available futures products on exchanges",
+    "category": "crypto",
+    "endpoint": "velo/futures-products",
+    "isUtility": True,
+    "source": "VeloData",
+})
 async def get_velo_futures_products():
     data = velo_service.get_futures_products()
     return data.to_dict(orient="records")
 
 @velo_router.get("/spot-products")
+@register_widget({
+    "name": "Velo Spot Products",
+    "description": "List of all available spot products on exchanges",
+    "category": "crypto",
+    "endpoint": "velo/spot-products",
+    "isUtility": True,
+    "source": "VeloData",
+})
 async def get_velo_spot_products():
     data = velo_service.get_spot_products()
     return data.to_dict(orient="records")
 
 @velo_router.get("/options-products")
+@register_widget({
+    "name": "Velo Options Products",
+    "description": "List of all available options products on exchanges",
+    "category": "crypto",
+    "endpoint": "velo/options-products",
+    "isUtility": True,
+    "source": "VeloData",
+})
 async def get_velo_options_products():
     data = velo_service.get_options_products()
     return data.to_dict(orient="records")
 
 @velo_router.get("/oi-weighted-funding-rates")
+@register_widget({
+    "name": "OI Weighted Funding Rates",
+    "description": "Open Interest weighted funding rates across exchanges",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "velo/oi-weighted-funding-rates",
+    "gridData": {"w": 40, "h": 11},
+    "source": "VeloData",
+    "params": [
+        {
+            "paramName": "coin",
+            "value": "BTC",
+            "label": "Coin",
+            "show": True,
+            "description": "Cryptocurrency to display data for",
+        },
+        {
+            "paramName": "resolution",
+            "value": "1d",
+            "label": "Resolution",
+            "show": True,
+            "description": "Time resolution for data points",
+        },
+        {
+            "paramName": "begin",
+            "value": "2024-01-01",
+            "label": "Start Date",
+            "show": True,
+            "description": "Start date for the data",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_velo_oi_weighted_funding_rates(
     coin: str = "BTC", 
     begin: str = None, 
@@ -91,6 +149,39 @@ async def get_velo_oi_weighted_funding_rates(
 
 
 @velo_router.get("/exchange-funding-rates")
+@register_widget({
+    "name": "Exchange Funding Rates",
+    "description": "Funding rates across different exchanges",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "velo/exchange-funding-rates",
+    "gridData": {"w": 40, "h": 11},
+    "source": "VeloData",
+    "params": [
+        {
+            "paramName": "coin",
+            "value": "BTC",
+            "label": "Coin",
+            "show": True,
+            "description": "Cryptocurrency to display data for",
+        },
+        {
+            "paramName": "resolution",
+            "value": "1d",
+            "label": "Resolution",
+            "show": True,
+            "description": "Time resolution for data points",
+        },
+        {
+            "paramName": "begin",
+            "value": "2024-01-01",
+            "label": "Start Date",
+            "show": True,
+            "description": "Start date for the data",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_velo_funding_rates(
     coin: str = "BTC", 
     begin: str = None, 
@@ -140,6 +231,39 @@ async def get_velo_funding_rates(
         raise HTTPException(status_code=400, detail=f"Error processing funding rates: {str(e)}")
 
 @velo_router.get("/long-liquidations")
+@register_widget({
+    "name": "Long Liquidations",
+    "description": "Long position liquidations across exchanges",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "velo/long-liquidations",
+    "gridData": {"w": 20, "h": 12},
+    "source": "VeloData",
+    "params": [
+        {
+            "paramName": "coin",
+            "value": "BTC",
+            "label": "Coin",
+            "show": True,
+            "description": "Cryptocurrency to display data for",
+        },
+        {
+            "paramName": "resolution",
+            "value": "1d",
+            "label": "Resolution",
+            "show": True,
+            "description": "Time resolution for data points",
+        },
+        {
+            "paramName": "begin",
+            "value": "2024-01-01",
+            "label": "Start Date",
+            "show": True,
+            "description": "Start date for the data",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_velo_long_liquidations(
     coin: str = "BTC", 
     begin: str = None, 
@@ -202,6 +326,39 @@ async def get_velo_long_liquidations(
         raise HTTPException(status_code=400, detail=str(e))
 
 @velo_router.get("/short-liquidations")
+@register_widget({
+    "name": "Short Liquidations",
+    "description": "Short position liquidations across exchanges",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "velo/short-liquidations",
+    "gridData": {"w": 20, "h": 12},
+    "source": "VeloData",
+    "params": [
+        {
+            "paramName": "coin",
+            "value": "BTC",
+            "label": "Coin",
+            "show": True,
+            "description": "Cryptocurrency to display data for",
+        },
+        {
+            "paramName": "resolution",
+            "value": "1d",
+            "label": "Resolution",
+            "show": True,
+            "description": "Time resolution for data points",
+        },
+        {
+            "paramName": "begin",
+            "value": "2024-01-01",
+            "label": "Start Date",
+            "show": True,
+            "description": "Start date for the data",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_velo_short_liquidations(
     coin: str = "BTC", 
     begin: str = None, 
@@ -259,6 +416,39 @@ async def get_velo_short_liquidations(
         raise HTTPException(status_code=400, detail=str(e))
 
 @velo_router.get("/net-liquidations")
+@register_widget({
+    "name": "Net Liquidations",
+    "description": "Net liquidations (long - short) across exchanges",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "velo/net-liquidations",
+    "gridData": {"w": 40, "h": 12},
+    "source": "VeloData",
+    "params": [
+        {
+            "paramName": "coin",
+            "value": "BTC",
+            "label": "Coin",
+            "show": True,
+            "description": "Cryptocurrency to display data for",
+        },
+        {
+            "paramName": "resolution",
+            "value": "1d",
+            "label": "Resolution",
+            "show": True,
+            "description": "Time resolution for data points",
+        },
+        {
+            "paramName": "begin",
+            "value": "2024-01-01",
+            "label": "Start Date",
+            "show": True,
+            "description": "Start date for the data",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_velo_net_liquidations(
     coin: str = "BTC", 
     begin: str = None, 
@@ -331,6 +521,39 @@ async def get_velo_net_liquidations(
         raise HTTPException(status_code=400, detail=str(e))
 
 @velo_router.get("/open-interest")
+@register_widget({
+    "name": "Open Interest",
+    "description": "Open interest across exchanges",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "velo/open-interest",
+    "gridData": {"w": 40, "h": 15},
+    "source": "VeloData",
+    "params": [
+        {
+            "paramName": "coin",
+            "value": "BTC",
+            "label": "Coin",
+            "show": True,
+            "description": "Cryptocurrency to display data for",
+        },
+        {
+            "paramName": "resolution",
+            "value": "1d",
+            "label": "Resolution",
+            "show": True,
+            "description": "Time resolution for data points",
+        },
+        {
+            "paramName": "begin",
+            "value": "2024-01-01",
+            "label": "Start Date",
+            "show": True,
+            "description": "Start date for the data",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolution: str = "1d", theme: str = "dark"):
     try:
         data = velo_service.open_interest(coin, begin, resolution)
@@ -401,6 +624,39 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
         raise HTTPException(status_code=400, detail=str(e))
 
 @velo_router.get("/ohlcv")
+@register_widget({
+    "name": "OHLCV Chart",
+    "description": "Open, high, low, close, volume chart",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "velo/ohlcv",
+    "gridData": {"w": 40, "h": 21},
+    "source": "VeloData",
+    "params": [
+        {
+            "paramName": "ticker",
+            "value": "BTCUSDT",
+            "label": "Ticker",
+            "show": True,
+            "description": "Trading pair ticker",
+        },
+        {
+            "paramName": "exchange",
+            "value": "binance",
+            "label": "Exchange",
+            "show": True,
+            "description": "Exchange to fetch data from",
+        },
+        {
+            "paramName": "resolution",
+            "value": "1d",
+            "label": "Resolution",
+            "show": True,
+            "description": "Time resolution for data points",
+        }
+    ],
+    "data": {"chart": {"type": "candlestick"}},
+})
 async def get_velo_ohlcv(
     ticker: str = "BTCUSDT", 
     exchange: str = "binance", 
@@ -494,6 +750,39 @@ async def get_velo_ohlcv(
         raise HTTPException(status_code=400, detail=str(e))
     
 @velo_router.get("/basis")
+@register_widget({
+    "name": "Annualized Basis",
+    "description": "Annualized basis across exchanges",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "velo/basis",
+    "gridData": {"w": 40, "h": 17},
+    "source": "VeloData",
+    "params": [
+        {
+            "paramName": "coin",
+            "value": "BTC",
+            "label": "Coin",
+            "show": True,
+            "description": "Cryptocurrency to display data for",
+        },
+        {
+            "paramName": "resolution",
+            "value": "1d",
+            "label": "Resolution",
+            "show": True,
+            "description": "Time resolution for data points",
+        },
+        {
+            "paramName": "begin",
+            "value": "2024-01-01",
+            "label": "Start Date",
+            "show": True,
+            "description": "Start date for the data",
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_velo_basis(coin: str = "BTC", begin: str = None, resolution: str = "1d", theme: str = "dark"):
     try:
         data = velo_service.basis(coin.upper(), begin, resolution)

@@ -6,6 +6,7 @@ from app.assets.charts.plotly_config import (
     apply_config_to_figure,
     get_chart_colors
 )
+from app.core.widget_decorator import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -21,6 +22,28 @@ DEFAULT_POOL = (
 
 
 @aave_router.get("/lending-rate")
+@register_widget({
+    "name": "AAVE Lending Rate",
+    "description": "Historical lending rate for AAVE pools",
+    "category": "defi",
+    "defaultViz": "chart",
+    "endpoint": "aave/lending-rate",
+    "gridData": {"w": 20, "h": 9},
+    "source": "AAVE",
+    "params": [
+        {
+            "paramName": "pool",
+            "value": DEFAULT_POOL,
+            "label": "Pool",
+            "show": True,
+            "type": "endpoint",
+            "optionsEndpoint": "aave/pools-formatted",
+            "description": "AAVE pool address",
+            "style": {"popupWidth": 600},
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_aave_lending_rate(
     pool: str = DEFAULT_POOL,
     theme: str = "dark"
@@ -60,6 +83,28 @@ async def get_aave_lending_rate(
 
 
 @aave_router.get("/utilization-rate")
+@register_widget({
+    "name": "AAVE Utilization Rate",
+    "description": "Historical utilization rate for AAVE pools",
+    "category": "defi",
+    "defaultViz": "chart",
+    "endpoint": "aave/utilization-rate",
+    "gridData": {"w": 40, "h": 13},
+    "source": "AAVE",
+    "params": [
+        {
+            "paramName": "pool",
+            "value": DEFAULT_POOL,
+            "label": "Pool",
+            "show": True,
+            "type": "endpoint",
+            "optionsEndpoint": "aave/pools-formatted",
+            "description": "AAVE pool address",
+            "style": {"popupWidth": 600},
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_aave_utilization_rate(
     pool: str = DEFAULT_POOL,
     theme: str = "dark"
@@ -99,6 +144,28 @@ async def get_aave_utilization_rate(
 
 
 @aave_router.get("/borrow-rate")
+@register_widget({
+    "name": "AAVE Borrow Rate",
+    "description": "Historical borrow rate for AAVE pools",
+    "category": "defi",
+    "defaultViz": "chart",
+    "endpoint": "aave/borrow-rate",
+    "gridData": {"w": 20, "h": 9},
+    "source": "AAVE",
+    "params": [
+        {
+            "paramName": "pool",
+            "value": DEFAULT_POOL,
+            "label": "Pool",
+            "show": True,
+            "type": "endpoint",
+            "optionsEndpoint": "aave/pools-formatted",
+            "description": "AAVE pool address",
+            "style": {"popupWidth": 600},
+        }
+    ],
+    "data": {"chart": {"type": "line"}},
+})
 async def get_aave_borrow_rate(
     pool: str = DEFAULT_POOL,
     theme: str = "dark"
@@ -138,11 +205,27 @@ async def get_aave_borrow_rate(
 
 
 @aave_router.get("/pools")
+@register_widget({
+    "name": "AAVE Pools",
+    "description": "List of all available AAVE pools",
+    "category": "defi",
+    "endpoint": "aave/pools",
+    "isUtility": True,
+    "source": "AAVE",
+})
 async def get_aave_pools():
     return AAVE_POOLS
 
 
 @aave_router.get("/pools-formatted")
+@register_widget({
+    "name": "AAVE Pools Formatted",
+    "description": "Formatted list of AAVE pools for dropdown selection",
+    "category": "defi",
+    "endpoint": "aave/pools-formatted",
+    "isUtility": True,
+    "source": "AAVE",
+})
 async def get_aave_pools_formatted():
     """
     Returns a formatted list of Aave pools in the format:
