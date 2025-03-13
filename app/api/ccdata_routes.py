@@ -138,7 +138,7 @@ async def get_exchange_data(exchange: str):
             layout=create_base_layout(
                 x_title="Date",
                 y_title="Volume",
-                y_dtype=",.2f"
+                y_dtype=".2s"
             )
         )
 

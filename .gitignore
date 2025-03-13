@@ -1,11 +1,69 @@
+# OS generated files
 /.DS_Store
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python environments
 /venv
+.venv
+env/
+ENV/
+virtualenv/
+.python-version
 .env
 
+# Python bytecode
 __pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
 
-.DS_Store
+# Distribution / packaging
+dist/
+build/
+*.egg-info
+*.egg
+eggs/
+.eggs/
+wheels/
+develop-eggs/
 
-.venv
-
+# Project specific
 template/
+
+# Exclude specific build and egg-info folders
+build/lib/app/
+cryptobb.egg-info/
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+*.db
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.pydevproject
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Local configuration
+config.local.py
+local_settings.py
+
+# Sensitive information
+secrets.json
+credentials.json
+*.pem
+*.key
