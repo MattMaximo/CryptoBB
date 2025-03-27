@@ -2,7 +2,6 @@
 
 OpenBB backend for Crypto Traders.
 
-
 #### Dev
 
 ```bash
