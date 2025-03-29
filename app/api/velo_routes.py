@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from app.services.velo_service import VeloService
-from app.assets.charts.base_chart_layout import create_base_layout
 from app.assets.charts.plotly_config import (
     get_chart_colors, 
-    apply_config_to_figure
+    apply_config_to_figure,
+    create_base_layout
 )
 from app.core.registry import register_widget
 import plotly.graph_objects as go

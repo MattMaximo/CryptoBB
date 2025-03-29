@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from app.services.ccdata_service import CCDataService
-from app.assets.charts.base_chart_layout import create_base_layout
 from app.assets.charts.plotly_config import (
     apply_config_to_figure, 
-    get_chart_colors
+    get_chart_colors,
+    create_base_layout
 )
 from app.core.registry import register_widget
 import plotly.graph_objects as go
