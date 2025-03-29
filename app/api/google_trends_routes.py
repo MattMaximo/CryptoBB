@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.services.google_trends_service import GoogleTrendsService
 from app.assets.charts.base_chart_layout import create_base_layout
+from app.core.registry import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -9,6 +10,22 @@ google_trends_router = APIRouter()
 google_trends_service = GoogleTrendsService()
 
 @google_trends_router.get("/historical-google-trends")
+@register_widget({
+    "name": "Historical Google Trends",
+    "description": "Historical Google Trends for a given search term",
+    "category": "google",
+    "endpoint": "google-trends/historical-google-trends",
+    "gridData": {"w": 20, "h": 9},
+    "source": "Google Trends",
+    "type": "chart",
+    "params": [
+        {
+            "paramName": "search_term",
+            "value": "bitcoin",
+            "label": "Search Term",
+        }
+    ],
+})
 async def get_historical_google_trends(search_term: str):
     try:
         data = google_trends_service.get_historical_search_trends(search_term)
