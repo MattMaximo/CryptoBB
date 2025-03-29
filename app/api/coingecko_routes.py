@@ -117,7 +117,7 @@ async def get_market_data(coin_id: str, theme: str = "dark"):
         )
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
@@ -200,7 +200,7 @@ async def get_dominance(coin_id: str, theme: str = "dark"):
             )
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
@@ -279,7 +279,7 @@ async def get_vm_ratio(coin_id: str, theme: str = "dark"):
         figure.update_yaxes(tickformat=".2f")
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
@@ -471,7 +471,7 @@ async def get_correlation(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
         
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
