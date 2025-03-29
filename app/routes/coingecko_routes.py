@@ -18,7 +18,7 @@ coingecko_service = CoinGeckoService()
 
 @coingecko_router.get("/coin-list")
 @register_widget({
-    "name": "Coingecko Coins List",
+    "name": "Coins List",
     "description": (
         "List of all coins available on CoinGecko including ID, Name, "
         "Ticker, and available chains."
@@ -65,7 +65,7 @@ async def get_coin_list(
 
 @coingecko_router.get("/price")
 @register_widget({
-    "name": "CoinGecko Price Chart",
+    "name": "Price Chart",
     "description": "Historical price data for cryptocurrencies from CoinGecko",
     "category": "crypto",
     "type": "chart",
