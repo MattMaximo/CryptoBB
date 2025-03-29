@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.glassnode_service import GlassnodeService
-from app.assets.charts.plotly_config import (
+from app.core.plotly_config import (
     apply_config_to_figure, 
     get_chart_colors,
     create_base_layout

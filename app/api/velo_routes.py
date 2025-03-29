@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.velo_service import VeloService
-from app.assets.charts.plotly_config import (
+from app.core.plotly_config import (
     get_chart_colors, 
     apply_config_to_figure,
     create_base_layout
