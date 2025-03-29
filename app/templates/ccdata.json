@@ -13,14 +13,14 @@
         {
           "i": "ccdata/exchange-price-deltas",
           "x": 0,
-          "y": 0,
+          "y": 2,
           "w": 40,
           "h": 15
         },
         {
           "i": "ccdata/exchange-spot-volume",
           "x": 0,
-          "y": 15,
+          "y": 17,
           "w": 40,
           "h": 15
         }
@@ -33,9 +33,43 @@
         {
           "i": "ccdata/candles",
           "x": 0,
-          "y": 0,
+          "y": 2,
           "w": 40,
           "h": 20
+        }
+      ]
+    },
+    "technical-analysis": {
+      "id": "technical-analysis",
+      "name": "Technical Analysis",
+      "layout": [
+        {
+          "i": "ccdata/stochastic",
+          "x": 0,
+          "y": 2,
+          "w": 18,
+          "h": 12
+        },
+        {
+          "i": "ccdata/macd",
+          "x": 18,
+          "y": 2,
+          "w": 22,
+          "h": 12
+        },
+        {
+          "i": "ccdata/fibonacci-retracement",
+          "x": 0,
+          "y": 26,
+          "w": 40,
+          "h": 19
+        },
+        {
+          "i": "ccdata/rsi",
+          "x": 0,
+          "y": 14,
+          "w": 40,
+          "h": 12
         }
       ]
     }
@@ -47,8 +81,39 @@
       "paramName": "exchange",
       "defaultValue": "binance",
       "widgetIds": [
-        "ccdata/exchange-spot-volume"
+        "ccdata/exchange-spot-volume",
+        "ccdata/candles",
+        "ccdata/stochastic",
+        "ccdata/macd",
+        "ccdata/fibonacci-retracement",
+        "ccdata/rsi"
+      ]
+    },
+    {
+      "name": "Group 2",
+      "type": "param",
+      "paramName": "coin_id",
+      "defaultValue": "BTC-USDT",
+      "widgetIds": [
+        "ccdata/candles",
+        "ccdata/stochastic",
+        "ccdata/macd",
+        "ccdata/fibonacci-retracement",
+        "ccdata/rsi"
+      ]
+    },
+    {
+      "name": "Group 3",
+      "type": "param",
+      "paramName": "interval",
+      "defaultValue": "days",
+      "widgetIds": [
+        "ccdata/candles",
+        "ccdata/stochastic",
+        "ccdata/macd",
+        "ccdata/fibonacci-retracement",
+        "ccdata/rsi"
       ]
     }
   ]
-} 
+}

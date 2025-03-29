@@ -15,6 +15,19 @@ import numpy as np
 
 ccdata_router = APIRouter()
 ccdata_service = CCDataService()
+
+
+EXCHANGE_LIST = [
+    {"label": "Binance", "value": "binance"},
+    {"label": "Coinbase", "value": "coinbase"},
+    {"label": "Bybit", "value": "bybit"},
+    {"label": "OKEx", "value": "okex"},
+    {"label": "Crypto.com", "value": "cryptocom"},
+    {"label": "UPBIT", "value": "upbit"},
+    {"label": "Kraken", "value": "kraken"},
+    {"label": "MEXC", "value": "mexc"}
+]
+
    
 @ccdata_router.get("/exchange-price-deltas")
 @register_widget({
@@ -108,44 +121,38 @@ async def get_exchange_price_deltas(theme: str = "dark"):
             "value": "binance",
             "label": "Exchange",
             "type": "text",
-            "description": "Exchange to fetch data from (e.g. binance, kraken, mexc)",
+            "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
         },
         {
-            "paramName": "symbol",
+            "paramName": "coin_id",
             "value": "BTC-USDT",
-            "label": "Pair",
-            "type": "text",
-            "description": "Pair (e.g. BTC-USDT) to fetch data for",
+            "label": "Symbol",
+            "show": True,
+            "description": "Trading pair",
         },
         {
             "paramName": "interval",
-            "value": "hours",
+            "value": "days",
             "label": "Interval",
             "type": "text",
-            "description": "Interval to fetch data for (options: minutes, hours, days)",
-        },
-        {
-            "paramName": "aggregate",
-            "value": "1",
-            "label": "Aggregate",
-            "type": "text",
-            "description": "Aggregation interval. Options: day = [1], hour = [1, 4, 12], minute = [1, 5, 15]",
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
         },
     ],
     "data": {"chart": {"type": "candlestick"}},
 })
 async def get_ccdata_candles(
     exchange: str, 
-    symbol: str, 
+    coin_id: str, 
     interval: str, 
-    aggregate: int, 
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
-            (exchange, symbol), 
+            (exchange, coin_id), 
             interval=interval, 
-            aggregate=aggregate, 
+            aggregate=1, 
             limit=2000
         )
         data = pd.DataFrame(data)
@@ -232,7 +239,10 @@ async def get_ccdata_candles(
             "paramName": "exchange",
             "value": "binance",
             "label": "Exchange",
-        }
+            "type": "text",
+            "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
+        },
     ],
     "source": "CCData",
     "type": "chart",
@@ -292,8 +302,9 @@ async def get_exchange_data(exchange: str, theme: str = "dark"):
             "paramName": "exchange",
             "value": "binance",
             "label": "Exchange",
-            "show": True,
+            "type": "text",
             "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
         },
         {
             "paramName": "coin_id",
@@ -306,31 +317,25 @@ async def get_exchange_data(exchange: str, theme: str = "dark"):
             "paramName": "interval",
             "value": "days",
             "label": "Interval",
+            "type": "text",
             "show": True,
-            "description": "Time interval for data points",
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
         },
-        {
-            "paramName": "aggregate",
-            "value": "1",
-            "label": "Aggregate",
-            "show": True,
-            "description": "Number of time units to aggregate",
-        }
     ],
     "data": {"chart": {"type": "line"}},
 })
 async def get_rsi(
     exchange: str, 
     coin_id: str, 
-    interval: str, 
-    aggregate: int, 
+    interval: str,
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
             (exchange, coin_id), 
             interval=interval, 
-            aggregate=aggregate, 
+            aggregate=1, 
             limit=2000
         )
         data = pd.DataFrame(data)
@@ -434,8 +439,9 @@ async def get_rsi(
             "paramName": "exchange",
             "value": "binance",
             "label": "Exchange",
-            "show": True,
+            "type": "text",
             "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
         },
         {
             "paramName": "coin_id",
@@ -448,31 +454,25 @@ async def get_rsi(
             "paramName": "interval",
             "value": "days",
             "label": "Interval",
+            "type": "text",
             "show": True,
-            "description": "Time interval for data points",
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
         },
-        {
-            "paramName": "aggregate",
-            "value": "1",
-            "label": "Aggregate",
-            "show": True,
-            "description": "Number of time units to aggregate",
-        }
     ],
     "data": {"chart": {"type": "line"}},
 })
 async def get_macd(
     exchange: str, 
     coin_id: str, 
-    interval: str, 
-    aggregate: int, 
+    interval: str,  
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
             (exchange, coin_id), 
             interval=interval, 
-            aggregate=aggregate, 
+            aggregate=1, 
             limit=2000
         )
         data = pd.DataFrame(data)
@@ -601,8 +601,9 @@ async def get_macd(
             "paramName": "exchange",
             "value": "binance",
             "label": "Exchange",
-            "show": True,
+            "type": "text",
             "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
         },
         {
             "paramName": "coin_id",
@@ -615,31 +616,25 @@ async def get_macd(
             "paramName": "interval",
             "value": "days",
             "label": "Interval",
+            "type": "text",
             "show": True,
-            "description": "Time interval for data points",
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
         },
-        {
-            "paramName": "aggregate",
-            "value": "1",
-            "label": "Aggregate",
-            "show": True,
-            "description": "Number of time units to aggregate",
-        }
     ],
     "data": {"chart": {"type": "line"}},
 })
 async def get_fibonacci(
     exchange: str, 
     coin_id: str, 
-    interval: str, 
-    aggregate: int,
+    interval: str,
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
             (exchange, coin_id), 
             interval=interval, 
-            aggregate=aggregate, 
+            aggregate=1, 
             limit=2000
         )
         data = pd.DataFrame(data)
@@ -765,8 +760,9 @@ async def get_fibonacci(
             "paramName": "exchange",
             "value": "binance",
             "label": "Exchange",
-            "show": True,
+            "type": "text",
             "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
         },
         {
             "paramName": "coin_id",
@@ -779,52 +775,61 @@ async def get_fibonacci(
             "paramName": "interval",
             "value": "days",
             "label": "Interval",
+            "type": "text",
             "show": True,
-            "description": "Time interval for data points",
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
         },
-        {
-            "paramName": "aggregate",
-            "value": "1",
-            "label": "Aggregate",
-            "show": True,
-            "description": "Number of time units to aggregate",
-        }
     ],
     "data": {"chart": {"type": "line"}},
 })
 async def get_stochastic(
     exchange: str, 
     coin_id: str, 
-    interval: str, 
-    aggregate: int,
+    interval: str,
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
             (exchange, coin_id), 
             interval=interval, 
-            aggregate=aggregate, 
+            aggregate=1, 
             limit=2000
         )
         data = pd.DataFrame(data)
         data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
         data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
         if interval == "minutes" or interval == "hours":
-            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d %H:%M:%S")
-        elif interval == "day":
+            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime(
+                "%Y-%m-%d %H:%M:%S")
+        elif interval == "days":  # Fixed "day" to "days" to match param value
             data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d")
         data = data.set_index("TIMESTAMP")
 
         # Calculate Stochastic Oscillator
         period = 14
-        low_min = data['LOW'].rolling(window=period).min()
-        high_max = data['HIGH'].rolling(window=period).max()
+        # Handle potential NaN values in data
+        data_clean = data.dropna()
+        
+        if len(data_clean) < period:
+            raise ValueError(f"Not enough data points for {period}-period calculation")
+            
+        low_min = data_clean['LOW'].rolling(window=period).min()
+        high_max = data_clean['HIGH'].rolling(window=period).max()
+        
+        # Avoid division by zero
+        denominator = high_max - low_min
+        # Replace zeros with small value to avoid division by zero
+        denominator = denominator.replace(0, 1e-10)
         
         # Calculate %K
-        data['%K'] = 100 * ((data['CLOSE'] - low_min) / (high_max - low_min))
+        data_clean['%K'] = 100 * ((data_clean['CLOSE'] - low_min) / denominator)
         
         # Calculate %D (3-period MA of %K)
-        data['%D'] = data['%K'].rolling(window=3).mean()
+        data_clean['%D'] = data_clean['%K'].rolling(window=3).mean()
+        
+        # Use the cleaned data for the chart
+        data = data_clean
 
         # Get chart colors based on theme
         colors = get_chart_colors(theme)
