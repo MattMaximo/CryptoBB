@@ -17,6 +17,8 @@ from app.api.velo_routes import velo_router
 from app.api.vvaifu_routes import vvaifu_router
 from app.api.virtuals_routes import virtuals_router
 from app.core.session_manager import SessionManager
+from fastapi.responses import HTMLResponse
+from pathlib import Path
 
 settings = get_settings()
 
@@ -47,14 +49,10 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return Response(
-        """CryptoBB - Crypto Backend for OpenBB Workspace
-
-Backend created by @MattMaximo, @didier_lopes and @jose-donato
-
-Any questions, feel free to reach out on x/twitter""",
-        media_type="text/plain"
-    )
+    html_path = Path(__file__).parent / "assets" / "landing.html"
+    with open(html_path) as f:
+        html_content = f.read()
+    return HTMLResponse(content=html_content)
 
 
 print(f"\n\nLoading data into OpenBB workspace...\n")
