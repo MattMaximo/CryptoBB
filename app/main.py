@@ -11,7 +11,6 @@ from app.api.aave_routes import aave_router
 from app.api.btc_matrix_routes import btc_matrix_router
 from app.api.ccdata_routes import ccdata_router
 from app.api.coingecko_routes import coingecko_router
-from app.api.daos_fun_routes import daos_fun_router
 from app.api.geckoterminal_routes import geckoterminal_router
 from app.api.glassnode_routes import glassnode_router
 from app.api.google_trends_routes import google_trends_router
@@ -88,11 +87,6 @@ if check_api_key_exists("VELO_API_KEY"):
         prefix="/velo",
     )
     add_template("velodata")
-
-app.include_router(
-    daos_fun_router,
-    prefix="/daos_fun",
-)
 
 app.include_router(
     geckoterminal_router,
