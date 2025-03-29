@@ -171,6 +171,7 @@ def get_chart_colors(theme="dark"):
             # Additional colors for multiple series
             'secondary': '#8C4646',   # Burgundy
             'tertiary': '#5F4B8B',    # Muted purple
+            "quaternary": "#d3d3d3"
         }
     else:  # dark theme (default)
         return {
@@ -184,6 +185,7 @@ def get_chart_colors(theme="dark"):
             # Additional colors for multiple series
             'secondary': '#9E69AF',   # purple
             'tertiary': '#00C2DE',    # teal
+            "quaternary": "#d3d3d3"
         }
 
 
