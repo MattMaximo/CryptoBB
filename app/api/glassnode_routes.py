@@ -282,7 +282,7 @@ async def get_glassnode_price(asset: str = "btc", theme: str = "dark"):
         )
 
         # Apply the standard configuration to the figure with theme
-        figure, _ = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
