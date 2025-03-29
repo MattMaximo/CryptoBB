@@ -13,7 +13,6 @@ from app.api.geckoterminal_routes import geckoterminal_router
 from app.api.glassnode_routes import glassnode_router
 from app.api.google_trends_routes import google_trends_router
 from app.api.microstrategy_routes import microstrategy_router
-from app.api.screener_routes import screener_router
 from app.api.ta_routes import ta_router
 from app.api.velo_routes import velo_router
 from app.api.vvaifu_routes import vvaifu_router
@@ -101,11 +100,6 @@ app.include_router(
 app.include_router(
     microstrategy_router,
     prefix="/microstrategy",
-)
-
-app.include_router(
-    screener_router,
-    prefix="/screener",
 )
 
 app.include_router(
