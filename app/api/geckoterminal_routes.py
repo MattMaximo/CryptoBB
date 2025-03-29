@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from app.services.geckoterminal_service import GeckoTerminalService
-from app.assets.charts.base_chart_layout import create_base_layout
-from app.assets.charts.plotly_config import (
+from app.core.plotly_config import (
     apply_config_to_figure,
-    get_chart_colors
+    get_chart_colors,
+    create_base_layout
 )
 from app.assets.ai_agent_mapping import ai_agent_mapping
 from app.core.registry import register_widget

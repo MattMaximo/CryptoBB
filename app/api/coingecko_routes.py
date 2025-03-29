@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from app.services.coingecko_service import CoinGeckoService
-from app.assets.charts.base_chart_layout import create_base_layout
-from app.assets.charts.plotly_config import (
+from app.core.plotly_config import (
     apply_config_to_figure, 
-    get_chart_colors
+    get_chart_colors,
+    create_base_layout
 )
 from app.core.registry import register_widget
 import plotly.graph_objects as go
@@ -123,9 +123,6 @@ async def get_market_data(coin_id: str, theme: str = "dark"):
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
         
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
-        
         return figure_dict
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -206,9 +203,6 @@ async def get_dominance(coin_id: str, theme: str = "dark"):
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
         
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
-        
         return figure_dict
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -284,9 +278,6 @@ async def get_vm_ratio(coin_id: str, theme: str = "dark"):
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -476,9 +467,6 @@ async def get_correlation(
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -733,9 +721,6 @@ async def get_agents_market_caps(theme: str = "dark"):
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
 

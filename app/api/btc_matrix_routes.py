@@ -1,7 +1,7 @@
 # %%
 from fastapi import APIRouter, HTTPException
 from app.services.btc_matrix_service import BTCMatrixService
-from app.assets.charts.plotly_config import apply_config_to_figure
+from app.core.plotly_config import apply_config_to_figure
 from app.core.registry import register_widget
 import plotly.express as px
 import json

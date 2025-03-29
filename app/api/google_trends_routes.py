@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.services.google_trends_service import GoogleTrendsService
-from app.assets.charts.base_chart_layout import create_base_layout
 from app.core.registry import register_widget
+from app.core.plotly_config import create_base_layout
 import plotly.graph_objects as go
 import pandas as pd
 import json
