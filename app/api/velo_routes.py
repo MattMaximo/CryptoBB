@@ -144,7 +144,7 @@ async def get_velo_oi_weighted_funding_rates(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -228,7 +228,7 @@ async def get_velo_funding_rates(
             )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Return the chart as JSON
         return json.loads(figure.to_json())
@@ -328,7 +328,7 @@ async def get_velo_long_liquidations(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -422,7 +422,7 @@ async def get_velo_short_liquidations(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -530,7 +530,7 @@ async def get_velo_net_liquidations(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -636,7 +636,7 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -764,7 +764,7 @@ async def get_velo_ohlcv(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
         
         return json.loads(figure.to_json())
         
@@ -835,7 +835,7 @@ async def get_velo_basis(coin: str = "BTC", begin: str = None, resolution: str =
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:

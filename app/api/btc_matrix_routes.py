@@ -67,12 +67,9 @@ async def get_btc_reserve_matrix(return_fig: bool = True, theme: str = "dark"):
         y_label="BTC Reserve Amount", 
         hover_label="BTC ($T)"
     )
-    
-    # Update figure colors for theme
-    fig_reserves = _update_figure_for_theme(fig_reserves, theme)
-    
+
     # Apply theme configuration
-    fig_reserves, config = apply_config_to_figure(
+    fig_reserves = apply_config_to_figure(
         fig_reserves, 
         theme=theme
     )
@@ -114,23 +111,20 @@ async def get_btc_reserve_matrix_pct(
         col.strip('%') for col in pct_matrix.columns
     ]
     
-    fig_pct = get_matrix_figure(
+    figure = get_matrix_figure(
         pct_matrix, 
         y_label="BTC Reserve Amount", 
         hover_label=r"% of Debt"
     )
     
-    # Update figure colors for theme
-    fig_pct = _update_figure_for_theme(fig_pct, theme)
-    
     # Apply theme configuration
-    fig_pct, config = apply_config_to_figure(
-        fig_pct, 
+    figure = apply_config_to_figure(
+        figure, 
         theme=theme
     )
     
     if return_fig:
-        return json.loads(fig_pct.to_json())
+        return json.loads(figure.to_json())
     else:
         return pct_matrix
 

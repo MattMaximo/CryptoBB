@@ -136,14 +136,11 @@ async def get_altcoin_season_index(
         )
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        figure = apply_config_to_figure(fig, theme=theme)
         
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
