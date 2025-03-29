@@ -5,7 +5,7 @@ from app.assets.charts.plotly_config import (
     apply_config_to_figure, 
     get_chart_colors
 )
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 from typing import List
@@ -81,7 +81,7 @@ async def get_exchange_price_deltas(theme: str = "dark"):
         )
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
@@ -267,7 +267,7 @@ async def get_exchange_data(exchange: str, theme: str = "dark"):
         )
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = fig.to_json()

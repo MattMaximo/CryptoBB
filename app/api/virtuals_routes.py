@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.virtuals_service import VirtualsService
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 
 virtuals_router = APIRouter()
 virtuals_service = VirtualsService()
