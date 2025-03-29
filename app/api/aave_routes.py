@@ -75,7 +75,7 @@ async def get_aave_lending_rate(
         )
 
         # Apply the configuration to the figure
-        apply_config_to_figure(figure, theme)
+        figure = apply_config_to_figure(figure, theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -136,7 +136,7 @@ async def get_aave_utilization_rate(
         )
 
         # Apply the configuration to the figure
-        apply_config_to_figure(figure, theme)
+        figure = apply_config_to_figure(figure, theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -197,7 +197,7 @@ async def get_aave_borrow_rate(
         )
 
         # Apply the configuration to the figure
-        apply_config_to_figure(figure, theme)
+        figure = apply_config_to_figure(figure, theme)
 
         return json.loads(figure.to_json())
     except Exception as e:

@@ -151,9 +151,6 @@ async def get_rsi(
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
         
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
-        
         return figure_dict
 
     except Exception as e:
@@ -321,9 +318,6 @@ async def get_macd(
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
         
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
-        
         return figure_dict
 
     except Exception as e:
@@ -489,9 +483,6 @@ async def get_fibonacci(
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
         
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
-        
         return figure_dict
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -633,9 +624,6 @@ async def get_stochastic(
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
 

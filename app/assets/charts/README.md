@@ -38,12 +38,11 @@ figure.add_scatter(
 )
 
 # Apply standard configuration to the figure
-figure, config = apply_config_to_figure(figure)
+figure = apply_config_to_figure(figure)
 
 # Convert to JSON for frontend with config
 figure_json = figure.to_json()
 figure_dict = json.loads(figure_json)
-figure_dict["config"] = config
 
 return figure_dict
 ```
@@ -74,7 +73,7 @@ If you need to override specific settings for a particular chart, you can do so 
 
 ```python
 # Apply standard configuration
-figure, config = apply_config_to_figure(figure)
+figure = apply_config_to_figure(figure)
 
 # Override specific settings
 figure.update_layout(
@@ -85,7 +84,6 @@ figure.update_layout(
 # Convert to JSON with config
 figure_json = figure.to_json()
 figure_dict = json.loads(figure_json)
-figure_dict["config"] = config
 
 return figure_dict
 ``` 

@@ -211,8 +211,5 @@ def apply_config_to_figure(figure, theme="dark"):
     # Apply layout updates with the specified theme
     figure.update_layout(**get_layout_update(theme))
     
-    # Get the config but don't set it directly on the figure
-    config = None  # get_default_config()
-    
     # Return both the figure and the config
-    return figure, config
+    return figure

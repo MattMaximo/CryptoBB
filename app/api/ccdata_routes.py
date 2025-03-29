@@ -86,9 +86,6 @@ async def get_exchange_price_deltas(theme: str = "dark"):
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
         
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
-        
         return figure_dict
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -210,14 +207,11 @@ async def get_ccdata_candles(
         )
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -277,9 +271,6 @@ async def get_exchange_data(exchange: str, theme: str = "dark"):
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
