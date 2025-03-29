@@ -22,7 +22,7 @@ geckoterminal_service = GeckoTerminalService()
     "endpoint": "geckoterminal/ai-agents-market-data",
     "gridData": {"w": 20, "h": 9},
     "source": "GeckoTerminal",
-    "defaultViz": "table",
+    "type": "table",
     "data": {
         "table": {
             "showAll": True,
@@ -76,7 +76,7 @@ async def get_ai_agents_market_data():
     "name": "GeckoTerminal Candles",
     "description": "OHLCV data for a given pool from GeckoTerminal",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "geckoterminal/candles",
     "gridData": {"w": 20, "h": 9},
     "source": "GeckoTerminal",

@@ -24,7 +24,7 @@ microstrategy_service = MicrostrategyService()
         "its Bitcoin holdings"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "microstrategy/premium",
     "gridData": {"w": 20, "h": 9},
     "source": "Microstrategy",
@@ -98,7 +98,7 @@ async def get_microstrategy_premium(theme: str = "dark"):
         "balance, cost basis, and share metrics"
     ),
     "category": "crypto",
-    "defaultViz": "table",
+    "type": "table",
     "endpoint": "microstrategy/info",
     "gridData": {"w": 20, "h": 9},
     "source": "Microstrategy",

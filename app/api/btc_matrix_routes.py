@@ -46,7 +46,7 @@ def _update_figure_for_theme(fig, theme="dark"):
         "Matrix showing Bitcoin reserves of countries and companies in USD"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "btc-matrix/reserve-dollars",
     "widgetId": "btc-matrix/reserve-dollars",
     "gridData": {"w": 20, "h": 9},
@@ -88,7 +88,7 @@ async def get_btc_reserve_matrix(return_fig: bool = True, theme: str = "dark"):
         "percentage of their total reserves"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "btc-matrix/reserve-pct",
     "widgetId": "btc-matrix/reserve-pct",
     "gridData": {"w": 20, "h": 9},

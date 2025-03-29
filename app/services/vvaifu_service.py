@@ -52,6 +52,3 @@ class VVaifuService:
         all_characters = [char for page in results for char in page]
         
         return pd.DataFrame(all_characters)
-
-
-# %%

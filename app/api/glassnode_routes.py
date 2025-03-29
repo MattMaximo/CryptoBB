@@ -20,7 +20,7 @@ glassnode_service = GlassnodeService()
         "Supply of long term holders"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/lth-supply",
     "widgetId": "glassnode/lth-supply",
     "gridData": {"w": 20, "h": 9},
@@ -124,7 +124,7 @@ async def get_lth_supply(
         "Net position change of long term holders"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/lth-net-change",
     "widgetId": "glassnode/lth-net-change",
     "gridData": {"w": 20, "h": 9},
@@ -241,7 +241,7 @@ async def get_lth_net_change(
     "name": "Glassnode Price",
     "description": "Historical price data from Glassnode",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/price",
     "widgetId": "glassnode/price",
     "gridData": {"w": 20, "h": 9},
@@ -301,7 +301,7 @@ async def get_glassnode_price(asset: str = "btc", theme: str = "dark"):
         "Bitcoin is over or undervalued"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/mvrv-zscore",
     "widgetId": "glassnode/mvrv-zscore",
     "gridData": {"w": 20, "h": 9},
@@ -374,7 +374,7 @@ async def get_mvrv_zscore(asset: str = "btc", theme: str = "dark"):
         "Net Unrealized Profit/Loss for long term holders"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/lth-nupl",
     "widgetId": "glassnode/lth-nupl",
     "gridData": {"w": 20, "h": 9},
