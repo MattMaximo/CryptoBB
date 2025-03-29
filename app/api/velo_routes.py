@@ -9,6 +9,7 @@ from app.core.registry import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
+from datetime import datetime, timedelta
 
 velo_router = APIRouter()
 velo_service = VeloService()
@@ -81,7 +82,7 @@ async def get_velo_options_products():
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -179,7 +180,7 @@ async def get_velo_oi_weighted_funding_rates(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -264,7 +265,7 @@ async def get_velo_funding_rates(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -363,7 +364,7 @@ async def get_velo_long_liquidations(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -456,7 +457,7 @@ async def get_velo_short_liquidations(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -564,7 +565,7 @@ async def get_velo_net_liquidations(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -670,7 +671,7 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -799,7 +800,7 @@ async def get_velo_ohlcv(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -846,8 +847,8 @@ async def get_resolution_options():
     """
     Returns a formatted list of resolution options in the format:
     {
-        "value": "1d",
-        "label": "1 Day"
+        "value": "1h",
+        "label": "1 Hour"
     }
     """
     resolution_options = [
@@ -857,12 +858,7 @@ async def get_resolution_options():
         {"value": "1h", "label": "1 Hour"},
         {"value": "4h", "label": "4 Hours"},
         {"value": "12h", "label": "12 Hours"},
-        {"value": "1d", "label": "1 Day"},
-        {"value": "3d", "label": "3 Days"},
-        {"value": "5d", "label": "5 Days"},
-        {"value": "1w", "label": "1 Week"},
-        {"value": "2w", "label": "2 Weeks"},
-        {"value": "4w", "label": "4 Weeks"}
+        {"value": "24h", "label": "1 Day"},
     ]
     
     return resolution_options

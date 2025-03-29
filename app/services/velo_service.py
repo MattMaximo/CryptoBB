@@ -80,7 +80,14 @@ class VeloService:
             df = df[df['coin'] == coin]
             begin_timestamp = int(df.begin.min())
         else:
-            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+            # Check if begin is already a timestamp in milliseconds
+            try:
+                begin_timestamp = int(begin)
+                if begin_timestamp > 1e11:  # If timestamp is too large (likely in seconds)
+                    begin_timestamp = begin_timestamp * 1000
+            except ValueError:
+                # If not a timestamp, treat as date string
+                begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
 
         params = {
             'type': 'futures',
@@ -127,7 +134,14 @@ class VeloService:
             df = df[df['coin'] == coin]
             begin_timestamp = int(df.begin.min())
         else:
-            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+            # Check if begin is already a timestamp in milliseconds
+            try:
+                begin_timestamp = int(begin)
+                if begin_timestamp > 1e11:  # If timestamp is too large (likely in seconds)
+                    begin_timestamp = begin_timestamp * 1000
+            except ValueError:
+                # If not a timestamp, treat as date string
+                begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
 
         params = {
             'type': 'futures',
@@ -167,7 +181,14 @@ class VeloService:
             df = df[df['coin'] == coin]
             begin_timestamp = int(df.begin.min())
         else:
-            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+            # Check if begin is already a timestamp in milliseconds
+            try:
+                begin_timestamp = int(begin)
+                if begin_timestamp > 1e11:  # If timestamp is too large (likely in seconds)
+                    begin_timestamp = begin_timestamp * 1000
+            except ValueError:
+                # If not a timestamp, treat as date string
+                begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
 
         params = {
             'type': 'futures',
@@ -204,7 +225,14 @@ class VeloService:
             df = df[df['coin'] == coin]
             begin_timestamp = int(df.begin.min())
         else:
-            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+            # Check if begin is already a timestamp in milliseconds
+            try:
+                begin_timestamp = int(begin)
+                if begin_timestamp > 1e11:  # If timestamp is too large (likely in seconds)
+                    begin_timestamp = begin_timestamp * 1000
+            except ValueError:
+                # If not a timestamp, treat as date string
+                begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
 
         params = {
             'type': 'futures',
@@ -233,7 +261,14 @@ class VeloService:
             df = df[df['coin'] == coin]
             begin_timestamp = int(df.begin.min())
         else:
-            begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
+            # Check if begin is already a timestamp in milliseconds
+            try:
+                begin_timestamp = int(begin)
+                if begin_timestamp > 1e11:  # If timestamp is too large (likely in seconds)
+                    begin_timestamp = begin_timestamp * 1000
+            except ValueError:
+                # If not a timestamp, treat as date string
+                begin_timestamp = int(pd.Timestamp(begin).timestamp() * 1000)
 
         params = {
             'type': 'futures',
