@@ -50,7 +50,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    html_path = Path(__file__).parent / "assets" / "landing.html"
+    html_path = Path(__file__).parent / "core" / "landing.html"
     with open(html_path) as f:
         html_content = f.read()
     return HTMLResponse(content=html_content)
