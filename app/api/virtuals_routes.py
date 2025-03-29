@@ -3,14 +3,12 @@ import pandas as pd
 import plotly.graph_objects as go
 from app.services.virtuals_service import VirtualsService
 from app.services.coingecko_service import CoinGeckoService
-from app.services.artemis_service import ArtemisService
 from app.assets.queries.category_market_cap import get_category_market_cap_query
 from app.assets.charts.base_chart_layout import create_base_layout
 import json
 virtuals_router = APIRouter()
 virtuals_service = VirtualsService()
 coingecko_service = CoinGeckoService()
-artemis_service = ArtemisService()
 
 @virtuals_router.get("/agents-data")
 async def get_agents_list():

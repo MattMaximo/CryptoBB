@@ -5,7 +5,6 @@ from app.core.settings import get_settings
 from app.api.base_routes import base_router
 from app.api.aave_routes import aave_router
 from app.api.ai_agent_routes import ai_agents_router
-from app.api.artemis_routes import artemis_router
 from app.api.btc_matrix_routes import btc_matrix_router
 from app.api.ccdata_routes import ccdata_router
 from app.api.coingecko_routes import coingecko_router
@@ -15,7 +14,6 @@ from app.api.glassnode_routes import glassnode_router
 from app.api.google_trends_routes import google_trends_router
 from app.api.microstrategy_routes import microstrategy_router
 from app.api.screener_routes import screener_router
-from app.api.telegram_routes import telegram_router
 from app.api.ta_routes import ta_router
 from app.api.velo_routes import velo_router
 from app.api.vvaifu_routes import vvaifu_router
@@ -56,6 +54,10 @@ app.include_router(
     tags=["Base Routes no prefix"]
 )
 
+@app.get("/")
+async def root():
+    return {"message": "OpenBB Terminal Pro Backend"}
+
 app.include_router(
     aave_router,
     prefix="/aave",
@@ -66,12 +68,6 @@ app.include_router(
     ai_agents_router,
     prefix="/ai-agents",
     tags=["AI Agents"]
-)
-
-app.include_router(
-    artemis_router,
-    prefix="/artemis",
-    tags=["Artemis"]
 )
 
 app.include_router(
@@ -126,12 +122,6 @@ app.include_router(
     screener_router,
     prefix="/screener",
     tags=["Screener"]
-)
-
-app.include_router(
-    telegram_router,
-    prefix="/telegram",
-    tags=["Telegram"]
 )
 
 app.include_router(

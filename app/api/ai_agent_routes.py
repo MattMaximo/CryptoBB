@@ -1,6 +1,5 @@
 # %%
 from fastapi import APIRouter, HTTPException
-from app.services.artemis_service import ArtemisService
 from app.services.coingecko_service import CoinGeckoService
 from app.assets.charts.base_chart_layout import create_base_layout
 from app.assets.queries.category_market_cap import get_category_market_cap_query
@@ -9,7 +8,6 @@ import pandas as pd
 import json
 
 ai_agents_router = APIRouter()
-artemis_service = ArtemisService()
 coingecko_service = CoinGeckoService()
 
 @ai_agents_router.get("/ai-agent-category-market-caps")
@@ -29,17 +27,6 @@ async def get_ai_agent_category_market_cap():
             ai_categories[category] = data['id'].tolist()
         except Exception as e:
             print(f"Error getting coin list for category {category}: {e}")
-
-
-    # Second loop - get market cap data for each category
-    dfs = []
-    for category in ai_categories:
-        QUERY = get_category_market_cap_query(ai_categories[category])
-        df = await artemis_service.execute_query(QUERY)
-        df.rename(columns={'MARKET_CAP': category}, inplace=True)
-        df.set_index('DATE', inplace=True)
-        df.sort_index(inplace=True)
-        dfs.append(df)
 
     # Combine all dataframes
     combined_df = pd.concat(dfs, axis=1)
