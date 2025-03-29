@@ -2,8 +2,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import get_settings, check_api_key_exists
-from app.core.templates import TEMPLATES
-from app.core.widget_decorator import register_widget, WIDGETS
+from app.core.widget_decorator import (
+    register_widget, 
+    add_template, 
+    WIDGETS, 
+    TEMPLATES
+)
 from app.api.aave_routes import aave_router
 from app.api.btc_matrix_routes import btc_matrix_router
 from app.api.ccdata_routes import ccdata_router
@@ -50,12 +54,13 @@ async def root():
     return Response(
         """CryptoBB - Crypto Backend for OpenBB Workspace
 
-Backend created by @MattMaximo, @didier_lopes and @jose-donato
+Backend made by @MattMaximo, @didier_lopes and @jose_donato
 
 Any questions, feel free to reach out on x/twitter""",
         media_type="text/plain"
     )
 
+# Loading widgets and templates
 
 print(f"\n\nLoading data into OpenBB workspace...\n")
 
@@ -64,24 +69,28 @@ if check_api_key_exists("CCDATA_API_KEY"):
         ccdata_router,
         prefix="/ccdata",
     )
+    add_template("ccdata")
 
 if check_api_key_exists("COINGECKO_API_KEY_1"):
     app.include_router(
         coingecko_router,
         prefix="/coingecko",
     )
+    add_template("coingecko")
 
 if check_api_key_exists("GLASSNODE_API_KEY"):
     app.include_router(
         glassnode_router,
         prefix="/glassnode",
     )
+    add_template("glassnode")
 
 if check_api_key_exists("VELO_API_KEY"):
     app.include_router(
         velo_router,
         prefix="/velo",
     )
+    add_template("velodata")
 
 app.include_router(
     daos_fun_router,
@@ -113,6 +122,7 @@ app.include_router(
     btc_matrix_router,
     prefix="/btc-matrix",
 )
+add_template("btc_matrix")
 
 app.include_router(
     vvaifu_router,
@@ -130,13 +140,20 @@ print(f"\nLoading done.\n")
 async def get_widgets():
     return WIDGETS
 
+
+# Loading custom templates
+
+if check_api_key_exists(
+    [
+        "VELO_API_KEY",
+        "GLASSNODE_API_KEY",
+        "COINGECKO_API_KEY_1",
+        "CCDATA_API_KEY"
+    ],
+    verbose=False
+):
+    add_template("matt_backend")
+
 @app.get("/templates.json")
-@register_widget({
-    "name": "Templates JSON",
-    "description": "List of all available dashboard templates in the system",
-    "category": "system",
-    "endpoint": "templates.json",
-    "isUtility": True,
-})
 async def get_templates():
-    return TEMPLATES
+    return list(TEMPLATES.values())

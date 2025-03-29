@@ -1,0 +1,147 @@
+{
+    "name": "VeloData",
+    "img": "https://velodata.app/assets/twitter_preview.png",
+    "img_dark": "",
+    "img_light": "",
+    "description": "Open Interest, Liquidations, Funding Rates, Annualized Basis, and more.",
+    "allowCustomization": true,
+    "tabs": {
+      "liquidations": {
+        "id": "liquidations",
+        "name": "Liquidations",
+        "layout": [
+          {
+            "i": "velo/short-liquidations",
+            "x": 0,
+            "y": 2,
+            "w": 20,
+            "h": 12
+          },
+          {
+            "i": "velo/long-liquidations",
+            "x": 20,
+            "y": 2,
+            "w": 20,
+            "h": 12
+          },
+          {
+            "i": "velo/net-liquidations",
+            "x": 0,
+            "y": 14,
+            "w": 40,
+            "h": 12
+          }
+        ]
+      },
+      "funding-rates": {
+        "id": "funding-rates",
+        "name": "Funding Rates",
+        "layout": [
+          {
+            "i": "velo/oi-weighted-funding-rates",
+            "x": 0,
+            "y": 2,
+            "w": 40,
+            "h": 11
+          },
+          {
+            "i": "velo/exchange-funding-rates",
+            "x": 0,
+            "y": 13,
+            "w": 40,
+            "h": 11
+          }
+        ]
+      },
+      "ohlcv": {
+        "id": "ohlcv",
+        "name": "OHLCV",
+        "layout": [
+          {
+            "i": "velo/ohlcv",
+            "x": 0,
+            "y": 2,
+            "w": 40,
+            "h": 21
+          }
+        ]
+      },
+      "open-interest": {
+        "id": "open-interest",
+        "name": "Open Interest",
+        "layout": [
+          {
+            "i": "velo/open-interest",
+            "x": 0,
+            "y": 2,
+            "w": 40,
+            "h": 15
+          }
+        ]
+      },
+      "annualized-basis": {
+        "id": "annualized-basis",
+        "name": "Annualized Basis",
+        "layout": [
+          {
+            "i": "velo/basis",
+            "x": 0,
+            "y": 2,
+            "w": 40,
+            "h": 17
+          }
+        ]
+      }
+    },
+    "groups": [
+      {
+        "name": "Group 1",
+        "type": "param",
+        "paramName": "coin",
+        "defaultValue": "BTC",
+        "widgetIds": [
+          "velo/short-liquidations",
+          "velo/long-liquidations",
+          "velo/net-liquidations",
+          "velo/oi-weighted-funding-rates",
+          "velo/exchange-funding-rates",
+          "velo/open-interest",
+          "velo/basis",
+          "velo/ohlcv"
+        ]
+      },
+      {
+        "name": "Group 2",
+        "type": "endpointParam",
+        "paramName": "resolution",
+        "defaultValue": "1d",
+        "widgetIds": [
+          "velo/short-liquidations",
+          "velo/long-liquidations",
+          "velo/net-liquidations",
+          "velo/oi-weighted-funding-rates",
+          "velo/exchange-funding-rates",
+          "velo/open-interest",
+          "velo/basis",
+          "velo/ohlcv",
+          "velo/ohlcv"
+        ]
+      },
+      {
+        "name": "Group 3",
+        "type": "param",
+        "paramName": "begin",
+        "defaultValue": "2024-01-01",
+        "widgetIds": [
+          "velo/short-liquidations",
+          "velo/long-liquidations",
+          "velo/net-liquidations",
+          "velo/oi-weighted-funding-rates",
+          "velo/exchange-funding-rates",
+          "velo/open-interest",
+          "velo/basis",
+          "velo/ohlcv"
+        ]
+      }
+    ]
+  }
