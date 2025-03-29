@@ -126,12 +126,12 @@ The `core` folder contains essential components that support the functionality o
 - `landing.html`: Provides the landing page template for the application
 - `plotly_config.py`: Manages the styling and configuration of all Plotly charts in the application, ensuring consistent visualization across all widgets
 
-<br />
-
 ## Others
 
 <details>
 <summary>Plotly Chart Configuration</summary>
+
+<br />
 
 This directory contains utilities for creating and configuring Plotly charts with consistent styling and behavior across the application.
 
