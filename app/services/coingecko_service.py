@@ -11,12 +11,14 @@ settings = get_settings()
 
 class CoinGeckoService:
     def __init__(self):
-        self.headers = {"accept": "application/json", "x-cg-pro-api-key": settings.COINGECKO_API_KEY}
+        self.headers = {"accept": "application/json"}
+        self.api_key = settings.COINGECKO_API_KEY
         self.session_manager = SessionManager()
 
     async def fetch_data(self, url: str) -> Dict:
+        base_url = url + ('&' if '?' in url else '?') + f'x_cg_pro_api_key={self.api_key}'
         session = await self.session_manager.get_session(self.headers)
-        async with session.get(url) as response:
+        async with session.get(base_url) as response:
             data = await response.json()
             
             if response.status == 200 and data:

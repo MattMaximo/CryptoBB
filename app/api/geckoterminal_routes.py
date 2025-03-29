@@ -82,18 +82,26 @@ async def get_ai_agents_market_data():
     "source": "GeckoTerminal",
     "params": [
         {
-            "paramName": "symbol",
-            "value": "ethereum:0x60594a405d53811d3bc4766596efd80fd545a270",
+            "paramName": "chain",
+            "value": "solana",
+            "label": "Chain",
+            "type": "text",
+            "description": "Chain (e.g. solana)",
+        },
+        {
+            "paramName": "pool_id",
+            "value": "2cWGVhRAo7SF6BtaNuivDSPCncGnEfLWwMPrKk5ikeXk",
             "label": "Pool ID",
             "type": "text",
-            "description": "Pool ID in format chain:address",
+            "description": "Pool ID",
         },
         {
             "paramName": "timeframe",
-            "value": "1h",
+            "value": "minute",
             "label": "Timeframe",
             "type": "text",
-            "description": "Timeframe (e.g. 1m, 5m, 15m, 1h, 4h, 1d)",
+            "description": "Timeframe (e.g. minute, hour, day)",
+            "options": [{"label": "Minute", "value": "minute"}, {"label": "Hour", "value": "hour"}, {"label": "Day", "value": "day"}]
         },
         {
             "paramName": "aggregate",
@@ -106,14 +114,13 @@ async def get_ai_agents_market_data():
     "data": {"chart": {"type": "candlestick"}},
 })
 async def get_geckoterminal_candles(
-    symbol: str, 
+    pool_id: str,
+    chain: str,
     timeframe: str, 
     aggregate: int, 
     theme: str = "dark"
 ):
     try:
-        pool_id = ai_agent_mapping[symbol.upper()]['pool_id']
-        chain = ai_agent_mapping[symbol.upper()]['chain']
         data = await geckoterminal_service.fetch_pool_ohlcv_data(
             pool_id, chain, timeframe, aggregate
         )
@@ -190,5 +197,6 @@ async def get_geckoterminal_candles(
         
         return figure_dict
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=400, detail=str(e))
   

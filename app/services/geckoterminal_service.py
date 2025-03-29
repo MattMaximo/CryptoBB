@@ -79,7 +79,6 @@ class GeckoTerminalService:
         - pd.DataFrame: A DataFrame containing the OHLCV data with columns ['timestamp', 'open', 'high', 'low', 'close', 'volume'].
         """
         url = f"https://pro-api.coingecko.com/api/v3/onchain/networks/{chain}/pools/{pool_id}/ohlcv/{timeframe}"
-        
         params = {
             "aggregate": aggregate,
             "limit": 1000,
