@@ -145,7 +145,7 @@ async def get_rsi(
         fig.add_hline(y=30, line_dash="dash", line_color="green", opacity=0.5)
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
@@ -312,7 +312,7 @@ async def get_macd(
         fig.add_hline(y=0, line_dash="solid", line_color="gray", opacity=0.5)
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
@@ -477,7 +477,7 @@ async def get_fibonacci(
             )
         
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
         
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
@@ -619,7 +619,7 @@ async def get_stochastic(
         fig.add_hline(y=20, line_dash="dash", line_color="green", opacity=0.5)
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
