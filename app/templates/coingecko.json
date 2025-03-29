@@ -5,7 +5,7 @@
   "img_light": "",
   "description": "CoinGecko powered dashboard with price, volume/mktcap, market dominance; and a screener.",
   "allowCustomization": true,
-  "tabs": {
+   "tabs": {
     "overview": {
       "id": "overview",
       "name": "Overview",
@@ -13,21 +13,21 @@
         {
           "i": "coingecko/price",
           "x": 0,
-          "y": 0,
+          "y": 2,
           "w": 40,
           "h": 12
         },
         {
           "i": "coingecko/vm-ratio",
           "x": 0,
-          "y": 12,
+          "y": 14,
           "w": 20,
           "h": 9
         },
         {
           "i": "coingecko/dominance",
           "x": 20,
-          "y": 12,
+          "y": 14,
           "w": 20,
           "h": 9
         }
@@ -40,8 +40,40 @@
         {
           "i": "coingecko/coin-list",
           "x": 0,
-          "y": 21,
+          "y": 2,
           "w": 40,
+          "h": 9,
+          "state": {
+            "chartView": {
+              "enabled": false,
+              "chartType": "line"
+            }
+          }
+        }
+      ]
+    },
+    "agents": {
+      "id": "agents",
+      "name": "Agents",
+      "layout": [
+        {
+          "i": "geckoterminal/ai-agents-market-data",
+          "x": 20,
+          "y": 2,
+          "w": 20,
+          "h": 9,
+          "state": {
+            "chartView": {
+              "enabled": false,
+              "chartType": "line"
+            }
+          }
+        },
+        {
+          "i": "coingecko/agents-market-caps",
+          "x": 0,
+          "y": 2,
+          "w": 20,
           "h": 9
         }
       ]
