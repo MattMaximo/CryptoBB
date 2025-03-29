@@ -13,7 +13,6 @@ from app.api.geckoterminal_routes import geckoterminal_router
 from app.api.glassnode_routes import glassnode_router
 from app.api.google_trends_routes import google_trends_router
 from app.api.microstrategy_routes import microstrategy_router
-from app.api.ta_routes import ta_router
 from app.api.velo_routes import velo_router
 from app.api.vvaifu_routes import vvaifu_router
 from app.api.virtuals_routes import virtuals_router
@@ -57,10 +56,6 @@ if check_api_key_exists("CCDATA_API_KEY"):
     app.include_router(
         ccdata_router,
         prefix="/ccdata",
-    )
-    app.include_router(
-        ta_router,
-        prefix="/ta",
     )
 
 if check_api_key_exists("COINGECKO_API_KEY_1"):
