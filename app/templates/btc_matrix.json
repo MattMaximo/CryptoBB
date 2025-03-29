@@ -1,0 +1,30 @@
+{
+  "name": "BTC Matrix",
+  "img": "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
+  "img_dark": "",
+  "img_light": "",
+  "description": "Bitcoin reserve matrices showing holdings of countries and companies.",
+  "allowCustomization": true,
+  "tabs": {
+    "reserve-matrices": {
+      "id": "reserve-matrices",
+      "name": "Reserve Matrices",
+      "layout": [
+        {
+          "i": "btc-matrix/reserve-dollars",
+          "x": 0,
+          "y": 0,
+          "w": 40,
+          "h": 20
+        },
+        {
+          "i": "btc-matrix/reserve-pct",
+          "x": 0,
+          "y": 20,
+          "w": 40,
+          "h": 20
+        }
+      ]
+    }
+  }
+} 

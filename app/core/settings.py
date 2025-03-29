@@ -24,13 +24,13 @@ class Settings(BaseSettings):
 def get_settings():
     return Settings()
 
-def check_api_key_exists(env_var_name: str | list[str]):
+def check_api_key_exists(env_var_name: str | list[str], verbose: bool = True):
     """
     Checks if specified API key(s) are set.
 
     Args:
         env_var_name (str | list[str]): Name of the environment variable(s) to check
-
+        verbose (bool): Whether to print verbose output
     Returns:
         bool: True if all API keys exist and are configured, False otherwise
     """
@@ -50,9 +50,11 @@ def check_api_key_exists(env_var_name: str | list[str]):
         api_key = getattr(settings, var, None)
         
         if not api_key or api_key == "your_api_key":
-            print(f"{RED}API key for {var} not found or not configured.{RESET}")
+            if verbose:
+                print(f"{RED}API key for {var} not found or not configured.{RESET}")
             all_keys_exist = False
         else:
-            print(f"{GREEN}API key for {var} found.{RESET}")
+            if verbose:
+                print(f"{GREEN}API key for {var} found.{RESET}")
     
     return all_keys_exist

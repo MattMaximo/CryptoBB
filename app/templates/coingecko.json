@@ -1,0 +1,64 @@
+{
+  "name": "CoinGecko",
+  "img": "https://blog.cryptoflies.com/wp-content/uploads/2023/11/sale-2.png",
+  "img_dark": "",
+  "img_light": "",
+  "description": "CoinGecko powered dashboard with price, volume/mktcap, market dominance; and a screener.",
+  "allowCustomization": true,
+  "tabs": {
+    "overview": {
+      "id": "overview",
+      "name": "Overview",
+      "layout": [
+        {
+          "i": "coingecko/price",
+          "x": 0,
+          "y": 0,
+          "w": 40,
+          "h": 12
+        },
+        {
+          "i": "coingecko/vm-ratio",
+          "x": 0,
+          "y": 12,
+          "w": 20,
+          "h": 9
+        },
+        {
+          "i": "coingecko/dominance",
+          "x": 20,
+          "y": 12,
+          "w": 20,
+          "h": 9
+        }
+      ]
+    },
+    "screener": {
+      "id": "screener",
+      "name": "Screener",
+      "layout": [
+        {
+          "i": "coingecko/coin-list",
+          "x": 0,
+          "y": 21,
+          "w": 40,
+          "h": 9
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "name": "Group 1",
+      "type": "endpointParam",
+      "paramName": "coin_id",
+      "defaultValue": "bitcoin",
+      "widgetIds": [
+        "coingecko/price",
+        "coingecko/vm-ratio",
+        "coingecko/dominance",
+        "coingecko/coin-list"
+      ]
+    }
+  ]
+} 
