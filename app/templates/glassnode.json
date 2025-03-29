@@ -1,0 +1,69 @@
+{
+  "name": "Glassnode",
+  "img": "https://tvblog-static.tradingview.com/uploads/2021/08/glassnode-preview.png",
+  "img_dark": "",
+  "img_light": "",
+  "description": "Glassnode on-chain metrics including Long Term Holders Supply, MVRV Z-Score, and more.",
+  "allowCustomization": true,
+  "tabs": {
+    "long-term-holders": {
+      "id": "long-term-holders",
+      "name": "Long Term Holders",
+      "layout": [
+        {
+          "i": "glassnode/lth-supply",
+          "x": 0,
+          "y": 20,
+          "w": 40,
+          "h": 7
+        },
+        {
+          "i": "glassnode/lth-net-change",
+          "x": 0,
+          "y": 11,
+          "w": 40,
+          "h": 9
+        },
+        {
+          "i": "glassnode/lth-nupl",
+          "x": 0,
+          "y": 2,
+          "w": 40,
+          "h": 9
+        }
+      ]
+    },
+    "market-metrics": {
+      "id": "market-metrics",
+      "name": "Market Metrics",
+      "layout": [
+        {
+          "i": "glassnode/price",
+          "x": 0,
+          "y": 18,
+          "w": 40,
+          "h": 9
+        },
+        {
+          "i": "glassnode/mvrv-zscore",
+          "x": 0,
+          "y": 2,
+          "w": 40,
+          "h": 16
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "name": "Group 1",
+      "type": "param",
+      "paramName": "asset",
+      "defaultValue": "btc",
+      "widgetIds": [
+        "glassnode/price",
+        "glassnode/mvrv-zscore"
+      ]
+    }
+  ]
+}

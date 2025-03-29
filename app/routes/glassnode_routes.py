@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from app.services.glassnode_service import GlassnodeService
-from app.assets.charts.base_chart_layout import create_base_layout
-from app.assets.charts.plotly_config import (
+from app.core.plotly_config import (
     apply_config_to_figure, 
-    get_chart_colors
+    get_chart_colors,
+    create_base_layout
 )
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -20,19 +20,12 @@ glassnode_service = GlassnodeService()
         "Supply of long term holders"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/lth-supply",
     "widgetId": "glassnode/lth-supply",
     "gridData": {"w": 20, "h": 9},
     "source": "Glassnode",
     "params": [
-        {
-            "paramName": "asset",
-            "value": "btc",
-            "label": "Coin",
-            "type": "text",
-            "description": "Glassnode ID of the cryptocurrency",
-        },
         {
             "paramName": "show_price",
             "value": "False",
@@ -48,12 +41,11 @@ glassnode_service = GlassnodeService()
     "data": {"chart": {"type": "line"}},
 })
 async def get_lth_supply(
-    asset: str = "btc", 
     show_price: str = "False", 
     theme: str = "dark"
 ):
     try:
-        data = await glassnode_service.get_lth_supply(asset)
+        data = await glassnode_service.get_lth_supply("btc")
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 
@@ -107,14 +99,11 @@ async def get_lth_supply(
             )
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -127,19 +116,12 @@ async def get_lth_supply(
         "Net position change of long term holders"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/lth-net-change",
     "widgetId": "glassnode/lth-net-change",
     "gridData": {"w": 20, "h": 9},
     "source": "Glassnode",
     "params": [
-        {
-            "paramName": "asset",
-            "value": "btc",
-            "label": "Coin",
-            "type": "text",
-            "description": "Glassnode ID of the cryptocurrency",
-        },
         {
             "paramName": "show_price",
             "value": "False",
@@ -155,12 +137,11 @@ async def get_lth_supply(
     "data": {"chart": {"type": "line"}},
 })
 async def get_lth_net_change(
-    asset: str = "btc", 
     show_price: str = "False", 
     theme: str = "dark"
 ):
     try:
-        data = await glassnode_service.get_lth_net_change(asset)
+        data = await glassnode_service.get_lth_net_change("btc")
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 
@@ -228,14 +209,11 @@ async def get_lth_net_change(
             )
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -247,7 +225,7 @@ async def get_lth_net_change(
     "name": "Glassnode Price",
     "description": "Historical price data from Glassnode",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/price",
     "widgetId": "glassnode/price",
     "gridData": {"w": 20, "h": 9},
@@ -288,16 +266,14 @@ async def get_glassnode_price(asset: str = "btc", theme: str = "dark"):
         )
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
-        
+    
         return figure_dict
+
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
@@ -309,7 +285,7 @@ async def get_glassnode_price(asset: str = "btc", theme: str = "dark"):
         "Bitcoin is over or undervalued"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/mvrv-zscore",
     "widgetId": "glassnode/mvrv-zscore",
     "gridData": {"w": 20, "h": 9},
@@ -365,14 +341,11 @@ async def get_mvrv_zscore(asset: str = "btc", theme: str = "dark"):
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -385,26 +358,17 @@ async def get_mvrv_zscore(asset: str = "btc", theme: str = "dark"):
         "Net Unrealized Profit/Loss for long term holders"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "glassnode/lth-nupl",
     "widgetId": "glassnode/lth-nupl",
     "gridData": {"w": 20, "h": 9},
     "source": "Glassnode",
-    "params": [
-        {
-            "paramName": "asset",
-            "value": "btc",
-            "label": "Coin",
-            "type": "text",
-            "description": "Glassnode ID of the cryptocurrency",
-        }
-    ],
     "data": {"chart": {"type": "line"}},
 })
-async def get_lth_nupl(asset: str = "btc", theme: str = "dark"):
+async def get_lth_nupl(theme: str = "dark"):
     try:
         # Fetch and process data
-        data = await glassnode_service.lth_nupl(asset)
+        data = await glassnode_service.lth_nupl("btc")
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         
         # Sort data by date to ensure chronological order
@@ -505,14 +469,11 @@ async def get_lth_nupl(asset: str = "btc", theme: str = "dark"):
             )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
         
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:

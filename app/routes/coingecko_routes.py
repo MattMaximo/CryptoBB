@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from app.services.coingecko_service import CoinGeckoService
-from app.assets.charts.base_chart_layout import create_base_layout
-from app.assets.charts.plotly_config import (
+from app.core.plotly_config import (
     apply_config_to_figure, 
-    get_chart_colors
+    get_chart_colors,
+    create_base_layout
 )
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -18,7 +18,7 @@ coingecko_service = CoinGeckoService()
 
 @coingecko_router.get("/coin-list")
 @register_widget({
-    "name": "Coingecko Coins List",
+    "name": "Coins List",
     "description": (
         "List of all coins available on CoinGecko including ID, Name, "
         "Ticker, and available chains."
@@ -65,10 +65,10 @@ async def get_coin_list(
 
 @coingecko_router.get("/price")
 @register_widget({
-    "name": "CoinGecko Price Chart",
+    "name": "Price Chart",
     "description": "Historical price data for cryptocurrencies from CoinGecko",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "coingecko/price",
     "gridData": {"w": 20, "h": 12},
     "source": "CoinGecko",
@@ -117,14 +117,11 @@ async def get_market_data(coin_id: str, theme: str = "dark"):
         )
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -136,7 +133,7 @@ async def get_market_data(coin_id: str, theme: str = "dark"):
     "name": "Crypto Market Dominance",
     "description": "Market dominance of major cryptocurrencies",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "coingecko/dominance",
     "gridData": {"w": 20, "h": 9},
     "source": "CoinGecko",
@@ -200,14 +197,11 @@ async def get_dominance(coin_id: str, theme: str = "dark"):
             )
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -219,7 +213,7 @@ async def get_dominance(coin_id: str, theme: str = "dark"):
     "name": "Volume/Market Cap Ratio",
     "description": "Total Trading Volume / Total Market Cap",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "coingecko/vm-ratio",
     "gridData": {"w": 20, "h": 9},
     "source": "CoinGecko",
@@ -279,14 +273,11 @@ async def get_vm_ratio(coin_id: str, theme: str = "dark"):
         figure.update_yaxes(tickformat=".2f")
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -295,10 +286,10 @@ async def get_vm_ratio(coin_id: str, theme: str = "dark"):
 
 @coingecko_router.get("/correlation")
 @register_widget({
-    "name": "Coingecko Correlation",
+    "name": "Coin Correlation",
     "description": "Historical correlation between two search tokens",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "coingecko/correlation",
     "gridData": {"w": 20, "h": 9},
     "source": "CoinGecko",
@@ -471,14 +462,11 @@ async def get_correlation(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
         
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -490,7 +478,7 @@ async def get_correlation(
     "name": "BTC Price / SMA Multiplier",
     "description": "Bitcoin price divided by the 1458-day Simple Moving Average",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "coingecko/btc-price-sma-multiplier",
     "gridData": {"w": 20, "h": 9},
     "source": "CoinGecko",
@@ -588,14 +576,11 @@ async def get_btc_price_sma_multiplier(theme: str = "dark"):
         )
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig= apply_config_to_figure(fig, theme=theme)
 
         # Convert figure to JSON with the config
         fig_json = fig.to_json()
         fig_dict = json.loads(fig_json)
-        
-        # Add config to the figure dictionary
-        fig_dict["config"] = config
         
         return fig_dict
     except Exception as e:
@@ -603,17 +588,6 @@ async def get_btc_price_sma_multiplier(theme: str = "dark"):
     
 
 @coingecko_router.get("/coin-list-formatted")
-@register_widget({
-    "name": "Coingecko Coins List Formatted",
-    "description": (
-        "Formatted list of all coins available on CoinGecko "
-        "for dropdown selection"
-    ),
-    "category": "crypto",
-    "endpoint": "coingecko/coin-list-formatted",
-    "source": "CoinGecko",
-    "isUtility": True,
-})
 async def get_coin_list_formatted(
     include_platform: str = "true", 
     status: str = "active"
@@ -639,3 +613,102 @@ async def get_coin_list_formatted(
         })
     
     return formatted_list
+
+@coingecko_router.get("/watchlist")
+@register_widget({
+    "name": "Crypto Watchlist",
+    "description": "Market data for a curated list of cryptocurrencies",
+    "category": "crypto",
+    "endpoint": "coingecko/watchlist",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CoinGecko",
+    "data": {"table": {"showAll": True}},
+})
+async def get_watchlist():
+    coin_ids = "kyber-network-crystal,bitcoin,ethereum,ripple,solana,tron,avalanche-2,chainlink,stellar,sui,uniswap,eigenlayer,aave,celestia,hyperliquid,dogwifcoin,injective-protocol,jupiter-exchange-solana,virtual-protocol,helium,raydium,apecoin,pendle,grass,goatseus-maximus,echelon-prime,drift-protocol,zerebro,cetus-protocol,kamino,aixbt,banana-gun,morpho,near,the-open-network,researchcoin,vitadao,blub,navi,ai16z,wormhole,tensor,vaderai-by-virtuals,arbitrum,optimism,hivemapper"
+    data = await coingecko_service.get_coin_list_market_data(coin_ids)
+    data.fillna("", inplace=True)
+    data = data[['market_cap_rank', 'name', 'symbol', 'current_price', 'total_volume', 'market_cap',
+        'fully_diluted_valuation', 'price_change_percentage_1h_in_currency',
+        'price_change_percentage_24h_in_currency', 'price_change_percentage_7d_in_currency',
+        'price_change_percentage_14d_in_currency', 'price_change_percentage_30d_in_currency',
+        'price_change_percentage_200d_in_currency', 'price_change_percentage_1y_in_currency',
+        'circulating_supply', 'total_supply', 'max_supply', 'ath', 'ath_date', 'atl', 'atl_date']]
+    
+    data = data.rename(columns={
+        'market_cap_rank': 'rank',
+        'current_price': 'price', 
+        'total_volume': 'volume',
+        'fully_diluted_valuation': 'fdv',
+        'price_change_percentage_1h_in_currency': '1h_pct_change',
+        'price_change_percentage_24h_in_currency': '24h_pct_change',
+        'price_change_percentage_7d_in_currency': '7d_pct_change',
+        'price_change_percentage_14d_in_currency': '14d_pct_change',
+        'price_change_percentage_30d_in_currency': '30d_pct_change',
+        'price_change_percentage_200d_in_currency': '200d_pct_change',
+        'price_change_percentage_1y_in_currency': '1y_pct_change'
+    })
+
+    data['symbol'] = data['symbol'].str.upper()
+    return data.to_dict(orient="records")
+
+@coingecko_router.get("/agents-market-caps")
+@register_widget({
+    "name": "Virtuals Agents Market Caps",
+    "description": "Historical market capitalization of Virtuals Protocol agents",
+    "category": "crypto",
+    "type": "chart",
+    "endpoint": "coingecko/agents-market-caps",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CoinGecko"
+})
+async def get_agents_market_caps(theme: str = "dark"):
+    try:
+        virtuals_agents = await coingecko_service.get_coin_list_market_data(category="virtuals-protocol-ecosystem")
+        virtuals_agents.fillna(0, inplace=True)
+        virtuals_agents["market_cap"] = virtuals_agents["market_cap"].astype(float)
+        virtuals_agents = virtuals_agents[virtuals_agents["total_volume"] >= 500000]
+        virtuals_agents = virtuals_agents[virtuals_agents["id"] != "virtual-protocol"]
+        virtuals_agents_ids = virtuals_agents["id"].tolist()
+
+        df = await coingecko_service.get_market_data(virtuals_agents_ids)
+        df.fillna(0, inplace=True)
+        df = df[df["date"].dt.time == pd.to_datetime("00:00:00").time()]
+        df = df[["date", "market_cap", "coingecko_id"]]
+        df.rename(columns={"market_cap": "market_cap_usd"}, inplace=True)
+
+        df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
+        df = df.set_index("date")
+
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
+
+        figure = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Market Cap (USD)",
+                theme=theme
+            )
+        )
+
+        for coingecko_id in df["coingecko_id"].unique():
+            coin_data = df[df["coingecko_id"] == coingecko_id]
+            figure.add_scatter(
+                x=coin_data.index,
+                y=coin_data["market_cap_usd"],
+                mode="lines",
+                name=coingecko_id,
+                hovertemplate="$%{y:,.0f}"
+            )
+
+        # Apply the standard configuration to the figure with theme
+        figure = apply_config_to_figure(figure, theme=theme)
+
+        # Convert figure to JSON with the config
+        figure_json = figure.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        return figure_dict
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

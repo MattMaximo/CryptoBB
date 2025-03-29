@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from app.services.microstrategy_service import MicrostrategyService
-from app.assets.charts.base_chart_layout import create_base_layout
-from app.assets.charts.plotly_config import (
+from app.core.plotly_config import (
     apply_config_to_figure, 
-    get_chart_colors
+    get_chart_colors,
+    create_base_layout
 )
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -24,7 +24,7 @@ microstrategy_service = MicrostrategyService()
         "its Bitcoin holdings"
     ),
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "microstrategy/premium",
     "gridData": {"w": 20, "h": 9},
     "source": "Microstrategy",
@@ -79,14 +79,11 @@ async def get_microstrategy_premium(theme: str = "dark"):
         )
 
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = figure.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
@@ -101,7 +98,7 @@ async def get_microstrategy_premium(theme: str = "dark"):
         "balance, cost basis, and share metrics"
     ),
     "category": "crypto",
-    "defaultViz": "table",
+    "type": "table",
     "endpoint": "microstrategy/info",
     "gridData": {"w": 20, "h": 9},
     "source": "Microstrategy",

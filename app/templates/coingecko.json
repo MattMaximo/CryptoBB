@@ -1,0 +1,141 @@
+{
+  "name": "CoinGecko",
+  "img": "https://blog.cryptoflies.com/wp-content/uploads/2023/11/sale-2.png",
+  "img_dark": "",
+  "img_light": "",
+  "description": "CoinGecko powered dashboard with price, volume/mktcap, market dominance; and a screener.",
+  "allowCustomization": true,
+  "tabs": {
+    "overview": {
+      "id": "overview",
+      "name": "Overview",
+      "layout": [
+        {
+          "i": "coingecko/price",
+          "x": 0,
+          "y": 2,
+          "w": 40,
+          "h": 12,
+          "state": {
+            "params": {
+              "coin_id": "ai16z"
+            }
+          }
+        },
+        {
+          "i": "coingecko/vm-ratio",
+          "x": 0,
+          "y": 14,
+          "w": 20,
+          "h": 9
+        },
+        {
+          "i": "coingecko/dominance",
+          "x": 20,
+          "y": 14,
+          "w": 20,
+          "h": 9
+        }
+      ]
+    },
+    "coins-list": {
+      "id": "coins-list",
+      "name": "Coins List",
+      "layout": [
+        {
+          "i": "coingecko/coin-list",
+          "x": 0,
+          "y": 2,
+          "w": 40,
+          "h": 20,
+          "state": {
+            "chartView": {
+              "enabled": false,
+              "chartType": "line"
+            }
+          }
+        }
+      ]
+    },
+    "agents": {
+      "id": "agents",
+      "name": "Agents",
+      "layout": [
+        {
+          "i": "coingecko/agents-market-caps",
+          "x": 0,
+          "y": 2,
+          "w": 40,
+          "h": 23
+        }
+      ]
+    },
+    "correlation": {
+      "id": "correlation",
+      "name": "Correlation",
+      "layout": [
+        {
+          "i": "coingecko/correlation",
+          "x": 0,
+          "y": 2,
+          "w": 40,
+          "h": 16
+        }
+      ]
+    },
+    "rainbow-btc": {
+      "id": "rainbow-btc",
+      "name": "Rainbow BTC",
+      "layout": [
+        {
+          "i": "coingecko/btc-price-sma-multiplier",
+          "x": 0,
+          "y": 2,
+          "w": 40,
+          "h": 22
+        }
+      ]
+    },
+    "watchlist": {
+      "id": "watchlist",
+      "name": "Watchlist",
+      "layout": [
+        {
+          "i": "coingecko/watchlist",
+          "x": 0,
+          "y": 2,
+          "w": 40,
+          "h": 20,
+          "state": {
+            "chartView": {
+              "enabled": false,
+              "chartType": "line"
+            },
+            "columnState": {
+              "default_undefined": {
+                "scroll": {
+                  "top": 0,
+                  "left": 1139
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "name": "Group 1",
+      "type": "endpointParam",
+      "paramName": "coin_id2",
+      "defaultValue": "ai16z",
+      "widgetIds": [
+        "coingecko/price",
+        "coingecko/vm-ratio",
+        "coingecko/dominance",
+        "coingecko/coin-list"
+      ]
+    }
+  ]
+}

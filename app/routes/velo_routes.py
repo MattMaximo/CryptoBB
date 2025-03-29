@@ -1,14 +1,15 @@
 from fastapi import APIRouter, HTTPException
 from app.services.velo_service import VeloService
-from app.assets.charts.base_chart_layout import create_base_layout
-from app.assets.charts.plotly_config import (
+from app.core.plotly_config import (
     get_chart_colors, 
-    apply_config_to_figure
+    apply_config_to_figure,
+    create_base_layout
 )
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
+from datetime import datetime, timedelta
 
 velo_router = APIRouter()
 velo_service = VeloService()
@@ -58,7 +59,7 @@ async def get_velo_options_products():
     "name": "OI Weighted Funding Rates",
     "description": "Open Interest weighted funding rates across exchanges",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "velo/oi-weighted-funding-rates",
     "gridData": {"w": 40, "h": 11},
     "source": "VeloData",
@@ -81,7 +82,7 @@ async def get_velo_options_products():
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -144,7 +145,7 @@ async def get_velo_oi_weighted_funding_rates(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -156,7 +157,7 @@ async def get_velo_oi_weighted_funding_rates(
     "name": "Exchange Funding Rates",
     "description": "Funding rates across different exchanges",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "velo/exchange-funding-rates",
     "gridData": {"w": 40, "h": 11},
     "source": "VeloData",
@@ -179,7 +180,7 @@ async def get_velo_oi_weighted_funding_rates(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -228,7 +229,7 @@ async def get_velo_funding_rates(
             )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         # Return the chart as JSON
         return json.loads(figure.to_json())
@@ -241,7 +242,7 @@ async def get_velo_funding_rates(
     "name": "Long Liquidations",
     "description": "Long position liquidations across exchanges",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "velo/long-liquidations",
     "gridData": {"w": 20, "h": 12},
     "source": "VeloData",
@@ -264,7 +265,7 @@ async def get_velo_funding_rates(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -328,7 +329,7 @@ async def get_velo_long_liquidations(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -339,7 +340,7 @@ async def get_velo_long_liquidations(
     "name": "Short Liquidations",
     "description": "Short position liquidations across exchanges",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "velo/short-liquidations",
     "gridData": {"w": 20, "h": 12},
     "source": "VeloData",
@@ -363,7 +364,7 @@ async def get_velo_long_liquidations(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -422,7 +423,7 @@ async def get_velo_short_liquidations(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -433,7 +434,7 @@ async def get_velo_short_liquidations(
     "name": "Net Liquidations",
     "description": "Net liquidations (long - short) across exchanges",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "velo/net-liquidations",
     "gridData": {"w": 40, "h": 12},
     "source": "VeloData",
@@ -456,7 +457,7 @@ async def get_velo_short_liquidations(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -530,7 +531,7 @@ async def get_velo_net_liquidations(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -541,7 +542,7 @@ async def get_velo_net_liquidations(
     "name": "Open Interest",
     "description": "Open interest across exchanges",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "velo/open-interest",
     "gridData": {"w": 40, "h": 15},
     "source": "VeloData",
@@ -564,7 +565,7 @@ async def get_velo_net_liquidations(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -636,7 +637,7 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -647,7 +648,7 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
     "name": "OHLCV Chart",
     "description": "Open, high, low, close, volume chart",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "velo/ohlcv",
     "gridData": {"w": 40, "h": 21},
     "source": "VeloData",
@@ -670,7 +671,7 @@ async def get_velo_open_interest(coin: str = "BTC", begin: str = None, resolutio
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -764,7 +765,7 @@ async def get_velo_ohlcv(
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
         
         return json.loads(figure.to_json())
         
@@ -776,7 +777,7 @@ async def get_velo_ohlcv(
     "name": "Annualized Basis",
     "description": "Annualized basis across exchanges",
     "category": "crypto",
-    "defaultViz": "chart",
+    "type": "chart",
     "endpoint": "velo/basis",
     "gridData": {"w": 40, "h": 17},
     "source": "VeloData",
@@ -799,7 +800,7 @@ async def get_velo_ohlcv(
         },
         {
             "paramName": "begin",
-            "value": "2024-01-01",
+            "value": (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d"),
             "label": "Start Date",
             "show": True,
             "description": "Start date for the data",
@@ -835,7 +836,7 @@ async def get_velo_basis(coin: str = "BTC", begin: str = None, resolution: str =
         )
         
         # Apply the standard configuration to the figure with theme
-        figure, config = apply_config_to_figure(figure, theme=theme)
+        figure = apply_config_to_figure(figure, theme=theme)
 
         return json.loads(figure.to_json())
     except Exception as e:
@@ -846,8 +847,8 @@ async def get_resolution_options():
     """
     Returns a formatted list of resolution options in the format:
     {
-        "value": "1d",
-        "label": "1 Day"
+        "value": "1h",
+        "label": "1 Hour"
     }
     """
     resolution_options = [
@@ -857,12 +858,7 @@ async def get_resolution_options():
         {"value": "1h", "label": "1 Hour"},
         {"value": "4h", "label": "4 Hours"},
         {"value": "12h", "label": "12 Hours"},
-        {"value": "1d", "label": "1 Day"},
-        {"value": "3d", "label": "3 Days"},
-        {"value": "5d", "label": "5 Days"},
-        {"value": "1w", "label": "1 Week"},
-        {"value": "2w", "label": "2 Weeks"},
-        {"value": "4w", "label": "4 Weeks"}
+        {"value": "24h", "label": "1 Day"},
     ]
     
     return resolution_options

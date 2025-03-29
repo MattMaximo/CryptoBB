@@ -1,0 +1,29 @@
+{
+  "name": "Google Trends",
+  "img": "https://www.searchenginejournal.com/wp-content/uploads/2020/10/trends-5f7734173d303.png",
+  "img_dark": "https://www.searchenginejournal.com/wp-content/uploads/2020/10/trends-5f7734173d303.png",
+  "img_light": "https://www.searchenginejournal.com/wp-content/uploads/2020/10/trends-5f7734173d303.png",
+  "description": "Historical google trends",
+  "allowCustomization": true,
+  "tabs": {
+    "": {
+      "id": "",
+      "name": "",
+      "layout": [
+        {
+          "i": "google-trends/historical-google-trends",
+          "x": 0,
+          "y": 0,
+          "w": 40,
+          "h": 23,
+          "state": {
+            "params": {
+              "search_term": "openai"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "groups": []
+}

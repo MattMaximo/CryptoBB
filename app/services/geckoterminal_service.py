@@ -8,38 +8,21 @@ settings = get_settings()
 
 class GeckoTerminalService:
     def __init__(self):
-        self.api_key = settings.COINGECKO_API_KEY_1
-        self.api_key_2 = settings.COINGECKO_API_KEY_2
-        self.headers_1 = {
+        self.headers = {
             "accept": "application/json",
-            "x-cg-pro-api-key": self.api_key
-        }
-        self.headers_2 = {
-            "accept": "application/json",
-            "x-cg-pro-api-key": self.api_key_2
+            "x-cg-pro-api-key": settings.COINGECKO_API_KEY
         }
         self.session_manager = SessionManager()
 
     async def fetch_data(self, url: str, params: Dict = None) -> Dict:
-
-        session = await self.session_manager.get_session(self.headers_1)
+        session = await self.session_manager.get_session(self.headers)
         async with session.get(url, params=params) as response:
             data = await response.json()
             
-            # If successful, return the data
             if response.status == 200 and data:
                 return data
                 
-            # If failed, try with second API key
-            session = await self.session_manager.get_session(self.headers_2)
-            async with session.get(url, params=params) as response:
-                data = await response.json()
-                if response.status == 200 and data:
-                    return data
-                    
-                # If both failed, raise an exception
-                raise Exception(f"Failed to fetch data from CoinGecko API. Status: {response.status}, Response: {data}")
-
+            raise Exception(f"Failed to fetch data from CoinGecko API. Status: {response.status}, Response: {data}")
 
     async def fetch_coin_market_data(self, network_id: str, coin_ids: str) -> pd.DataFrame:
         url = f"https://pro-api.coingecko.com/api/v3/onchain/networks/{network_id}/tokens/multi/{coin_ids}"
@@ -96,7 +79,6 @@ class GeckoTerminalService:
         - pd.DataFrame: A DataFrame containing the OHLCV data with columns ['timestamp', 'open', 'high', 'low', 'close', 'volume'].
         """
         url = f"https://pro-api.coingecko.com/api/v3/onchain/networks/{chain}/pools/{pool_id}/ohlcv/{timeframe}"
-        
         params = {
             "aggregate": aggregate,
             "limit": 1000,

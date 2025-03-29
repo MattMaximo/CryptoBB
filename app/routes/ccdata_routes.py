@@ -1,36 +1,128 @@
 from fastapi import APIRouter, HTTPException
 from app.services.ccdata_service import CCDataService
-from app.assets.charts.base_chart_layout import create_base_layout
-from app.assets.charts.plotly_config import (
+from app.core.plotly_config import (
     apply_config_to_figure, 
-    get_chart_colors
+    get_chart_colors,
+    create_base_layout
 )
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 import plotly.graph_objects as go
 import pandas as pd
+from typing import List
 import json
+import asyncio
 import numpy as np
 
-ta_router = APIRouter()
-
+ccdata_router = APIRouter()
 ccdata_service = CCDataService()
 
-@ta_router.get("/rsi")
+
+EXCHANGE_LIST = [
+    {"label": "Binance", "value": "binance"},
+    {"label": "Coinbase", "value": "coinbase"},
+    {"label": "Bybit", "value": "bybit"},
+    {"label": "OKEx", "value": "okex"},
+    {"label": "Crypto.com", "value": "cryptocom"},
+    {"label": "UPBIT", "value": "upbit"},
+    {"label": "Kraken", "value": "kraken"},
+    {"label": "MEXC", "value": "mexc"}
+]
+
+   
+@ccdata_router.get("/exchange-price-deltas")
 @register_widget({
-    "name": "Relative Strength Index (RSI)",
-    "description": "Technical indicator that measures the magnitude of recent price changes to evaluate overbought or oversold conditions",
-    "category": "technical",
-    "defaultViz": "chart",
-    "endpoint": "ta/rsi",
+    "name": "Exchange Price Deltas",
+    "description": (
+        "This is the percent difference between the vwap price of BTC on each "
+        "exchange and the average price of BTC across those exchanges."
+    ),
+    "category": "crypto",
+    "type": "chart",
+    "endpoint": "ccdata/exchange-price-deltas",
+    "widgetId": "ccdata/exchange-price-deltas",
     "gridData": {"w": 20, "h": 9},
-    "source": "CryptoCompare",
+    "source": "CCData",
+    "data": {"chart": {"type": "line"}},
+})
+async def get_exchange_price_deltas(theme: str = "dark"):
+    try:
+        data = await ccdata_service.get_delta_data()
+        data['timestamp'] = data['timestamp'].dt.strftime("%Y-%m-%d %H:%M:%S")
+        data = data.set_index("timestamp")
+
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
+
+        fig = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Delta",
+                y_dtype=".2%",
+                theme=theme
+            )
+        )
+
+        # Add delta lines on primary y-axis
+        for col in data.columns:
+            if col != 'average_price':
+                fig.add_scatter(
+                    x=data.index,
+                    y=data[col],
+                    mode="lines", 
+                    name=col.split('_')[0],
+                    hovertemplate="%{y:.3%}"
+                )
+
+        fig.update_layout(
+            yaxis2=dict(
+                title="Price",
+                overlaying="y", 
+                side="right",
+                gridcolor="#2f3338",
+                color="#ffffff"
+            )
+        )
+        # Add average price line on secondary y-axis
+        fig.add_scatter(
+            x=data.index,
+            y=data['average_price'],
+            mode="lines",
+            name="Average Price",
+            line=dict(color=colors['sma_line'], width=1),
+            yaxis="y2",
+            hovertemplate="%{y:,.2f}",
+        )
+
+        # Apply the standard configuration to the figure with theme
+        fig = apply_config_to_figure(fig, theme=theme)
+
+        # Convert figure to JSON with the config
+        figure_json = fig.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        return figure_dict
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+
+@ccdata_router.get("/candles")
+@register_widget({
+    "name": "CCData Candles",
+    "description": "OHLCV data for a given pool",
+    "category": "crypto",
+    "type": "chart",
+    "endpoint": "ccdata/candles",
+    "widgetId": "ccdata/candles",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CCData",
     "params": [
         {
             "paramName": "exchange",
             "value": "binance",
             "label": "Exchange",
-            "show": True,
+            "type": "text",
             "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
         },
         {
             "paramName": "coin_id",
@@ -43,31 +135,207 @@ ccdata_service = CCDataService()
             "paramName": "interval",
             "value": "days",
             "label": "Interval",
-            "show": True,
-            "description": "Time interval for data points",
+            "type": "text",
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
         },
-        {
-            "paramName": "aggregate",
-            "value": "1",
-            "label": "Aggregate",
-            "show": True,
-            "description": "Number of time units to aggregate",
-        }
     ],
-    "data": {"chart": {"type": "line"}},
+    "data": {"chart": {"type": "candlestick"}},
 })
-async def get_rsi(
+async def get_ccdata_candles(
     exchange: str, 
     coin_id: str, 
     interval: str, 
-    aggregate: int, 
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
             (exchange, coin_id), 
             interval=interval, 
-            aggregate=aggregate, 
+            aggregate=1, 
+            limit=2000
+        )
+        data = pd.DataFrame(data)
+        data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
+        data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
+        if interval == "minutes" or interval == "hours":
+            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d %H:%M:%S")
+        elif interval == "day":
+            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d")
+        data = data.set_index("TIMESTAMP")
+
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
+
+        figure = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Price",
+                y_dtype="$,.4f",
+                theme=theme
+            )
+        )
+        # Add volume bars on secondary y-axis first so they appear behind candlesticks
+        figure.add_bar(
+            x=data.index,
+            y=data['VOLUME'],
+            name="Volume",
+            yaxis="y2",
+            marker_color='rgba(128,128,128,0.5)'
+        )
+        # Add candlestick chart second so it appears on top
+        figure.add_candlestick(
+            x=data.index,
+            open=data['OPEN'],
+            high=data['HIGH'],
+            low=data['LOW'],
+            close=data['CLOSE'],
+            name="Price",
+            increasing_line_color=colors['positive'],
+            decreasing_line_color=colors['negative']
+        )
+        # Update layout to include secondary y-axis for volume
+        figure.update_layout(
+            yaxis=dict(
+                rangemode="nonnegative",
+                zeroline=True,
+                zerolinewidth=2,
+                zerolinecolor="lightgrey"
+            ),
+            yaxis2=dict(
+                title="Volume",
+                overlaying="y", 
+                side="right",
+                showgrid=False,
+                rangemode="nonnegative",
+                zeroline=True,
+                zerolinewidth=2,
+                zerolinecolor="lightgrey"
+            ),
+        )
+
+        # Apply the standard configuration to the figure with theme
+        figure = apply_config_to_figure(figure, theme=theme)
+
+        # Convert figure to JSON with the config
+        figure_json = figure.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        return figure_dict
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@ccdata_router.get("/exchange-spot-volume")
+@register_widget({
+    "name": "Total Spot Exchange Volume",
+    "description": "Total spot volume for a given exchange.",
+    "category": "crypto",
+    "endpoint": "ccdata/exchange-spot-volume",
+    "widgetId": "ccdata/exchange-spot-volume",
+    "gridData": {"w": 20, "h": 9},
+    "params": [
+        {
+            "paramName": "exchange",
+            "value": "binance",
+            "label": "Exchange",
+            "type": "text",
+            "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
+        },
+    ],
+    "source": "CCData",
+    "type": "chart",
+    "data": {"chart": {"type": "line"}},
+})
+async def get_exchange_data(exchange: str, theme: str = "dark"):
+    try:
+        # First get all instruments for the exchange
+        data = await ccdata_service.get_total_exchange_volume(exchange)
+        data['timestamp'] = data['timestamp'].dt.strftime("%Y-%m-%d %H:%M:%S")
+        data = data.set_index("timestamp")
+
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
+
+        fig = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Volume",
+                y_dtype=",.2f",
+                theme=theme
+            )
+        )
+
+        fig.add_scatter(
+            x=data.index,
+            y=data['total_volume'],
+            mode="lines",
+            name="Total Volume",
+            line=dict(color=colors['main_line']),
+            hovertemplate="%{y:,.2f}"
+        )
+
+        # Apply the standard configuration to the figure with theme
+        fig = apply_config_to_figure(fig, theme=theme)
+
+        # Convert figure to JSON with the config
+        figure_json = fig.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        return figure_dict
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@ccdata_router.get("/rsi")
+@register_widget({
+    "name": "Relative Strength Index (RSI)",
+    "description": "Technical indicator that measures the magnitude of recent price changes to evaluate overbought or oversold conditions",
+    "category": "technical",
+    "type": "chart",
+    "endpoint": "ccdata/rsi",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CCData",
+    "params": [
+        {
+            "paramName": "exchange",
+            "value": "binance",
+            "label": "Exchange",
+            "type": "text",
+            "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
+        },
+        {
+            "paramName": "coin_id",
+            "value": "BTC-USDT",
+            "label": "Symbol",
+            "show": True,
+            "description": "Trading pair",
+        },
+        {
+            "paramName": "interval",
+            "value": "days",
+            "label": "Interval",
+            "type": "text",
+            "show": True,
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
+        },
+    ],
+    "data": {"chart": {"type": "line"}},
+})
+async def get_rsi(
+    exchange: str, 
+    coin_id: str, 
+    interval: str,
+    theme: str = "dark"
+):
+    try:
+        data = await ccdata_service._fetch_spot_data(
+            (exchange, coin_id), 
+            interval=interval, 
+            aggregate=1, 
             limit=2000
         )
         data = pd.DataFrame(data)
@@ -145,14 +413,11 @@ async def get_rsi(
         fig.add_hline(y=30, line_dash="dash", line_color="green", opacity=0.5)
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
 
@@ -160,22 +425,23 @@ async def get_rsi(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ta_router.get("/macd")
+@ccdata_router.get("/macd")
 @register_widget({
     "name": "Moving Average Convergence Divergence (MACD)",
     "description": "Trend-following momentum indicator that shows the relationship between two moving averages of a security's price",
     "category": "technical",
-    "defaultViz": "chart",
-    "endpoint": "ta/macd",
+    "type": "chart",
+    "endpoint": "ccdata/macd",
     "gridData": {"w": 20, "h": 9},
-    "source": "CryptoCompare",
+    "source": "CCData",
     "params": [
         {
             "paramName": "exchange",
             "value": "binance",
             "label": "Exchange",
-            "show": True,
+            "type": "text",
             "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
         },
         {
             "paramName": "coin_id",
@@ -188,31 +454,25 @@ async def get_rsi(
             "paramName": "interval",
             "value": "days",
             "label": "Interval",
+            "type": "text",
             "show": True,
-            "description": "Time interval for data points",
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
         },
-        {
-            "paramName": "aggregate",
-            "value": "1",
-            "label": "Aggregate",
-            "show": True,
-            "description": "Number of time units to aggregate",
-        }
     ],
     "data": {"chart": {"type": "line"}},
 })
 async def get_macd(
     exchange: str, 
     coin_id: str, 
-    interval: str, 
-    aggregate: int, 
+    interval: str,  
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
             (exchange, coin_id), 
             interval=interval, 
-            aggregate=aggregate, 
+            aggregate=1, 
             limit=2000
         )
         data = pd.DataFrame(data)
@@ -315,14 +575,11 @@ async def get_macd(
         fig.add_hline(y=0, line_dash="solid", line_color="gray", opacity=0.5)
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
 
@@ -330,22 +587,23 @@ async def get_macd(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ta_router.get("/fibonacci-retracement")
+@ccdata_router.get("/fibonacci-retracement")
 @register_widget({
     "name": "Fibonacci Retracement",
     "description": "Technical analysis tool that uses horizontal lines to indicate areas of support or resistance at key Fibonacci levels",
     "category": "technical",
-    "defaultViz": "chart",
-    "endpoint": "ta/fibonacci-retracement",
+    "type": "chart",
+    "endpoint": "ccdata/fibonacci-retracement",
     "gridData": {"w": 12, "h": 12},
-    "source": "CryptoCompare",
+    "source": "CCData",
     "params": [
         {
             "paramName": "exchange",
             "value": "binance",
             "label": "Exchange",
-            "show": True,
+            "type": "text",
             "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
         },
         {
             "paramName": "coin_id",
@@ -358,31 +616,25 @@ async def get_macd(
             "paramName": "interval",
             "value": "days",
             "label": "Interval",
+            "type": "text",
             "show": True,
-            "description": "Time interval for data points",
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
         },
-        {
-            "paramName": "aggregate",
-            "value": "1",
-            "label": "Aggregate",
-            "show": True,
-            "description": "Number of time units to aggregate",
-        }
     ],
     "data": {"chart": {"type": "line"}},
 })
 async def get_fibonacci(
     exchange: str, 
     coin_id: str, 
-    interval: str, 
-    aggregate: int,
+    interval: str,
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
             (exchange, coin_id), 
             interval=interval, 
-            aggregate=aggregate, 
+            aggregate=1, 
             limit=2000
         )
         data = pd.DataFrame(data)
@@ -483,36 +735,34 @@ async def get_fibonacci(
             )
         
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
         
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ta_router.get("/stochastic")
+@ccdata_router.get("/stochastic")
 @register_widget({
     "name": "Stochastic Oscillator",
     "description": "Momentum indicator comparing a particular closing price of a security to a range of its prices over a certain period of time",
     "category": "technical",
-    "defaultViz": "chart",
-    "endpoint": "ta/stochastic",
+    "type": "chart",
+    "endpoint": "ccdata/stochastic",
     "gridData": {"w": 28, "h": 12},
-    "source": "CryptoCompare",
+    "source": "CCData",
     "params": [
         {
             "paramName": "exchange",
             "value": "binance",
             "label": "Exchange",
-            "show": True,
+            "type": "text",
             "description": "Exchange to fetch data from",
+            "options": EXCHANGE_LIST
         },
         {
             "paramName": "coin_id",
@@ -525,52 +775,61 @@ async def get_fibonacci(
             "paramName": "interval",
             "value": "days",
             "label": "Interval",
+            "type": "text",
             "show": True,
-            "description": "Time interval for data points",
+            "description": "Interval to fetch data for",
+            "options": [{"label": "Minutes", "value": "minutes"}, {"label": "Hours", "value": "hours"}, {"label": "Days", "value": "days"}]
         },
-        {
-            "paramName": "aggregate",
-            "value": "1",
-            "label": "Aggregate",
-            "show": True,
-            "description": "Number of time units to aggregate",
-        }
     ],
     "data": {"chart": {"type": "line"}},
 })
 async def get_stochastic(
     exchange: str, 
     coin_id: str, 
-    interval: str, 
-    aggregate: int,
+    interval: str,
     theme: str = "dark"
 ):
     try:
         data = await ccdata_service._fetch_spot_data(
             (exchange, coin_id), 
             interval=interval, 
-            aggregate=aggregate, 
+            aggregate=1, 
             limit=2000
         )
         data = pd.DataFrame(data)
         data = data[['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
         data['TIMESTAMP'] = pd.to_datetime(data['TIMESTAMP'], unit='s')
         if interval == "minutes" or interval == "hours":
-            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d %H:%M:%S")
-        elif interval == "day":
+            data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime(
+                "%Y-%m-%d %H:%M:%S")
+        elif interval == "days":  # Fixed "day" to "days" to match param value
             data['TIMESTAMP'] = data['TIMESTAMP'].dt.strftime("%Y-%m-%d")
         data = data.set_index("TIMESTAMP")
 
         # Calculate Stochastic Oscillator
         period = 14
-        low_min = data['LOW'].rolling(window=period).min()
-        high_max = data['HIGH'].rolling(window=period).max()
+        # Handle potential NaN values in data
+        data_clean = data.dropna()
+        
+        if len(data_clean) < period:
+            raise ValueError(f"Not enough data points for {period}-period calculation")
+            
+        low_min = data_clean['LOW'].rolling(window=period).min()
+        high_max = data_clean['HIGH'].rolling(window=period).max()
+        
+        # Avoid division by zero
+        denominator = high_max - low_min
+        # Replace zeros with small value to avoid division by zero
+        denominator = denominator.replace(0, 1e-10)
         
         # Calculate %K
-        data['%K'] = 100 * ((data['CLOSE'] - low_min) / (high_max - low_min))
+        data_clean['%K'] = 100 * ((data_clean['CLOSE'] - low_min) / denominator)
         
         # Calculate %D (3-period MA of %K)
-        data['%D'] = data['%K'].rolling(window=3).mean()
+        data_clean['%D'] = data_clean['%K'].rolling(window=3).mean()
+        
+        # Use the cleaned data for the chart
+        data = data_clean
 
         # Get chart colors based on theme
         colors = get_chart_colors(theme)
@@ -628,14 +887,11 @@ async def get_stochastic(
         fig.add_hline(y=20, line_dash="dash", line_color="green", opacity=0.5)
 
         # Apply the standard configuration to the figure with theme
-        fig, config = apply_config_to_figure(fig, theme=theme)
+        fig = apply_config_to_figure(fig, theme=theme)
 
         # Convert figure to JSON with the config
         figure_json = fig.to_json()
         figure_dict = json.loads(figure_json)
-        
-        # Add config to the figure dictionary
-        figure_dict["config"] = config
         
         return figure_dict
 
