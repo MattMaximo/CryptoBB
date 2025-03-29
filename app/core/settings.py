@@ -6,7 +6,6 @@ class Settings(BaseSettings):
     GLASSNODE_API_KEY: str = "your_api_key"
     VELO_API_KEY: str = "your_api_key"
     CCDATA_API_KEY: str = "your_api_key"
-    
     class Config:
         env_file = ".env"
 
