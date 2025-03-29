@@ -7,16 +7,16 @@ from app.core.registry import (
     WIDGETS, 
     TEMPLATES
 )
-from app.api.aave_routes import aave_router
-from app.api.btc_matrix_routes import btc_matrix_router
-from app.api.ccdata_routes import ccdata_router
-from app.api.coingecko_routes import coingecko_router
-from app.api.geckoterminal_routes import geckoterminal_router
-from app.api.glassnode_routes import glassnode_router
-from app.api.google_trends_routes import google_trends_router
-from app.api.microstrategy_routes import microstrategy_router
-from app.api.velo_routes import velo_router
-from app.api.virtuals_routes import virtuals_router
+from app.routers.aave_routes import aave_router
+from app.routers.btc_matrix_routes import btc_matrix_router
+from app.routers.ccdata_routes import ccdata_router
+from app.routers.coingecko_routes import coingecko_router
+from app.routers.geckoterminal_routes import geckoterminal_router
+from app.routers.glassnode_routes import glassnode_router
+from app.routers.google_trends_routes import google_trends_router
+from app.routers.microstrategy_routes import microstrategy_router
+from app.routers.velo_routes import velo_router
+from app.routers.virtuals_routes import virtuals_router
 from app.core.session_manager import SessionManager
 from fastapi.responses import HTMLResponse
 from pathlib import Path
