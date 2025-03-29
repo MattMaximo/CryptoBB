@@ -11,31 +11,18 @@ settings = get_settings()
 
 class CoinGeckoService:
     def __init__(self):
-        self.headers_1 = {"accept": "application/json", "x-cg-pro-api-key": settings.COINGECKO_API_KEY_1}
-        self.headers_2 = {"accept": "application/json", "x-cg-pro-api-key": settings.COINGECKO_API_KEY_2}
+        self.headers = {"accept": "application/json", "x-cg-pro-api-key": settings.COINGECKO_API_KEY}
         self.session_manager = SessionManager()
 
     async def fetch_data(self, url: str) -> Dict:
-        # Try with first API key
-        session = await self.session_manager.get_session(self.headers_1)
+        session = await self.session_manager.get_session(self.headers)
         async with session.get(url) as response:
             data = await response.json()
-
             
-            # If successful, return the data
             if response.status == 200 and data:
                 return data
                 
-            # If failed, try with second API key
-            session = await self.session_manager.get_session(self.headers_2)
-            async with session.get(url) as response:
-                data = await response.json()
-
-                if response.status == 200 and data:
-                    return data
-                    
-                # If both failed, raise an exception
-                raise Exception(f"Failed to fetch data from CoinGecko API. Status: {response.status}, Response: {data}")
+            raise Exception(f"Failed to fetch data from CoinGecko API. Status: {response.status}, Response: {data}")
 
     async def get_coin_details(self, coin_id: str) -> Dict:
         '''

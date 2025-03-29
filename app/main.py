@@ -67,7 +67,7 @@ if check_api_key_exists("CCDATA_API_KEY"):
     )
     add_template("ccdata")
 
-if check_api_key_exists("COINGECKO_API_KEY_1"):
+if check_api_key_exists("COINGECKO_API_KEY"):
     app.include_router(
         coingecko_router,
         prefix="/coingecko",
@@ -137,7 +137,7 @@ if check_api_key_exists(
     [
         "VELO_API_KEY",
         "GLASSNODE_API_KEY",
-        "COINGECKO_API_KEY_1",
+        "COINGECKO_API_KEY",
         "CCDATA_API_KEY"
     ],
     verbose=False
