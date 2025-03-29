@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.settings import get_settings
+from app.core.settings import get_settings, check_api_key_exists
 from app.api.base_routes import base_router
 from app.api.aave_routes import aave_router
 from app.api.ai_agent_routes import ai_agents_router
@@ -49,6 +49,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+print(f"\n\nLoading data into OpenBB workspace...\n")
 
 app.include_router(
     base_router,
@@ -104,11 +105,13 @@ app.include_router(
     tags=["GeckoTerminal"]
 )
 
-app.include_router(
-    glassnode_router,
-    prefix="/glassnode",
-    tags=["Glassnode"]
-)
+# Check if Glassnode API key exists
+if check_api_key_exists("GLASSNODE_API_KEY"):
+    app.include_router(
+        glassnode_router,
+        prefix="/glassnode",
+        tags=["Glassnode"]
+    )
 
 app.include_router(
     google_trends_router,
@@ -158,5 +161,4 @@ app.include_router(
     tags=["Virtuals"]
 )
 
-
-
+print(f"\nLoading done.\n")

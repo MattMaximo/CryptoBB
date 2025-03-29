@@ -22,4 +22,29 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings():
-    return Settings() 
+    return Settings()
+
+def check_api_key_exists(env_var_name: str):
+    """
+    Checks if a specified API key is set.
+
+    Args:
+        env_var_name (str): Name of the environment variable to check
+
+    Returns:
+        bool: True if API key exists and is configured, False otherwise
+    """
+    settings = get_settings()
+    api_key = getattr(settings, env_var_name, None)
+
+    # ANSI color codes
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    RESET = '\033[0m'
+
+    if not api_key or api_key == "your_api_key":
+        print(f"{RED}API key for {env_var_name} not found or not configured.{RESET}")
+        return False
+
+    print(f"{GREEN}API key for {env_var_name} found.{RESET}")
+    return True
