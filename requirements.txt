@@ -48,7 +48,6 @@ parso==0.8.4
 pendulum==3.0.0
 pexpect==4.9.0
 platformdirs==4.3.6
-playwright==1.42.0
 plotly==5.24.1
 prompt_toolkit==3.0.48
 propcache==0.2.0
