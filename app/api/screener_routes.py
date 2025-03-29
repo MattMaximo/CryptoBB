@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.core.widgets import WIDGETS
+from app.core.widget_decorator import WIDGETS
 from app.services.coingecko_service import CoinGeckoService
 
 coingecko_service = CoinGeckoService()
