@@ -13,23 +13,23 @@
         {
           "i": "glassnode/lth-supply",
           "x": 0,
-          "y": 0,
+          "y": 20,
           "w": 40,
-          "h": 15
+          "h": 7
         },
         {
           "i": "glassnode/lth-net-change",
           "x": 0,
-          "y": 15,
+          "y": 11,
           "w": 40,
-          "h": 15
+          "h": 9
         },
         {
           "i": "glassnode/lth-nupl",
           "x": 0,
-          "y": 30,
+          "y": 2,
           "w": 40,
-          "h": 15
+          "h": 9
         }
       ]
     },
@@ -40,16 +40,16 @@
         {
           "i": "glassnode/price",
           "x": 0,
-          "y": 0,
+          "y": 18,
           "w": 40,
-          "h": 15
+          "h": 9
         },
         {
           "i": "glassnode/mvrv-zscore",
           "x": 0,
-          "y": 15,
+          "y": 2,
           "w": 40,
-          "h": 15
+          "h": 16
         }
       ]
     }
@@ -61,12 +61,9 @@
       "paramName": "asset",
       "defaultValue": "btc",
       "widgetIds": [
-        "glassnode/lth-supply",
-        "glassnode/lth-net-change",
-        "glassnode/lth-nupl",
         "glassnode/price",
         "glassnode/mvrv-zscore"
       ]
     }
   ]
-} 
+}
