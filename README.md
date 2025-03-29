@@ -1,21 +1,77 @@
 # CryptoBB
 
-OpenBB backend for Crypto Traders.
+Crypto backend to be used by OpenBB Workspace.
 
-#### Dev
+![Gm_e1IzXwAAzaYQ](https://github.com/user-attachments/assets/de7f8770-cbed-47ef-93c9-68559b1d3b83)
+
+Powered by:
+- CoinGecko
+- Velodata
+- Glassnode
+- CCData
+- Google Trends
+
+... and more to come.
+
+## Getting Started
+
+### API keys
+
+Rename the `.env.example` file to `.env` and update the API keys based on what you get from these vendors:
+
+```
+COINGECKO_API_KEY="your_coingecko_api_key"
+GLASSNODE_API_KEY="your_glassnode_api_key"
+VELO_API_KEY="your_velo_api_key"
+CCDATA_API_KEY="your_ccdata_api_key"
+```
+
+### Running
 
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 7778
 ```
 
-#### Docker
+## Docker
 
 ```bash
 docker build -t crypto-backend .
 docker run --env-file .env -p 7778:7778 crypto-backend
 ```
 
-# Repo Structure 
+You can test that it is running by accessing [http://127.0.0.1:7778](http://127.0.0.1:7778).
+
+If it is running successfully, you should see:
+
+![CleanShot 2025-03-29 at 16 09 47](https://github.com/user-attachments/assets/d371f85a-49ef-4350-a0f6-0ab4bdbf1b00)
+
+
+### Integrating to OpenBB
+
+Go into OpenBB Workspace at [https://pro.openbb.co/](https://pro.openbb.co/) and add this custom backend.
+
+- Name: CryptoBB
+- URL: http://127.0.0.1:7778)
+
+If all is working you can click "Test" and get the confirmation of how many widgets are valid. See below,
+
+![CleanShot 2025-03-29 at 16 10 41](https://github.com/user-attachments/assets/82949108-b9ce-4f84-819b-943de4360a44)
+
+Note: You can have OpenBB Workspace running as a native app within your desktop, see [https://docs.openbb.co/workspace/native-installation](https://docs.openbb.co/workspace/native-installation).
+
+### Visualizing data
+
+If you go into the "Templates" tab you will see a few out of the box templates to get started.
+
+![CleanShot 2025-03-29 at 16 12 33](https://github.com/user-attachments/assets/52c6b474-705e-4334-9298-44f740b4f2e9)
+
+If you go into Velo data, for instance - you will see:
+
+![CleanShot 2025-03-29 at 16 14 04](https://github.com/user-attachments/assets/061e4694-19f2-4239-81f6-85b9e4f694b2)
+
+And you will be able to use OpenBB's AI agent or bring your own into the workspace.
+
+## Repo Structure 
 
 ## Main.py
 The main.py file is the entry point of the FastAPI application. It:
