@@ -158,7 +158,5 @@ app.include_router(
     tags=["Virtuals"]
 )
 
-@app.get("/")
-async def root():
-    return {"message": "OpenBB Terminal Pro Backend is running"}
+
 
