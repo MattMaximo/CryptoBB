@@ -5,7 +5,6 @@ from app.core.settings import get_settings, check_api_key_exists
 from app.core.templates import TEMPLATES
 from app.core.widget_decorator import register_widget, WIDGETS
 from app.api.aave_routes import aave_router
-from app.api.ai_agent_routes import ai_agents_router
 from app.api.btc_matrix_routes import btc_matrix_router
 from app.api.ccdata_routes import ccdata_router
 from app.api.coingecko_routes import coingecko_router
@@ -108,11 +107,6 @@ app.include_router(
 app.include_router(
     aave_router,
     prefix="/aave",
-)
-
-app.include_router(
-    ai_agents_router,
-    prefix="/ai-agents",
 )
 
 app.include_router(

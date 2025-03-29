@@ -741,3 +741,94 @@ async def get_agents_market_caps(theme: str = "dark"):
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@coingecko_router.get("/ai-agent-category-market-caps")
+@register_widget({
+    "name": "AI Agent Categories Market Caps",
+    "description": "Historical market capitalization of AI agent categories",
+    "category": "crypto",
+    "type": "chart",
+    "endpoint": "coingecko/ai-agent-category-market-caps",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CoinGecko"
+})
+async def get_ai_agent_category_market_cap(theme: str = "dark"):
+    ai_categories = {
+        'ai-agents': [],
+        'ai-meme-coins': [],
+        'ai-applications': [],
+        'ai-agent-launchpad': [],
+    }
+
+    # Get market data for each category
+    dfs = []
+    for category in ai_categories:
+        try:
+            data = await coingecko_service.get_coin_list_market_data(category=category)
+            if not data.empty:
+                market_cap_sum = data['market_cap'].sum()
+                dfs.append(pd.DataFrame({category: [market_cap_sum]}, index=[pd.Timestamp.now().strftime("%Y-%m-%d")]))
+        except Exception as e:
+            print(f"Error getting coin list for category {category}: {e}")
+            dfs.append(pd.DataFrame({category: [0]}, index=[pd.Timestamp.now().strftime("%Y-%m-%d")]))
+
+    # Combine all dataframes
+    combined_df = pd.concat(dfs, axis=1)
+    combined_df = combined_df.fillna(0)
+
+    # Get chart colors based on theme
+    colors = get_chart_colors(theme)
+
+    # Create the figure
+    fig = go.Figure(
+        layout=create_base_layout(
+            x_title="Date",
+            y_title="Market Cap (USD)",
+            theme=theme
+        )
+    )
+
+    # Color palette for different categories
+    category_colors = {
+        'ai-agents': colors['main_line'],
+        'ai-meme-coins': colors['secondary'],
+        'ai-applications': colors['tertiary'],
+        'ai-agent-launchpad': colors['quaternary']
+    }
+
+    # Add a trace for each category
+    for category in ai_categories:
+        fig.add_trace(
+            go.Scatter(
+                x=combined_df.index,
+                y=combined_df[category],
+                mode='lines',
+                name=category.replace('-', ' ').title(),
+                line=dict(color=category_colors[category]),
+                hovertemplate="<b>%{x}</b><br>" +
+                            f"{category.replace('-', ' ').title()}: $%{{y:,.0f}}<extra></extra>"
+            )
+        )
+
+    # Update layout for better visualization
+    fig.update_layout(
+        yaxis=dict(
+            tickformat="$,.0f",  # Format y-axis ticks as currency
+        ),
+        hovermode='x unified'
+    )
+
+    # Apply the standard configuration to the figure with theme
+    fig = apply_config_to_figure(fig, theme=theme)
+
+    try:
+        # Convert figure to JSON with the config
+        fig_json = fig.to_json()
+        fig_dict = json.loads(fig_json)
+        
+        # Add config to the figure dictionary
+        fig_dict["config"] = config
+        
+        return fig_dict
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating chart: {str(e)}")
