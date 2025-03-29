@@ -1,8 +1,9 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import get_settings, check_api_key_exists
-from app.api.base_routes import base_router
+from app.core.templates import TEMPLATES
+from app.core.widget_decorator import register_widget, WIDGETS
 from app.api.aave_routes import aave_router
 from app.api.ai_agent_routes import ai_agents_router
 from app.api.btc_matrix_routes import btc_matrix_router
@@ -45,12 +46,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-print(f"\n\nLoading data into OpenBB workspace...\n")
+@app.get("/")
+async def root():
+    return Response(
+        """CryptoBB - Crypto Backend for OpenBB Workspace
 
-app.include_router(
-    base_router,
-    prefix="",
-)
+Backend made by @MattMaximo, @didier_lopes and @jose-donato
+
+Any questions, feel free to reach out on x/twitter""",
+        media_type="text/plain"
+    )
+
+
+print(f"\n\nLoading data into OpenBB workspace...\n")
 
 if check_api_key_exists("CCDATA_API_KEY"):
     app.include_router(
@@ -123,3 +131,18 @@ app.include_router(
 )
 
 print(f"\nLoading done.\n")
+
+@app.get("/widgets.json")
+async def get_widgets():
+    return WIDGETS
+
+@app.get("/templates.json")
+@register_widget({
+    "name": "Templates JSON",
+    "description": "List of all available dashboard templates in the system",
+    "category": "system",
+    "endpoint": "templates.json",
+    "isUtility": True,
+})
+async def get_templates():
+    return TEMPLATES
