@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.vvaifu_service import VVaifuService
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 
 vvaifu_router = APIRouter()
 vvaifu_service = VVaifuService()

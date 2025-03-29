@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 from app.services.btc_matrix_service import BTCMatrixService
 from app.assets.charts.base_matrix_layout import get_matrix_figure
 from app.assets.charts.plotly_config import apply_config_to_figure
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 import pandas as pd
 import json
 

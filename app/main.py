@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import get_settings, check_api_key_exists
-from app.core.widget_decorator import (
+from app.core.registry import (
     add_template, 
     WIDGETS, 
     TEMPLATES

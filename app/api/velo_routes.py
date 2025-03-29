@@ -5,7 +5,7 @@ from app.assets.charts.plotly_config import (
     get_chart_colors, 
     apply_config_to_figure
 )
-from app.core.widget_decorator import register_widget
+from app.core.registry import register_widget
 import plotly.graph_objects as go
 import pandas as pd
 import json
