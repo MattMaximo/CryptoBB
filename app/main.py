@@ -57,41 +57,38 @@ app.include_router(
     tags=["Base Routes no prefix"]
 )
 
-app.include_router(
-    aave_router,
-    prefix="/aave",
-    tags=["Aave"]
-)
+if check_api_key_exists("CCDATA_API_KEY"):
+    app.include_router(
+        ccdata_router,
+        prefix="/ccdata",
+        tags=["CCData"]
+    )
+    app.include_router(
+        ta_router,
+        prefix="/ta",
+        tags=["Technical Analysis"]
+    )
 
-app.include_router(
-    ai_agents_router,
-    prefix="/ai-agents",
-    tags=["AI Agents"]
-)
+if check_api_key_exists("COINGECKO_API_KEY_1"):
+    app.include_router(
+        coingecko_router,
+        prefix="/coingecko",
+        tags=["CoinGecko"]
+    )
 
-app.include_router(
-    artemis_router,
-    prefix="/artemis",
-    tags=["Artemis"]
-)
+if check_api_key_exists("GLASSNODE_API_KEY"):
+    app.include_router(
+        glassnode_router,
+        prefix="/glassnode",
+        tags=["Glassnode"]
+    )
 
-app.include_router(
-    btc_matrix_router,
-    prefix="/btc-matrix",
-    tags=["BTC Matrix"]
-)
-
-app.include_router(
-    ccdata_router,
-    prefix="/ccdata",
-    tags=["CCData"]
-)
-
-app.include_router(
-    coingecko_router,
-    prefix="/coingecko",
-    tags=["CoinGecko"]
-)
+if check_api_key_exists("VELO_API_KEY"):
+    app.include_router(
+        velo_router,
+        prefix="/velo",
+        tags=["Velo"]
+    )
 
 app.include_router(
     daos_fun_router,
@@ -105,13 +102,6 @@ app.include_router(
     tags=["GeckoTerminal"]
 )
 
-# Check if Glassnode API key exists
-if check_api_key_exists("GLASSNODE_API_KEY"):
-    app.include_router(
-        glassnode_router,
-        prefix="/glassnode",
-        tags=["Glassnode"]
-    )
 
 app.include_router(
     google_trends_router,
@@ -137,16 +127,29 @@ app.include_router(
     tags=["Telegram"]
 )
 
+
 app.include_router(
-    ta_router,
-    prefix="/ta",
-    tags=["Technical Analysis"]
+    aave_router,
+    prefix="/aave",
+    tags=["Aave"]
 )
 
 app.include_router(
-    velo_router,
-    prefix="/velo",
-    tags=["Velo"]
+    ai_agents_router,
+    prefix="/ai-agents",
+    tags=["AI Agents"]
+)
+
+app.include_router(
+    artemis_router,
+    prefix="/artemis",
+    tags=["Artemis"]
+)
+
+app.include_router(
+    btc_matrix_router,
+    prefix="/btc-matrix",
+    tags=["BTC Matrix"]
 )
 
 app.include_router(

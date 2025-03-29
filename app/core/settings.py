@@ -24,27 +24,35 @@ class Settings(BaseSettings):
 def get_settings():
     return Settings()
 
-def check_api_key_exists(env_var_name: str):
+def check_api_key_exists(env_var_name: str | list[str]):
     """
-    Checks if a specified API key is set.
+    Checks if specified API key(s) are set.
 
     Args:
-        env_var_name (str): Name of the environment variable to check
+        env_var_name (str | list[str]): Name of the environment variable(s) to check
 
     Returns:
-        bool: True if API key exists and is configured, False otherwise
+        bool: True if all API keys exist and are configured, False otherwise
     """
     settings = get_settings()
-    api_key = getattr(settings, env_var_name, None)
-
+    
     # ANSI color codes
     GREEN = '\033[92m'
     RED = '\033[91m'
     RESET = '\033[0m'
-
-    if not api_key or api_key == "your_api_key":
-        print(f"{RED}API key for {env_var_name} not found or not configured.{RESET}")
-        return False
-
-    print(f"{GREEN}API key for {env_var_name} found.{RESET}")
-    return True
+    
+    # Convert single string to list for uniform processing
+    env_vars = [env_var_name] if isinstance(env_var_name, str) else env_var_name
+    
+    all_keys_exist = True
+    
+    for var in env_vars:
+        api_key = getattr(settings, var, None)
+        
+        if not api_key or api_key == "your_api_key":
+            print(f"{RED}API key for {var} not found or not configured.{RESET}")
+            all_keys_exist = False
+        else:
+            print(f"{GREEN}API key for {var} found.{RESET}")
+    
+    return all_keys_exist
