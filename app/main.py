@@ -3,7 +3,6 @@ from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.settings import get_settings, check_api_key_exists
 from app.core.widget_decorator import (
-    register_widget, 
     add_template, 
     WIDGETS, 
     TEMPLATES
@@ -139,7 +138,6 @@ print(f"\nLoading done.\n")
 @app.get("/widgets.json")
 async def get_widgets():
     return WIDGETS
-
 
 # Loading custom templates
 
