@@ -286,7 +286,7 @@ async def get_exchange_data(exchange: str, theme: str = "dark"):
     "type": "chart",
     "endpoint": "ccdata/rsi",
     "gridData": {"w": 20, "h": 9},
-    "source": "CryptoCompare",
+    "source": "CCData",
     "params": [
         {
             "paramName": "exchange",
@@ -428,7 +428,7 @@ async def get_rsi(
     "type": "chart",
     "endpoint": "ccdata/macd",
     "gridData": {"w": 20, "h": 9},
-    "source": "CryptoCompare",
+    "source": "CCData",
     "params": [
         {
             "paramName": "exchange",
@@ -595,7 +595,7 @@ async def get_macd(
     "type": "chart",
     "endpoint": "ccdata/fibonacci-retracement",
     "gridData": {"w": 12, "h": 12},
-    "source": "CryptoCompare",
+    "source": "CCData",
     "params": [
         {
             "paramName": "exchange",
@@ -759,7 +759,7 @@ async def get_fibonacci(
     "type": "chart",
     "endpoint": "ccdata/stochastic",
     "gridData": {"w": 28, "h": 12},
-    "source": "CryptoCompare",
+    "source": "CCData",
     "params": [
         {
             "paramName": "exchange",
