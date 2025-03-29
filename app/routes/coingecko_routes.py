@@ -286,7 +286,7 @@ async def get_vm_ratio(coin_id: str, theme: str = "dark"):
 
 @coingecko_router.get("/correlation")
 @register_widget({
-    "name": "Coingecko Correlation",
+    "name": "Coin Correlation",
     "description": "Historical correlation between two search tokens",
     "category": "crypto",
     "type": "chart",
@@ -588,17 +588,6 @@ async def get_btc_price_sma_multiplier(theme: str = "dark"):
     
 
 @coingecko_router.get("/coin-list-formatted")
-@register_widget({
-    "name": "Coingecko Coins List Formatted",
-    "description": (
-        "Formatted list of all coins available on CoinGecko "
-        "for dropdown selection"
-    ),
-    "category": "crypto",
-    "endpoint": "coingecko/coin-list-formatted",
-    "source": "CoinGecko",
-    "isUtility": True,
-})
 async def get_coin_list_formatted(
     include_platform: str = "true", 
     status: str = "active"

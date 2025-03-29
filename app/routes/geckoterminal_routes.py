@@ -13,7 +13,7 @@ import json
 geckoterminal_router = APIRouter()
 geckoterminal_service = GeckoTerminalService()
 
-ai_agent_mapping = {
+AI_AGENT_LIST = {
     "GOAT": {
         "address": "CzLSujWBLFsSjncfkh59rUFqvafWcY5tzedWJSuypump",
         "chain": "solana",
@@ -200,7 +200,7 @@ ai_agent_mapping = {
 })
 async def get_ai_agents_market_data():
     try:
-        data = await geckoterminal_service.fetch_ai_agent_market_data(ai_agent_mapping)
+        data = await geckoterminal_service.fetch_ai_agent_market_data(AI_AGENT_LIST)
         data.fillna(0, inplace=True)
 
         float_columns = ['price_usd', 'volume_usd', 'market_cap_usd', 'fdv_usd', 
