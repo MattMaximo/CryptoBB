@@ -846,8 +846,8 @@ async def get_resolution_options():
     """
     Returns a formatted list of resolution options in the format:
     {
-        "value": "1d",
-        "label": "1 Day"
+        "value": "1h",
+        "label": "1 Hour"
     }
     """
     resolution_options = [
@@ -857,12 +857,7 @@ async def get_resolution_options():
         {"value": "1h", "label": "1 Hour"},
         {"value": "4h", "label": "4 Hours"},
         {"value": "12h", "label": "12 Hours"},
-        {"value": "1d", "label": "1 Day"},
-        {"value": "3d", "label": "3 Days"},
-        {"value": "5d", "label": "5 Days"},
-        {"value": "1w", "label": "1 Week"},
-        {"value": "2w", "label": "2 Weeks"},
-        {"value": "4w", "label": "4 Weeks"}
+        {"value": "24h", "label": "1 Day"},
     ]
     
     return resolution_options
