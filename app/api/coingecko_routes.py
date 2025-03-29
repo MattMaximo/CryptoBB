@@ -677,3 +677,67 @@ async def get_watchlist():
 
     data['symbol'] = data['symbol'].str.upper()
     return data.to_dict(orient="records")
+
+@coingecko_router.get("/agents-market-caps")
+@register_widget({
+    "name": "Virtuals Agents Market Caps",
+    "description": "Historical market capitalization of Virtuals Protocol agents",
+    "category": "crypto",
+    "defaultViz": "chart",
+    "endpoint": "coingecko/agents-market-caps",
+    "gridData": {"w": 20, "h": 9},
+    "source": "CoinGecko"
+})
+async def get_agents_market_caps(theme: str = "dark"):
+    try:
+        virtuals_agents = await coingecko_service.get_coin_list_market_data(category="virtuals-protocol-ecosystem")
+        virtuals_agents.fillna(0, inplace=True)
+        virtuals_agents["market_cap"] = virtuals_agents["market_cap"].astype(float)
+        virtuals_agents = virtuals_agents[virtuals_agents["total_volume"] >= 500000]
+        virtuals_agents = virtuals_agents[virtuals_agents["id"] != "virtual-protocol"]
+        virtuals_agents_ids = virtuals_agents["id"].tolist()
+
+        df = await coingecko_service.get_market_data(virtuals_agents_ids)
+        df.fillna(0, inplace=True)
+        df = df[df["date"].dt.time == pd.to_datetime("00:00:00").time()]
+        df = df[["date", "market_cap", "coingecko_id"]]
+        df.rename(columns={"market_cap": "market_cap_usd"}, inplace=True)
+
+        df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
+        df = df.set_index("date")
+
+        # Get chart colors based on theme
+        colors = get_chart_colors(theme)
+
+        figure = go.Figure(
+            layout=create_base_layout(
+                x_title="Date",
+                y_title="Market Cap (USD)",
+                theme=theme
+            )
+        )
+
+        for coingecko_id in df["coingecko_id"].unique():
+            coin_data = df[df["coingecko_id"] == coingecko_id]
+            figure.add_scatter(
+                x=coin_data.index,
+                y=coin_data["market_cap_usd"],
+                mode="lines",
+                name=coingecko_id,
+                hovertemplate="$%{y:,.0f}"
+            )
+
+        # Apply the standard configuration to the figure with theme
+        figure = apply_config_to_figure(figure, theme=theme)
+
+        # Convert figure to JSON with the config
+        figure_json = figure.to_json()
+        figure_dict = json.loads(figure_json)
+        
+        # Add config to the figure dictionary
+        figure_dict["config"] = config
+        
+        return figure_dict
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
     await SessionManager().close_session()
 
 app = FastAPI(
-    title="OpenBB Terminal Pro Backend",
+    title="CryptoBB - Crypto Backend for OpenBB Workspace",
     description="API for cryptocurrency market analysis",
     version="1.0.0",
     docs_url="/docs",
@@ -51,7 +51,7 @@ async def root():
     return Response(
         """CryptoBB - Crypto Backend for OpenBB Workspace
 
-Backend made by @MattMaximo, @didier_lopes and @jose-donato
+Backend created by @MattMaximo, @didier_lopes and @jose-donato
 
 Any questions, feel free to reach out on x/twitter""",
         media_type="text/plain"

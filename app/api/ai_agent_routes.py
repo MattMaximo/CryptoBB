@@ -2,7 +2,6 @@
 from fastapi import APIRouter, HTTPException
 from app.services.coingecko_service import CoinGeckoService
 from app.assets.charts.base_chart_layout import create_base_layout
-from app.assets.queries.category_market_cap import get_category_market_cap_query
 import plotly.graph_objects as go
 import pandas as pd
 import json
