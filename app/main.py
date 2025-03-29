@@ -16,7 +16,6 @@ from app.api.glassnode_routes import glassnode_router
 from app.api.google_trends_routes import google_trends_router
 from app.api.microstrategy_routes import microstrategy_router
 from app.api.velo_routes import velo_router
-from app.api.vvaifu_routes import vvaifu_router
 from app.api.virtuals_routes import virtuals_router
 from app.core.session_manager import SessionManager
 from fastapi.responses import HTMLResponse
@@ -114,11 +113,6 @@ app.include_router(
     prefix="/btc-matrix",
 )
 add_template("btc_matrix")
-
-app.include_router(
-    vvaifu_router,
-    prefix="/vvaifu",
-)
 
 app.include_router(
     virtuals_router,
