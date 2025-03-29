@@ -27,13 +27,6 @@ glassnode_service = GlassnodeService()
     "source": "Glassnode",
     "params": [
         {
-            "paramName": "asset",
-            "value": "btc",
-            "label": "Coin",
-            "type": "text",
-            "description": "Glassnode ID of the cryptocurrency",
-        },
-        {
             "paramName": "show_price",
             "value": "False",
             "label": "Show Price",
@@ -48,12 +41,11 @@ glassnode_service = GlassnodeService()
     "data": {"chart": {"type": "line"}},
 })
 async def get_lth_supply(
-    asset: str = "btc", 
     show_price: str = "False", 
     theme: str = "dark"
 ):
     try:
-        data = await glassnode_service.get_lth_supply(asset)
+        data = await glassnode_service.get_lth_supply("btc")
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 
@@ -131,13 +123,6 @@ async def get_lth_supply(
     "source": "Glassnode",
     "params": [
         {
-            "paramName": "asset",
-            "value": "btc",
-            "label": "Coin",
-            "type": "text",
-            "description": "Glassnode ID of the cryptocurrency",
-        },
-        {
             "paramName": "show_price",
             "value": "False",
             "label": "Show Price",
@@ -152,12 +137,11 @@ async def get_lth_supply(
     "data": {"chart": {"type": "line"}},
 })
 async def get_lth_net_change(
-    asset: str = "btc", 
     show_price: str = "False", 
     theme: str = "dark"
 ):
     try:
-        data = await glassnode_service.get_lth_net_change(asset)
+        data = await glassnode_service.get_lth_net_change("btc")
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         data = data.set_index("date")
 
@@ -379,21 +363,12 @@ async def get_mvrv_zscore(asset: str = "btc", theme: str = "dark"):
     "widgetId": "glassnode/lth-nupl",
     "gridData": {"w": 20, "h": 9},
     "source": "Glassnode",
-    "params": [
-        {
-            "paramName": "asset",
-            "value": "btc",
-            "label": "Coin",
-            "type": "text",
-            "description": "Glassnode ID of the cryptocurrency",
-        }
-    ],
     "data": {"chart": {"type": "line"}},
 })
-async def get_lth_nupl(asset: str = "btc", theme: str = "dark"):
+async def get_lth_nupl(theme: str = "dark"):
     try:
         # Fetch and process data
-        data = await glassnode_service.lth_nupl(asset)
+        data = await glassnode_service.lth_nupl("btc")
         data["date"] = pd.to_datetime(data["date"]).dt.strftime("%Y-%m-%d")
         
         # Sort data by date to ensure chronological order
