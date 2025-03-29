@@ -45,7 +45,6 @@ If it is running successfully, you should see:
 
 ![CleanShot 2025-03-29 at 16 09 47](https://github.com/user-attachments/assets/d371f85a-49ef-4350-a0f6-0ab4bdbf1b00)
 
-
 ### Integrating to OpenBB
 
 Go into OpenBB Workspace at [https://pro.openbb.co/](https://pro.openbb.co/) and add this custom backend.
@@ -126,6 +125,10 @@ The `core` folder contains essential components that support the functionality o
 - `session_manager.py`: Manages user sessions and authentication state throughout the application
 - `landing.html`: Provides the landing page template for the application
 - `plotly_config.py`: Manages the styling and configuration of all Plotly charts in the application, ensuring consistent visualization across all widgets
+
+<br />
+
+## Others
 
 <details>
 <summary>Plotly Chart Configuration</summary>
