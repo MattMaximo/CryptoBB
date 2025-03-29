@@ -32,7 +32,7 @@ CCDATA_API_KEY="your_ccdata_api_key"
 uvicorn app.main:app --reload --host 0.0.0.0 --port 7778
 ```
 
-## Docker
+Or using docker:
 
 ```bash
 docker build -t crypto-backend .
@@ -51,7 +51,7 @@ If it is running successfully, you should see:
 Go into OpenBB Workspace at [https://pro.openbb.co/](https://pro.openbb.co/) and add this custom backend.
 
 - Name: CryptoBB
-- URL: http://127.0.0.1:7778)
+- URL: http://127.0.0.1:7778
 
 If all is working you can click "Test" and get the confirmation of how many widgets are valid. See below,
 
@@ -73,7 +73,7 @@ And you will be able to use OpenBB's AI agent or bring your own into the workspa
 
 ## Repo Structure 
 
-## Main.py
+### Main.py
 
 The main.py file is the entry point of the FastAPI application. It:
 
@@ -83,7 +83,7 @@ The main.py file is the entry point of the FastAPI application. It:
 - Exposes a health check endpoint at "/"
 - Registers the /widgets.json and /templates.json based on the valid API keys that the user has set up
 
-## Services
+### Services
 
 The `services` folder contains classes responsible for retrieving and processing data from various external sources.
 
@@ -91,59 +91,127 @@ Each service is designed to focus on a specific data extraction task, ensuring t
 
 The services encapsulate the logic for interacting with APIs, handling data transformations, and returning results in a format that is ready for charting or other analytical purposes.
 
-## Routes
+### Routes
 
-The `routes.py` file defines the API endpoints for the CryptoBB backend. Each endpoint corresponds to a specific function that accepts parameters as input. These parameters are utilized to invoke the appropriate service, which retrieves the necessary data. The data is then processed to create visualizations, which are returned in JSON format. This structure allows for a clear separation of concerns, where the routing logic is distinct from the data retrieval and processing logic, promoting maintainability and scalability of the application.
+The `routes` folder contains multiple route files, each dedicated to a specific data source (such as CoinGecko, Glassnode, Velo, etc.).
 
-## Core
+Each route file defines API endpoints that query their respective service. For example, the CoinGecko routes will call the CoinGecko service, while Glassnode routes will call the Glassnode service.
 
-The `core` folder contains essential components that support the functionality of the CryptoBB application. Specifically, the `widgets.py` file defines custom OpenBB widgets that are utilized in the API route outputs. These widgets can represent various data visualizations, such as charts and tables, allowing users to interactively explore and analyze cryptocurrency data. The modular design of the core components promotes reusability and maintainability within the application.
+Each endpoint corresponds to a specific function that accepts parameters as input, which are then passed to the appropriate service to retrieve and process data. The processed data is transformed into visualizations and returned in JSON format.
 
-## Assets
+Importantly, the routes are where users define the widget behavior specifications that are recognized by OpenBB. These specifications include:
 
-The assets folder contains various hardcoded assets such as a manually created list of Aave pools or static images.
+- Parameter definitions
+- Widget size recommendations (width and height)
+- Widget descriptions and documentation
+- Category and tags for organization in the OpenBB interface
+- Any other metadata needed for proper integration with the OpenBB Workspace
 
+This modular approach allows for a clear separation of concerns, making the application more maintainable and scalable as new data sources can be added by simply creating new route and service files.
 
-# Implementation Guide
+### Templates
 
-## 1. Creating your service
-This is where you will make any API or database calls and structure data.
+The templates folder contains specific templates that aggregate multiple widgets together and their respective parameter grouping.
 
-If you are using any secrets, make sure to add your API key to a .env file or set as an environment variable. You will then need to update the settings file with a placeholder like this:
+A template may contain widgets from different sources, allowing users to define custom workflows tailored to their specific analytical needs. 
 
-```MY_SECRET_VARIABLE_NAME : str = "your_api_hash"```
+Users have the flexibility to combine various data visualizations and tools to create comprehensive dashboards that support their intended analysis objectives.
 
-In the file for your new service class, you will need to add the following to your imports:
+### Core
 
+The `core` folder contains essential components that support the functionality of the CryptoBB application:
+
+- `settings.py`: Handles application configuration and API key management, loading environment variables and providing centralized access to application settings
+- `registry.py`: Implements the widget registration system, allowing dynamic registration and management of OpenBB widgets
+- `session_manager.py`: Manages user sessions and authentication state throughout the application
+- `landing.html`: Provides the landing page template for the application
+- `plotly_config.py`: Manages the styling and configuration of all Plotly charts in the application, ensuring consistent visualization across all widgets
+
+<details>
+<summary>Plotly Chart Configuration</summary>
+
+This directory contains utilities for creating and configuring Plotly charts with consistent styling and behavior across the application.
+
+- `base_chart_layout.py`: Creates the base layout for charts with customizable axis titles and formatting
+- `base_matrix_layout.py`: Creates the base layout for matrix/heatmap visualizations
+- `plotly_config.py`: Provides standardized configuration options for all Plotly charts
+
+#### Basic Chart Creation
+
+To create a chart with consistent styling and behavior:
+
+```python
+from app.assets.charts.base_chart_layout import create_base_layout
+from app.assets.charts.plotly_config import apply_config_to_figure
+import plotly.graph_objects as go
+import json
+
+# Create a figure with base layout
+figure = go.Figure(
+    layout=create_base_layout(
+        x_title="Date",
+        y_title="Price"
+    )
+)
+
+# Add your data traces
+figure.add_scatter(
+    x=data.index,
+    y=data["values"],
+    mode="lines",
+    name="My Data",
+    line=dict(color="#E3BF1E"),
+)
+
+# Apply standard configuration to the figure
+figure = apply_config_to_figure(figure)
+
+# Convert to JSON for frontend with config
+figure_json = figure.to_json()
+figure_dict = json.loads(figure_json)
+
+return figure_dict
 ```
-from app.core.settings import get_settings
 
-settings = get_settings()
+#### Configuration Options
+
+The `plotly_config.py` module provides three main functions:
+
+1. `get_default_config()`: Returns the default configuration for all Plotly charts
+2. `get_layout_update()`: Returns standard layout updates to apply to all charts
+3. `apply_config_to_figure(figure)`: Applies the layout updates to a figure and returns both the figure and config
+
+You can customize the configuration by modifying these functions in the `plotly_config.py` file.
+
+#### Benefits
+
+Using these utilities ensures:
+
+- Consistent appearance across all charts
+- Standard interactive behavior (zooming, panning, etc.)
+- Optimized mode bar with relevant tools
+- Responsive charts that adapt to different screen sizes
+- Consistent hover and click behavior
+
+#### Customization
+
+If you need to override specific settings for a particular chart, you can do so after applying the standard configuration:
+
+```python
+# Apply standard configuration
+figure = apply_config_to_figure(figure)
+
+# Override specific settings
+figure.update_layout(
+    yaxis_type='log',  # Use logarithmic scale
+    showlegend=False   # Hide legend
+)
+
+# Convert to JSON with config
+figure_json = figure.to_json()
+figure_dict = json.loads(figure_json)
+
+return figure_dict
 ```
 
-You can access the secrets in your script by:
-
-```secret = settings.MY_SECRET_VARIABLE_NAME```
-
-Finally, you can begin writing the python code to extract and clean your data, returning a pandas dataframe with the desired output data. This is a good place to make api calls, database queries, and transaformations.
-
-## 2. API Route
-Here you'll create you API endpoint that accepts parameters, passes them to the service to get the data, creates a chart and returns the chart as json.
-
-Example imports to access your service:
-
-```
-from app.services.your_services_file_name_no_py import service_class_name
-
-service_name = service_class_name() #instantiate the class
-```
-
-The route will be define like this:
-```
-@router.get('/endpoint_name')
-def function_to_create_chart_json(params):
-    #call service
-    #create chart
-    #return chart as json
-```
-
+</details>
