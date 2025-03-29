@@ -71,6 +71,11 @@ if check_api_key_exists("COINGECKO_API_KEY"):
         coingecko_router,
         prefix="/coingecko",
     )
+    app.include_router(
+        geckoterminal_router,
+        prefix="/geckoterminal",
+    )
+
     add_template("coingecko")
 
 if check_api_key_exists("GLASSNODE_API_KEY"):
@@ -87,16 +92,13 @@ if check_api_key_exists("VELO_API_KEY"):
     )
     add_template("velodata")
 
-app.include_router(
-    geckoterminal_router,
-    prefix="/geckoterminal",
-)
-
 
 app.include_router(
     google_trends_router,
     prefix="/google-trends",
 )
+
+add_template("google_trends")
 
 app.include_router(
     microstrategy_router,
