@@ -16,6 +16,7 @@ from app.routes.glassnode_routes import glassnode_router
 from app.routes.google_trends_routes import google_trends_router
 from app.routes.microstrategy_routes import microstrategy_router
 from app.routes.velo_routes import velo_router
+from app.routes.udf_routes import udf_router
 from app.routes.virtuals_routes import virtuals_router
 from app.core.session_manager import SessionManager
 from fastapi.responses import HTMLResponse
@@ -119,6 +120,11 @@ add_template("btc_matrix")
 app.include_router(
     virtuals_router,
     prefix="/virtuals",
+)
+
+app.include_router(
+    udf_router,
+    prefix="/udf",
 )
 
 print(f"\nLoading done.\n")
