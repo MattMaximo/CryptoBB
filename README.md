@@ -60,7 +60,7 @@ Note: You can have OpenBB Workspace running as a native app within your desktop,
 
 ### Visualizing data
 
-If you go into the "Templates" tab you will see a few out of the box templates to get started.
+If you go into the "Apps" tab you will see a few out of the box Apps to get started.
 
 ![CleanShot 2025-03-29 at 16 12 33](https://github.com/user-attachments/assets/52c6b474-705e-4334-9298-44f740b4f2e9)
 
@@ -108,11 +108,11 @@ Importantly, the routes are where users define the widget behavior specification
 
 This modular approach allows for a clear separation of concerns, making the application more maintainable and scalable as new data sources can be added by simply creating new route and service files.
 
-### Templates
+### Apps
 
-The templates folder contains specific templates that aggregate multiple widgets together and their respective parameter grouping.
+The templates folder contains specific app that aggregate multiple widgets together and their respective parameter grouping.
 
-A template may contain widgets from different sources, allowing users to define custom workflows tailored to their specific analytical needs. 
+An app may contain widgets from different sources, allowing users to define custom workflows tailored to their specific analytical needs. 
 
 Users have the flexibility to combine various data visualizations and tools to create comprehensive dashboards that support their intended analysis objectives.
 
