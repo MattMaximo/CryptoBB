@@ -1,0 +1,238 @@
+// @version=5
+// Original concept by Edgar Hofer
+// Graphical inspiration by Ruben Jaramillos "RSI STOCH STOCHRSI"
+// Updated to Pine Script v5: bug fixes, new filters, 3Commas alert templates
+//
+// Bug fixed from v1: StochRSI was using Stochastic's smoothK/smoothD params
+//                    instead of its own independent smoothK1/smoothD1 params.
+
+indicator(
+     title      = "EDI 3Commas Signaler | RSI + Stoch + StochRSI | v2",
+     shorttitle = "EDI 3C V2",
+     overlay    = false
+ )
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  GLOBAL SETTINGS
+// ═══════════════════════════════════════════════════════════════════════════════
+src           = input.source(close,  title = "Source",                                   group = "Global")
+returningrsi  = input.bool(true,     title = "Use Crossover/Crossunder (vs. threshold)", group = "Global")
+stoch_average = input.string("SMA",  title = "Stoch/StochRSI Average Method",
+                             options = ["SMA", "EMA"],                                   group = "Global")
+use_ema       = stoch_average == "EMA"
+minsignals    = input.int(2, minval = 1, maxval = 3, title = "Min Signals Required",     group = "Global")
+
+// ─── Trend Filter ─────────────────────────────────────────────────────────────
+use_trend  = input.bool(false, title = "Enable Trend Filter (EMA)?",  group = "Trend Filter")
+trend_len  = input.int(200,    title = "Trend EMA Length", minval = 1, group = "Trend Filter")
+trend_ema  = ta.ema(close, trend_len)
+trend_long = not use_trend or close > trend_ema   // longs only above EMA
+trend_shrt = not use_trend or close < trend_ema   // shorts only below EMA
+
+// ─── Volume Filter ────────────────────────────────────────────────────────────
+use_vol = input.bool(false, title = "Enable Volume Filter?",           group = "Volume Filter")
+vol_len = input.int(20,     title = "Volume MA Length", minval = 1,    group = "Volume Filter")
+vol_ok  = not use_vol or (volume > ta.sma(volume, vol_len))
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  RSI  — displayed at +200 offset (panel rows 200–300)
+// ═══════════════════════════════════════════════════════════════════════════════
+needrsi = input.bool(true, title = "RSI Required (must fire to signal)",  group = "RSI")
+rsi_len = input.int(14,    title = "RSI Length",     minval = 1,          group = "RSI")
+rsisell = input.int(70,    title = "RSI Overbought", minval = 1, maxval = 99, group = "RSI")
+rsibuy  = input.int(30,    title = "RSI Oversold",   minval = 1, maxval = 99, group = "RSI")
+
+rsi_val = ta.rsi(src, rsi_len)
+
+plot(rsi_val + 200, color = color.purple, linewidth = 2, title = "RSI")
+
+rsi_ob  = hline(rsisell + 200, title = "RSI OB",  linestyle = hline.style_dashed, color = color.gray)
+rsi_os  = hline(rsibuy  + 200, title = "RSI OS",  linestyle = hline.style_dashed, color = color.gray)
+         hline(250,             title = "RSI 50",  linestyle = hline.style_dotted, color = color.gray)
+         hline(300,             title = "RSI Max", linestyle = hline.style_solid,  color = color.new(color.gray, 60))
+fill(rsi_ob, rsi_os, color = color.new(color.purple, 80), title = "RSI Zone")
+
+rsi_long  = returningrsi ? ta.crossover(rsi_val,  rsibuy)  : rsi_val < rsibuy
+rsi_short = returningrsi ? ta.crossunder(rsi_val, rsisell) : rsi_val > rsisell
+
+plot(rsi_long  ? 210 : na, style = plot.style_circles, color = color.new(#008fff, 40), linewidth = 3, title = "RSI Buy  Dot",  editable = false)
+plot(rsi_short ? 290 : na, style = plot.style_circles, color = color.new(color.orange, 40), linewidth = 3, title = "RSI Sell Dot",  editable = false)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  STOCHASTIC  — displayed at +100 offset (panel rows 100–200)
+// ═══════════════════════════════════════════════════════════════════════════════
+needstoch = input.bool(false, title = "Stoch Required",                     group = "Stochastic")
+stoch_k   = input.int(14,     title = "Stoch K (Length)",  minval = 1,      group = "Stochastic")
+stoch_d   = input.int(3,      title = "Stoch Smooth K",    minval = 1,      group = "Stochastic")
+stoch_sm  = input.int(3,      title = "Stoch Smooth D",    minval = 1,      group = "Stochastic")
+stochsell = input.int(80,     title = "Stoch Overbought",  minval = 1, maxval = 99, group = "Stochastic")
+stochbuy  = input.int(20,     title = "Stoch Oversold",    minval = 1, maxval = 99, group = "Stochastic")
+
+raw_k  = ta.stoch(src, high, low, stoch_k)
+k_line = use_ema ? ta.ema(raw_k,  stoch_d)  : ta.sma(raw_k,  stoch_d)
+d_line = use_ema ? ta.ema(k_line, stoch_sm) : ta.sma(k_line, stoch_sm)
+
+plot(k_line + 100, color = color.blue,   linewidth = 2, title = "Stoch K")
+plot(d_line + 100, color = color.orange, linewidth = 2, title = "Stoch D")
+
+stoch_ob  = hline(stochsell + 100, title = "Stoch OB", linestyle = hline.style_dashed, color = color.gray)
+stoch_os  = hline(stochbuy  + 100, title = "Stoch OS", linestyle = hline.style_dashed, color = color.gray)
+           hline(150,               title = "Stoch 50", linestyle = hline.style_dotted, color = color.gray)
+           hline(100,               title = "Stoch Panel Bot", linestyle = hline.style_solid, color = color.new(color.gray, 60))
+fill(stoch_ob, stoch_os, color = color.new(color.purple, 80), title = "Stoch Zone")
+
+stoch_long  = (d_line < stochbuy)  and (k_line >= d_line)
+stoch_short = (d_line > stochsell) and (k_line <= d_line)
+
+plot(stoch_long  ? 110 : na, style = plot.style_circles, color = color.new(#008fff, 40), linewidth = 3, title = "Stoch Buy  Dot", editable = false)
+plot(stoch_short ? 190 : na, style = plot.style_circles, color = color.new(color.orange, 40), linewidth = 3, title = "Stoch Sell Dot", editable = false)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  STOCHRSI  — displayed at 0–100 (no offset)
+//  BUG FIX: v1 used Stochastic's smoothK/smoothD for StochRSI smoothing.
+//           Now uses its own independent srsi_k / srsi_d parameters.
+// ═══════════════════════════════════════════════════════════════════════════════
+needstochrsi  = input.bool(false, title = "StochRSI Required",               group = "StochRSI")
+srsi_k        = input.int(3,      title = "StochRSI K Smooth",  minval = 1,  group = "StochRSI")
+srsi_d        = input.int(3,      title = "StochRSI D Smooth",  minval = 1,  group = "StochRSI")
+srsi_rsi_len  = input.int(14,     title = "StochRSI RSI Length", minval = 1, group = "StochRSI")
+srsi_stch_len = input.int(14,     title = "StochRSI Stoch Length", minval=1, group = "StochRSI")
+stochrsisell  = input.int(80,     title = "StochRSI OB", minval = 1, maxval = 99, group = "StochRSI")
+stochrsibuy   = input.int(20,     title = "StochRSI OS", minval = 1, maxval = 99, group = "StochRSI")
+
+rsi_for_srsi = ta.rsi(src, srsi_rsi_len)
+raw_k1  = ta.stoch(rsi_for_srsi, rsi_for_srsi, rsi_for_srsi, srsi_stch_len)
+k1_line = use_ema ? ta.ema(raw_k1,  srsi_k) : ta.sma(raw_k1,  srsi_k)
+d1_line = use_ema ? ta.ema(k1_line, srsi_d) : ta.sma(k1_line, srsi_d)
+
+plot(k1_line, color = color.blue,   linewidth = 2, title = "StochRSI K")
+plot(d1_line, color = color.orange, linewidth = 2, title = "StochRSI D")
+
+srsi_ob  = hline(stochrsisell, title = "StochRSI OB", linestyle = hline.style_dashed, color = color.gray)
+srsi_os  = hline(stochrsibuy,  title = "StochRSI OS", linestyle = hline.style_dashed, color = color.gray)
+          hline(50,             title = "StochRSI 50", linestyle = hline.style_dotted, color = color.gray)
+          hline(0,              title = "StochRSI Bot", linestyle = hline.style_solid, color = color.new(color.gray, 60))
+fill(srsi_ob, srsi_os, color = color.new(color.purple, 80), title = "StochRSI Zone")
+
+stochrsi_long  = (d1_line < stochrsibuy)  and (k1_line >= d1_line)
+stochrsi_short = (d1_line > stochrsisell) and (k1_line <= d1_line)
+
+plot(stochrsi_long  ? 10 : na, style = plot.style_circles, color = color.new(#008fff, 40), linewidth = 3, title = "StochRSI Buy  Dot", editable = false)
+plot(stochrsi_short ? 90 : na, style = plot.style_circles, color = color.new(color.orange, 40), linewidth = 3, title = "StochRSI Sell Dot", editable = false)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SIGNAL AGGREGATION
+// ═══════════════════════════════════════════════════════════════════════════════
+long_cnt  = (rsi_long  ? 1 : 0) + (stoch_long  ? 1 : 0) + (stochrsi_long  ? 1 : 0)
+short_cnt = (rsi_short ? 1 : 0) + (stoch_short ? 1 : 0) + (stochrsi_short ? 1 : 0)
+
+// Step 1: enough indicator votes?
+long_sig  = long_cnt  >= minsignals
+short_sig = short_cnt >= minsignals
+
+// Step 2: required indicators must fire
+long_sig  := long_sig  and (needrsi      ? rsi_long       : true)
+long_sig  := long_sig  and (needstoch    ? stoch_long     : true)
+long_sig  := long_sig  and (needstochrsi ? stochrsi_long  : true)
+
+short_sig := short_sig and (needrsi      ? rsi_short      : true)
+short_sig := short_sig and (needstoch    ? stoch_short    : true)
+short_sig := short_sig and (needstochrsi ? stochrsi_short : true)
+
+// Step 3: optional trend & volume gate
+long_sig  := long_sig  and trend_long and vol_ok
+short_sig := short_sig and trend_shrt and vol_ok
+
+// ─── Signal columns (bottom of pane) ─────────────────────────────────────────
+plot(long_sig  ? 15 : na, style = plot.style_columns, color = color.new(color.green, 25), title = "Buy  Signal", editable = false)
+plot(short_sig ? 15 : na, style = plot.style_columns, color = color.new(color.red,   25), title = "Sell Signal", editable = false)
+
+// Agreement strength (translucent area behind columns)
+plot(long_cnt  > 0 ? long_cnt  * 3 : na, style = plot.style_area, color = color.new(color.green, 88), title = "Long  Agreement", editable = false)
+plot(short_cnt > 0 ? short_cnt * 3 : na, style = plot.style_area, color = color.new(color.red,   88), title = "Short Agreement", editable = false)
+
+// Full-bar background flash on confirmed signal
+bgcolor(long_sig  ? color.new(color.green, 88) : na, title = "Buy  BG Flash")
+bgcolor(short_sig ? color.new(color.red,   88) : na, title = "Sell BG Flash")
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  STATUS TABLE  (top-right of pane — shows live indicator state)
+// ═══════════════════════════════════════════════════════════════════════════════
+show_table = input.bool(true, title = "Show Signal Status Table", group = "Display")
+
+var table status_tbl = table.new(position.top_right, 4, 5,
+     bgcolor      = color.new(color.gray, 85),
+     border_width = 1,
+     border_color = color.new(color.gray, 60))
+
+if barstate.islast and show_table
+    // Header row
+    table.cell(status_tbl, 0, 0, "Indicator", text_color = color.white,
+               bgcolor = color.new(color.gray, 40), text_size = size.small)
+    table.cell(status_tbl, 1, 0, "Long",      text_color = color.white,
+               bgcolor = color.new(color.gray, 40), text_size = size.small)
+    table.cell(status_tbl, 2, 0, "Short",     text_color = color.white,
+               bgcolor = color.new(color.gray, 40), text_size = size.small)
+    table.cell(status_tbl, 3, 0, "Required",  text_color = color.white,
+               bgcolor = color.new(color.gray, 40), text_size = size.small)
+
+    // RSI row
+    table.cell(status_tbl, 0, 1, "RSI",      text_color = color.white, bgcolor = color.new(color.gray, 70), text_size = size.small)
+    table.cell(status_tbl, 1, 1, rsi_long  ? "✓" : "✗",
+               bgcolor = rsi_long  ? color.new(color.green, 55) : color.new(color.red, 70), text_color = color.white, text_size = size.small)
+    table.cell(status_tbl, 2, 1, rsi_short ? "✓" : "✗",
+               bgcolor = rsi_short ? color.new(color.green, 55) : color.new(color.red, 70), text_color = color.white, text_size = size.small)
+    table.cell(status_tbl, 3, 1, needrsi ? "YES" : "no",
+               bgcolor = needrsi ? color.new(color.orange, 55) : color.new(color.gray, 75), text_color = color.white, text_size = size.small)
+
+    // Stoch row
+    table.cell(status_tbl, 0, 2, "Stoch",    text_color = color.white, bgcolor = color.new(color.gray, 70), text_size = size.small)
+    table.cell(status_tbl, 1, 2, stoch_long  ? "✓" : "✗",
+               bgcolor = stoch_long  ? color.new(color.green, 55) : color.new(color.red, 70), text_color = color.white, text_size = size.small)
+    table.cell(status_tbl, 2, 2, stoch_short ? "✓" : "✗",
+               bgcolor = stoch_short ? color.new(color.green, 55) : color.new(color.red, 70), text_color = color.white, text_size = size.small)
+    table.cell(status_tbl, 3, 2, needstoch ? "YES" : "no",
+               bgcolor = needstoch ? color.new(color.orange, 55) : color.new(color.gray, 75), text_color = color.white, text_size = size.small)
+
+    // StochRSI row
+    table.cell(status_tbl, 0, 3, "StochRSI",       text_color = color.white, bgcolor = color.new(color.gray, 70), text_size = size.small)
+    table.cell(status_tbl, 1, 3, stochrsi_long  ? "✓" : "✗",
+               bgcolor = stochrsi_long  ? color.new(color.green, 55) : color.new(color.red, 70), text_color = color.white, text_size = size.small)
+    table.cell(status_tbl, 2, 3, stochrsi_short ? "✓" : "✗",
+               bgcolor = stochrsi_short ? color.new(color.green, 55) : color.new(color.red, 70), text_color = color.white, text_size = size.small)
+    table.cell(status_tbl, 3, 3, needstochrsi ? "YES" : "no",
+               bgcolor = needstochrsi ? color.new(color.orange, 55) : color.new(color.gray, 75), text_color = color.white, text_size = size.small)
+
+    // Summary row
+    long_label  = long_sig  ? "BUY  (" + str.tostring(long_cnt)  + "/3)" : "—"
+    short_label = short_sig ? "SELL (" + str.tostring(short_cnt) + "/3)" : "—"
+    table.cell(status_tbl, 0, 4, "Signal",     text_color = color.white, bgcolor = color.new(color.gray, 40), text_size = size.small)
+    table.cell(status_tbl, 1, 4, long_label,
+               bgcolor = long_sig  ? color.new(color.green, 30) : color.new(color.gray, 75),
+               text_color = color.white, text_size = size.small)
+    table.cell(status_tbl, 2, 4, short_label,
+               bgcolor = short_sig ? color.new(color.red, 30) : color.new(color.gray, 75),
+               text_color = color.white, text_size = size.small)
+    table.cell(status_tbl, 3, 4, "≥" + str.tostring(minsignals),
+               text_color = color.white, bgcolor = color.new(color.gray, 60), text_size = size.small)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  ALERTS  — 3Commas compatible JSON format
+//  Replace YOUR_BOT_ID and YOUR_TOKEN with values from your 3Commas bot.
+//  The {{ticker}} placeholder is filled automatically by TradingView.
+// ═══════════════════════════════════════════════════════════════════════════════
+alertcondition(
+     long_sig,
+     title   = "3C Bot — Long Signal",
+     message = '{"action":"start_deal","bot_id":"YOUR_BOT_ID","email_token":"YOUR_TOKEN","pair":"{{ticker}}"}'
+ )
+
+alertcondition(
+     short_sig,
+     title   = "3C Bot — Short Signal",
+     message = '{"action":"start_deal","bot_id":"YOUR_BOT_ID","email_token":"YOUR_TOKEN","pair":"{{ticker}}"}'
+ )
+
+// Generic readable alerts (useful for webhook testing)
+alertcondition(long_sig,  title = "Long  Signal (readable)", message = "LONG  | {{ticker}} | {{interval}} | Signals: {{plot_0}}")
+alertcondition(short_sig, title = "Short Signal (readable)", message = "SHORT | {{ticker}} | {{interval}} | Signals: {{plot_0}}")
